@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ensamble de PC – Elemsoft</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav class="solid">
+  <ul class="nav-left">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="ensamble.html" class="active">Ensamble</a></li>
+    <li><a href="nosotros.html">Nosotros</a></li>
+  </ul>
+  <a href="index.html" class="nav-logo nav-center">
+    <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+    Elemsoft
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links-secondary">
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><a href="login.html">Iniciar sesión</a></li>
+    </ul>
+    <a href="contacto.html" class="nav-cta">Cotizar</a>
+    <div class="hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="ensamble.html" class="active">Ensamble</a></li>
+    <li><a href="nosotros.html">Nosotros</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+    <li><a href="login.html">Iniciar sesión</a></li>
+    <li><a href="contacto.html" class="nav-cta">Cotizar</a></li>
+  </ul>
+</nav>
+
+<!-- ─── PAGE HEADER ─── -->
+<header class="page-header page-header--image" style="--header-img: url('hero-bg.jpeg');">
+  <p class="section-eyebrow">Ensamble personalizado</p>
+  <h1>Sueñalo.<br/>Lo creamos.</h1>
+  <p>Diseñamos y ensamblamos computadoras a medida: gaming de alta gama, estaciones de trabajo o setups compactos. Cada pieza elegida con criterio y respaldada por garantía.</p>
+</header>
+
+<!-- ─── PROCESO DE ENSAMBLE ─── -->
+<section class="section ensamble-proceso" id="proceso">
+  <p class="section-eyebrow">Cómo funciona</p>
+  <h2 class="section-title">Tu PC.<br/><span class="outline">Paso a paso.</span></h2>
+  <p class="section-sub">Desde la primera conversación hasta la entrega, controlamos cada detalle.</p>
+
+  <div class="proceso-grid">
+
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <h2>Consulta</h2>
+      </div>
+      <div class="proceso-line"></div>
+      <h3 class="proceso-title">Definimos<br/>tu objetivo.</h3>
+      <p class="proceso-desc">Gaming, diseño, oficina o lo que necesites. Analizamos tu uso real y ajustamos cada componente a tu presupuesto.</p>
+      <ul class="proceso-list">
+        <li>Reunión sin costo</li>
+        <li>Asesoría de uso</li>
+        <li>Presupuesto claro</li>
+      </ul>
+    </div>
+
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <h2>Selección</h2>
+      </div>
+      <div class="proceso-line"></div>
+      <h3 class="proceso-title">Elegimos<br/>cada pieza.</h3>
+      <p class="proceso-desc">Compatibilidad verificada antes de comprar. Marcas confiables, rendimiento comprobado y margen para crecer.</p>
+      <ul class="proceso-list">
+        <li>Compatibilidad 100%</li>
+        <li>Componentes verificados</li>
+        <li>Sin cuellos de botella</li>
+      </ul>
+    </div>
+
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <h2>Ensamble</h2>
+      </div>
+      <div class="proceso-line"></div>
+      <h3 class="proceso-title">Lo armamos<br/>con precisión.</h3>
+      <p class="proceso-desc">Montaje profesional, gestión de cables y pruebas de estrés para garantizar estabilidad desde el primer encendido.</p>
+      <ul class="proceso-list">
+        <li>Montaje profesional</li>
+        <li>Prueba de estrés</li>
+        <li>Temperaturas bajo control</li>
+      </ul>
+    </div>
+
+    <div class="proceso-card">
+      <div class="proceso-header">
+        <h2>Entrega</h2>
+      </div>
+      <div class="proceso-line"></div>
+      <h3 class="proceso-title">Listo para<br/>encender.</h3>
+      <p class="proceso-desc">Sistema operativo instalado, drivers actualizados y garantía sobre mano de obra. Entregamos, tú disfrutas.</p>
+      <ul class="proceso-list">
+        <li>Sistema Operativo activado</li>
+        <li>Drivers al día</li>
+        <li>Garantía incluida</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="proceso-cta">
+    <a href="contacto.html" class="btn-explore">Solicitar ensamble</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     CONFIGURADOR DINÁMICO DE PC
+     ═══════════════════════════════════════════════════ -->
+<section class="section configurator-section" id="configurador">
+  <p class="section-eyebrow">Configurador</p>
+  <h2 class="section-title">Arma tu PC.<br/><span class="outline">En vivo.</span></h2>
+  <p class="section-sub">Elige tus componentes y mira cómo se va llenando tu equipo. Al final, te enviamos tu selección y te respondemos con precios y disponibilidad.</p>
+
+  <div class="configurator-layout">
+
+    <!-- Vista previa del case en 3D -->
+    <div class="configurator-preview">
+      <div class="case-diagram-3d" id="caseDiagram3D">
+        <div class="case-3d-hint">Arrastra para rotar</div>
+      </div>
+
+      <div class="configurator-progress">
+        <span id="configProgress">0 / 7 componentes seleccionados</span>
+        <div class="configurator-progress-bar">
+          <div class="configurator-progress-fill" id="configProgressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selectores -->
+    <div class="configurator-controls">
+
+      <div class="config-field" data-slot="case">
+        <label>Gabinete</label>
+        <select id="selCase">
+          <option value="">Selecciona un gabinete</option>
+          <option value="Gabinete compacto Micro-ATX">Compacto Micro-ATX</option>
+          <option value="Gabinete Mid Tower ATX">Mid Tower ATX</option>
+          <option value="Gabinete Full Tower ATX">Full Tower ATX</option>
+          <option value="Gabinete con panel de vidrio templado">Con panel de vidrio templado</option>
+        </select>
+      </div>
+
+      <div class="config-field" data-slot="motherboard">
+        <label>Tarjeta madre</label>
+        <select id="selMotherboard">
+          <option value="">Selecciona una tarjeta madre</option>
+          <option value="Tarjeta madre Micro-ATX (gama básica)">Micro-ATX — gama básica</option>
+          <option value="Tarjeta madre ATX (gama media)">ATX — gama media</option>
+          <option value="Tarjeta madre ATX (gama alta, WiFi integrado)">ATX — gama alta, WiFi integrado</option>
+          <option value="Tarjeta madre Mini-ITX (compacta)">Mini-ITX — compacta</option>
+        </select>
+      </div>
+
+      <div class="config-field" data-slot="cpu">
+        <label>Procesador (CPU)</label>
+        <select id="selCpu">
+          <option value="">Selecciona un procesador</option>
+          <option value="Intel Core i3 (gama básica)">Intel Core i3 — gama básica</option>
+          <option value="Intel Core i5 (gama media)">Intel Core i5 — gama media</option>
+          <option value="Intel Core i7 (gama alta)">Intel Core i7 — gama alta</option>
+          <option value="AMD Ryzen 5 (gama media)">AMD Ryzen 5 — gama media</option>
+          <option value="AMD Ryzen 7 (gama alta)">AMD Ryzen 7 — gama alta</option>
+          <option value="AMD Ryzen 9 (gama alta+)">AMD Ryzen 9 — gama alta+</option>
+        </select>
+      </div>
+
+      <div class="config-field" data-slot="gpu">
+        <label>Tarjeta gráfica (GPU)</label>
+        <select id="selGpu">
+          <option value="">Selecciona una tarjeta gráfica</option>
+          <option value="Gráficos integrados (sin GPU dedicada)">Gráficos integrados — sin GPU dedicada</option>
+          <option value="GPU gama de entrada (4-6GB)">GPU gama de entrada — 4–6GB</option>
+          <option value="GPU gama media (8-12GB)">GPU gama media — 8–12GB</option>
+          <option value="GPU gama alta (12GB+)">GPU gama alta — 12GB+</option>
+        </select>
+      </div>
+
+      <div class="config-field" data-slot="ram">
+        <label>Memoria RAM</label>
+        <select id="selRam">
+          <option value="">Selecciona la memoria RAM</option>
+          <option value="RAM 8GB">8GB</option>
+          <option value="RAM 16GB">16GB</option>
+          <option value="RAM 32GB">32GB</option>
+          <option value="RAM 64GB">64GB</option>
+        </select>
+      </div>
+
+      <div class="config-field" data-slot="storage">
+        <label>Almacenamiento</label>
+        <select id="selStorage">
+          <option value="">Selecciona el almacenamiento</option>
+          <option value="SSD 256GB">SSD 256GB</option>
+          <option value="SSD 512GB">SSD 512GB</option>
+          <option value="SSD 1TB">SSD 1TB</option>
+          <option value="SSD 1TB + HDD 1TB adicional">SSD 1TB + HDD 1TB adicional</option>
+          <option value="SSD 2TB">SSD 2TB</option>
+        </select>
+      </div>
+
+      <div class="config-field" data-slot="cooling">
+        <label>Refrigeración</label>
+        <select id="selCooling">
+          <option value="">Selecciona refrigeración</option>
+          <option value="Refrigeración por aire (estándar)">Por aire — estándar</option>
+          <option value="Refrigeración por aire (alto rendimiento)">Por aire — alto rendimiento</option>
+          <option value="Refrigeración líquida (AIO 240mm)">Líquida AIO 240mm</option>
+          <option value="Refrigeración líquida (AIO 360mm)">Líquida AIO 360mm</option>
+        </select>
+      </div>
+
+      <div class="config-field" data-slot="psu">
+        <label>Fuente de poder</label>
+        <select id="selPsu">
+          <option value="">Selecciona la fuente de poder</option>
+          <option value="Fuente 450W">450W</option>
+          <option value="Fuente 550W">550W</option>
+          <option value="Fuente 650W 80+ Bronze">650W — 80+ Bronze</option>
+          <option value="Fuente 850W 80+ Gold">850W — 80+ Gold</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Resumen tipo recibo -->
+  <div class="configurator-summary" id="configSummary">
+    <div class="config-summary-header">
+      <p class="c-label">Tu configuración</p>
+      <button type="button" class="config-reset" id="configReset">Reiniciar</button>
+    </div>
+    <ul class="config-summary-list" id="configSummaryList">
+      <li class="config-summary-empty">Aún no has seleccionado ningún componente.</li>
+    </ul>
+  </div>
+
+  <!-- Formulario de envío de la cotización -->
+  <form class="config-quote-form" id="configQuoteForm">
+    <div class="form-row">
+      <input type="text" name="nombre" placeholder="Nombre completo" required/>
+      <input type="tel" name="telefono" placeholder="Teléfono / WhatsApp" required/>
+    </div>
+    <input type="email" name="correo" placeholder="Correo electrónico (opcional)"/>
+    <textarea name="mensaje" placeholder="Comentarios adicionales sobre tu build (opcional)..."></textarea>
+    <button type="submit" class="form-submit">Enviar mi configuración →</button>
+  </form>
+</section>
+
+<!-- ─── TIPOS DE BUILD ─── -->
+<section class="section">
+  <p class="section-eyebrow">Tipos de ensamble</p>
+  <h2 class="section-title">Para cada necesidad</h2>
+  <p class="section-sub">Elegimos los componentes según tu presupuesto y el uso que le darás a tu equipo.</p>
+  <div class="values-grid">
+    <div class="value-card"><br>
+      <h3>Gaming</h3>
+      <p>Equipos de alto rendimiento para los juegos más exigentes, con buena relación calidad-precio y espacio para crecer.</p>
+    </div>
+    <div class="value-card"><br>
+      <h3>Estaciones de trabajo</h3>
+      <p>Configuraciones pensadas para edición de video, diseño gráfico, modelado 3D y desarrollo de software.</p>
+    </div>
+    <div class="value-card"><br>
+      <h3>Setups compactos</h3>
+      <p>Equipos silenciosos y de bajo consumo para uso diario, oficina en casa o entretenimiento.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── CTA BANNER ─── -->
+<div class="cta-banner">
+  <div class="cta-bg"></div>
+  <div class="cta-overlay"></div>
+  <div class="cta-content">
+    <p class="section-eyebrow">¿Listo para armar tu equipo?</p>
+    <h2>Cuéntanos tu<br/>presupuesto y uso.</h2>
+    <a href="contacto.html" class="btn-explore">Solicitar ensamble</a>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-brand">
+    <a href="index.html" class="nav-logo">
+      <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+      Elemsoft
+    </a>
+    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala. Tu equipo en las mejores manos.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Servicios</h4>
+    <ul>
+      <li><a href="servicios.html">Mantenimiento preventivo</a></li>
+      <li><a href="servicios.html">Mantenimiento correctivo</a></li>
+      <li><a href="ensamble.html">Ensamble de PC</a></li>
+      <li><a href="servicios.html">Actualización de hardware</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Empresa</h4>
+    <ul>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><a href="login.html">Iniciar sesión</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Social</h4>
+    <ul>
+      <li><a href="#">Facebook</a></li>
+      <li><a href="https://www.instagram.com/_elemsoft?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">Instagram</a></li>
+      <li><a href="#">WhatsApp</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>©  2026 Elemsoft · Todos los derechos reservados</span>
+ 
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="main.js"></script>
+
+<!-- ─── Configurador dinámico de PC ─── -->
+<script>
+(function() {
+  const fields = {
+    case:        { sel: document.getElementById('selCase'),        slot: 'slot-case', label: 'Gabinete' },
+    motherboard: { sel: document.getElementById('selMotherboard'), part: 'motherboard', label: 'Tarjeta madre' },
+    cpu:         { sel: document.getElementById('selCpu'),         part: 'cpu',     label: 'Procesador' },
+    gpu:         { sel: document.getElementById('selGpu'),         part: 'gpu',     label: 'Tarjeta gráfica' },
+    ram:         { sel: document.getElementById('selRam'),         part: 'ram',     label: 'Memoria RAM' },
+    storage:     { sel: document.getElementById('selStorage'),     part: 'storage', label: 'Almacenamiento' },
+    cooling:     { sel: document.getElementById('selCooling'),     part: 'cooling', label: 'Refrigeración' },
+    psu:         { sel: document.getElementById('selPsu'),         part: 'psu',     label: 'Fuente de poder' }
+  };
+  const TOTAL = Object.keys(fields).length;
+
+  const summaryList   = document.getElementById('configSummaryList');
+  const progressText  = document.getElementById('configProgress');
+  const progressFill  = document.getElementById('configProgressFill');
+  const resetBtn      = document.getElementById('configReset');
+  const quoteForm     = document.getElementById('configQuoteForm');
+
+  function getSelections() {
+    const out = {};
+    Object.entries(fields).forEach(([key, f]) => {
+      if (f.sel.value) out[key] = { label: f.label, value: f.sel.value };
+    });
+    return out;
+  }
+
+  /* ═══════════════════════════════════════
+     ESCENA 3D — Three.js
+     Gabinete wireframe + piezas geométricas
+     que aparecen con animación al seleccionar
+     ═══════════════════════════════════════ */
+  const container = document.getElementById('caseDiagram3D');
+  let scene, camera, renderer, controls, raf;
+  const parts = {}; // { key: { group: THREE.Group, target: {scale,y}, current: {...} } }
+  let gpuFanMesh = null, cpuFanMesh = null;
+
+  function colorVar(name, fallback) {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return v || fallback;
+  }
+
+  function initScene() {
+    const W = container.clientWidth, H = container.clientHeight;
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(38, W / H, 0.1, 100);
+    camera.position.set(5.8, 3.7, 7.1);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.enablePan = false;
+    controls.minDistance = 5.5;
+    controls.maxDistance = 13.5;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.8;
+    controls.target.set(0, 0.3, 0);
+
+    // Pausar auto-rotate al interactuar
+    controls.addEventListener('start', () => { controls.autoRotate = false; });
+
+    // Luces
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const key = new THREE.DirectionalLight(0xffffff, 0.9);
+    key.position.set(4, 6, 4);
+    scene.add(key);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.35);
+    rim.position.set(-4, 2, -4);
+    scene.add(rim);
+
+    buildCase();
+    buildParts();
+
+    animate();
+    window.addEventListener('resize', onResize, { passive: true });
+  }
+
+  function onResize() {
+    const W = container.clientWidth, H = container.clientHeight;
+    camera.aspect = W / H;
+    camera.updateProjectionMatrix();
+    renderer.setSize(W, H);
+  }
+
+  /* Gabinete: caja wireframe translúcida
+     Proporciones reales de una torre ATX: el ancho es la mitad de la
+     profundidad y el alto (21 x 45 x 45 cm aprox.) — antes el gabinete
+     era casi cuadrado (3.4 x 5.0 x 3.0), por eso no se veía como una PC real. */
+  function buildCase() {
+    const geo = new THREE.BoxGeometry(2.3, 5.0, 5.0);
+    const edges = new THREE.EdgesGeometry(geo);
+    const mat = new THREE.LineBasicMaterial({ color: 0x555555, transparent: true, opacity: 0.65 });
+    const wire = new THREE.LineSegments(edges, mat);
+    wire.position.y = 0.1;
+    scene.add(wire);
+
+    // Panel trasero sutil (plano semitransparente) para dar referencia de profundidad
+    const panelGeo = new THREE.PlaneGeometry(2.3, 5.0);
+    const panelMat = new THREE.MeshBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+    const panel = new THREE.Mesh(panelGeo, panelMat);
+    panel.position.set(0, 0.1, -2.5);
+    scene.add(panel);
+
+    // Separador del compartimento de la PSU (shroud inferior), como en un ATX real
+    const shroudGeo = new THREE.PlaneGeometry(2.3, 0.02);
+    const shroudMat = new THREE.MeshBasicMaterial({ color: 0x666666, transparent: true, opacity: 0.5 });
+    const shroud = new THREE.Mesh(shroudGeo, shroudMat);
+    shroud.rotation.x = Math.PI / 2;
+    shroud.position.set(0, -1.65, 0);
+    scene.add(shroud);
+
+    // Ventiladores fijos del gabinete (estructurales, siempre visibles) —
+    // 2 frontales (intake) APILADOS verticalmente en el panel frontal (un case
+    // real no tiene ancho para 2 ventiladores en fila, van uno sobre otro),
+    // más 1 trasero (exhaust) junto al panel de I/O — flujo de aire
+    // frontal→trasero como en cualquier ensamble real (ver fotos de referencia).
+    const fanMat = new THREE.MeshBasicMaterial({ color: 0x777777, transparent: true, opacity: 0.7 });
+    function addFan(x, y, z, radius) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, radius * 0.06, 8, 32), fanMat);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.set(x, y, z);
+      scene.add(ring);
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.22, radius * 0.22, 0.04, 16), fanMat);
+      hub.rotation.x = Math.PI / 2;
+      hub.position.set(x, y, z);
+      scene.add(hub);
+    }
+    addFan(0, 1.5, 2.43, 0.37);    // frontal superior
+    addFan(0, -0.5, 2.43, 0.37);   // frontal inferior
+    addFan(0.68, 1.7, -2.43, 0.26); // trasero, junto al panel de I/O
+  }
+
+  /* Material estándar para piezas (apagadas = casi invisibles, encendidas = sólidas) */
+  function partMaterial() {
+    return new THREE.MeshStandardMaterial({ color: 0xe8e8e8, metalness: 0.25, roughness: 0.55 });
+  }
+  function partWireMaterial(color) {
+    return new THREE.LineBasicMaterial({ color: color || 0x888888 });
+  }
+
+  /* ═══════════════════════════════════════
+     LAYOUT — Torre ATX real, vista lateral abierta
+     Motherboard pegada a la pared trasera-izquierda (X≈-0.55, Z≈-1.25)
+     CPU arriba-centro de la mobo · RAM a la derecha del CPU
+     GPU horizontal, debajo, sobresaliendo hacia el slot PCIe
+     Almacenamiento en bahía separada a la derecha
+     PSU en su propio compartimento, hasta abajo
+     ═══════════════════════════════════════ */
+  /* ═══════════════════════════════════════
+     LAYOUT — Torre ATX real, basado en diagrama de
+     ensamble de referencia (motherboard tray trasero-
+     izquierdo, GPU horizontal ancha debajo del CPU,
+     cooler grande proporcional, PSU en la base).
+     Sistema de coordenadas: gabinete 3.4(X) × 4.2(Y) × 3.0(Z)
+     pared trasera en Z=-1.5, panel frontal abierto hacia Z=+1.5
+     ═══════════════════════════════════════ */
+  function buildParts() {
+    // Tarjeta madre: panel PCB grande pegado a la pared trasera-izquierda.
+    // Ocupa la mitad superior del gabinete — es la base de todo lo demás.
+    {
+      const g = new THREE.Group();
+      const pcbW = 1.29, pcbH = 2.5;
+      const pcb = new THREE.Mesh(
+        new THREE.BoxGeometry(pcbW, pcbH, 0.05),
+        new THREE.MeshStandardMaterial({ color: 0x252525, metalness: 0.15, roughness: 0.75 })
+      );
+      g.add(pcb);
+
+      // Marca grabada: socket CPU (arriba-centro de la placa)
+      const socketMark = new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.PlaneGeometry(0.34, 0.5)),
+        partWireMaterial(0x777777)
+      );
+      socketMark.position.set(-0.10, 0.75, 0.05);
+      g.add(socketMark);
+
+      // Marca grabada: ranuras RAM (a la derecha del socket)
+      for (let i = 0; i < 2; i++) {
+        const ramMark = new THREE.LineSegments(
+          new THREE.EdgesGeometry(new THREE.PlaneGeometry(0.03, 0.7)),
+          partWireMaterial(0x777777)
+        );
+        ramMark.position.set(0.28 + i * 0.07, 0.75, 0.05);
+        g.add(ramMark);
+      }
+
+      // Marca grabada: slot PCIe (zona inferior, donde va la GPU)
+      const pcieMark = new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.PlaneGeometry(1.0, 0.06)),
+        partWireMaterial(0x777777)
+      );
+      pcieMark.position.set(0, -0.35, 0.05);
+      g.add(pcieMark);
+
+      // Panel de I/O (puertos traseros), esquina superior-izquierda de la placa
+      const io = new THREE.Mesh(
+        new THREE.BoxGeometry(0.24, 0.32, 0.12),
+        new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.4, roughness: 0.4 })
+      );
+      io.position.set(-0.51, 1.0, 0.05);
+      g.add(io);
+
+      // Posición: pegada a la pared trasera, mitad superior del gabinete
+      g.position.set(-0.37, 0.85, -2.38);
+      parts.motherboard = mkPart(g);
+    }
+
+    // CPU: centrado en el socket de la motherboard
+    {
+      const g = new THREE.Group();
+      const cube = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.06, 0.63), partMaterial());
+      g.add(cube);
+      const socketGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(0.34, 0.02, 0.83));
+      const socket = new THREE.LineSegments(socketGeo, partWireMaterial(0xaaaaaa));
+      socket.position.y = -0.045;
+      g.add(socket);
+      // Mismo X/Y que la marca de socket en la motherboard, ligeramente al frente del PCB
+      g.position.set(-0.47, 1.6, -2.33);
+      parts.cpu = mkPart(g);
+    }
+
+    // RAM: ranuras verticales, mismo nivel que el CPU, a su derecha
+    {
+      const g = new THREE.Group();
+      for (let i = 0; i < 2; i++) {
+        const stick = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.75, 0.30), partMaterial());
+        stick.position.set(-0.09 + i * 0.08, 1.6, -2.33);
+        g.add(stick);
+      }
+      parts.ram = mkPart(g);
+    }
+
+    // GPU: pieza ancha, gruesa y horizontal, montada en el slot PCIe (zona media
+    // de la motherboard), sobresaliendo hacia el frente del gabinete.
+    // Grosor de 2-3 slots como una tarjeta gráfica real, no un tablón plano.
+    {
+      const g = new THREE.Group();
+      const gpuW = 0.27, gpuH = 0.5, gpuLen = 3.08;
+      const body = new THREE.Mesh(new THREE.BoxGeometry(gpuW, gpuH, gpuLen), partMaterial());
+      body.position.z = gpuLen / 2 - 0.25;
+      g.add(body);
+      // Bracket de montaje contra el panel trasero (slot PCIe)
+      const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.5, 0.33), partMaterial());
+      bracket.position.set(0, 0, -0.25);
+      g.add(bracket);
+      // Ventiladores grandes y visibles desde el frente (2, como en el diagrama real)
+      gpuFanMesh = new THREE.Group();
+      for (let i = 0; i < 2; i++) {
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(0.16, 0.018, 8, 24),
+          new THREE.MeshStandardMaterial({ color: 0x999999 })
+        );
+        ring.rotation.x = Math.PI / 2;
+        ring.position.set(0, gpuH / 2 + 0.01, 0.67 + i * 1.17);
+        gpuFanMesh.add(ring);
+      }
+      g.add(gpuFanMesh);
+      // Posición: justo debajo de la motherboard/CPU, pegada al panel trasero,
+      // con el bracket alineado a la altura del slot PCIe marcado en el PCB
+      g.position.set(-0.37, 0.25, -2.38);
+      parts.gpu = mkPart(g);
+    }
+
+    // Almacenamiento: M.2 plano, montado directo sobre la motherboard
+    // (zona inferior-derecha de la placa, casi imperceptible como en el diagrama real)
+    {
+      const g = new THREE.Group();
+      const drive = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.025, 0.22), partMaterial());
+      g.add(drive);
+      g.position.set(0.03, 0.15, -2.33);
+      parts.storage = mkPart(g);
+    }
+
+    // Refrigeración: torre de aire grande, proporcional al CPU,
+    // montada directamente encima con el ventilador mirando hacia el frente del case
+    {
+      const g = new THREE.Group();
+      // Disipador: torre de aletas apilada, dimensionada para caber dentro del gabinete
+      // (más alta que ancha, pero sin sobrepasar el techo del case)
+      const heatsink = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.84, 0.83), partMaterial());
+      heatsink.position.set(0, 0.42, 0);
+      g.add(heatsink);
+      // Ventilador frontal del disipador
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.12, 24), partMaterial());
+      hub.rotation.x = Math.PI / 2;
+      hub.position.set(0, 0.42, 0.48);
+      g.add(hub);
+      cpuFanMesh = new THREE.Group();
+      cpuFanMesh.position.set(0, 0.42, 0.48);
+      for (let i = 0; i < 4; i++) {
+        const blade = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.012, 0.06), new THREE.MeshStandardMaterial({ color: 0xbbbbbb }));
+        blade.position.set(0.1, 0, 0); // desplazado del centro, en el plano XY
+        const pivot = new THREE.Group();
+        pivot.rotation.z = (i / 4) * Math.PI * 2; // gira alrededor del eje Z (el eje del ventilador)
+        pivot.add(blade);
+        cpuFanMesh.add(pivot);
+      }
+      g.add(cpuFanMesh);
+      // Posición: directamente sobre el CPU, mismo eje X/Z, partiendo desde la base del cooler
+      g.position.set(-0.47, 1.65, -2.33);
+      parts.cooling = mkPart(g);
+    }
+
+    // Fuente de poder: compartimento inferior independiente (shroud),
+    // ocupa casi todo el ancho del gabinete, como en el diagrama real
+    {
+      const g = new THREE.Group();
+      const psu = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.6, 2.33), partMaterial());
+      g.add(psu);
+      // Ventilador de la PSU mirando hacia abajo
+      const fanRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.19, 0.014, 8, 24),
+        new THREE.MeshStandardMaterial({ color: 0x999999 })
+      );
+      fanRing.rotation.x = Math.PI / 2;
+      fanRing.position.set(0, 0.31, 0);
+      g.add(fanRing);
+      g.position.set(0, -2.05, 0);
+      parts.psu = mkPart(g);
+    }
+  }
+
+  function mkPart(group) {
+    group.scale.set(0.001, 0.001, 0.001);
+    group.visible = false;
+    group.traverse(o => { if (o.material) { o.material = o.material.clone(); o.material.transparent = true; o.material.opacity = 0; } });
+    scene.add(group);
+    return { group, animating: false };
+  }
+
+  /* Animación de entrada/salida fluida (sin librerías extra, RAF manual) */
+  function animatePartIn(part) {
+    if (!part) return;
+    part.group.visible = true;
+    const startScale = 0.001;
+    const endScale = 1;
+    const startY = part.group.position.y + 0.6;
+    const endY = part.group.position.y;
+    const duration = 650;
+    const startTime = performance.now();
+
+    function step(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      const s = startScale + (endScale - startScale) * ease;
+      part.group.scale.set(s, s, s);
+      part.group.position.y = startY + (endY - startY) * ease;
+      part.group.traverse(o => { if (o.material) o.material.opacity = ease; });
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function animatePartOut(part) {
+    if (!part) return;
+    const startScale = part.group.scale.x;
+    const duration = 350;
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const s = startScale * (1 - t);
+      part.group.scale.set(s, s, s);
+      part.group.traverse(o => { if (o.material) o.material.opacity = 1 - t; });
+      if (t < 1) requestAnimationFrame(step);
+      else part.group.visible = false;
+    }
+    requestAnimationFrame(step);
+  }
+
+  function animate() {
+    raf = requestAnimationFrame(animate);
+    if (gpuFanMesh && fields.gpu.sel.value) gpuFanMesh.rotation.z += 0.06;
+    if (cpuFanMesh && fields.cooling.sel.value) cpuFanMesh.rotation.z += 0.08;
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  /* ═══════════════════════════════════════
+     Estado de la UI (selectores, resumen, progreso)
+     ═══════════════════════════════════════ */
+  const prevState = {};
+
+  function render() {
+    const sel = getSelections();
+    const count = Object.keys(sel).length;
+
+    progressText.textContent = `${count} / ${TOTAL} componentes seleccionados`;
+    progressFill.style.width = (count / TOTAL * 100) + '%';
+
+    Object.entries(fields).forEach(([key, f]) => {
+      const fieldEl = f.sel.closest('.config-field');
+      const filled = !!f.sel.value;
+      if (fieldEl) fieldEl.classList.toggle('is-filled', filled);
+
+      // Disparar animación 3D solo si cambió el estado
+      if (filled && !prevState[key]) animatePartIn(parts[f.part]);
+      if (!filled && prevState[key]) animatePartOut(parts[f.part]);
+      prevState[key] = filled;
+    });
+
+    if (count === 0) {
+      summaryList.innerHTML = '<li class="config-summary-empty">Aún no has seleccionado ningún componente.</li>';
+      return;
+    }
+    summaryList.innerHTML = Object.values(sel)
+      .map(item => `<li><span>${item.label}</span><span>${item.value}</span></li>`)
+      .join('');
+  }
+
+  Object.values(fields).forEach(f => f.sel.addEventListener('change', render));
+
+  resetBtn.addEventListener('click', () => {
+    Object.values(fields).forEach(f => f.sel.value = '');
+    render();
+  });
+
+  /* Envío de la configuración por EmailJS */
+  quoteForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const sel = getSelections();
+    if (Object.keys(sel).length === 0) {
+      alert('Selecciona al menos un componente antes de enviar tu configuración.');
+      return;
+    }
+
+    const resumen = Object.values(sel)
+      .map(item => `${item.label}: ${item.value}`)
+      .join('\n');
+
+    const f = e.target;
+    const btn = f.querySelector('.form-submit');
+    const original = btn.textContent;
+
+    const params = {
+      nombre:    f.nombre.value.trim(),
+      telefono:  f.telefono.value.trim(),
+      correo:    f.correo.value.trim() || '—',
+      servicio:  'Configurador de PC personalizado',
+      prioridad: '—',
+      entrega:   '—',
+      mensaje:   `Configuración seleccionada:\n${resumen}\n\nComentarios: ${f.mensaje.value.trim() || 'Ninguno'}`
+    };
+
+    if (typeof sendEmail === 'function') {
+      sendEmail(params, btn, original);
+    } else {
+      btn.textContent = 'EMAILJS NO DISPONIBLE';
+    }
+    setTimeout(() => { f.reset(); }, 500);
+  });
+
+  if (window.THREE && THREE.OrbitControls) {
+    initScene();
+  } else {
+    container.innerHTML = '<p style="color:var(--gray-5);font-size:.8rem;padding:24px;">No se pudo cargar la vista 3D. Verifica tu conexión a internet.</p>';
+  }
+  render();
+})();
+</script>
+</body>
+</html>
