@@ -1,9 +1,0 @@
-<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none">
-  <!-- Tarjeta trasera (SOFT) -->
-  <g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">
-    <path d="M48 30 L74 16 L112 36 L86 50 Z"/>
-  </g>
-  <!-- Tarjeta delantera (ELEM) - rellena -->
-  <path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/>
-  <path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
-</svg>
