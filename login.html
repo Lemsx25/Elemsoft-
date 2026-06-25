@@ -7,6 +7,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="icon" type="image/png" href="favicon.png"/>
+  <style>
+    .auth-message {
+      font-size: 0.85rem;
+      padding: 0.6rem 0.9rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .auth-message--error   { background: rgba(220,50,50,0.12); color: #ff6b6b; border: 1px solid rgba(220,50,50,0.25); }
+    .auth-message--success { background: rgba(50,200,100,0.12); color: #4cda80; border: 1px solid rgba(50,200,100,0.25); }
+    .form-submit:disabled  { opacity: 0.6; cursor: not-allowed; }
+    .logged-in-state       { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem 0; }
+    .logged-in-state h3    { font-size: 1.3rem; margin: 0; }
+    .logged-in-state p     { color: var(--color-muted, #888); margin: 0; }
+  </style>
 </head>
 <body>
 
@@ -78,22 +93,27 @@
         <button class="login-tab" id="tabRegister" onclick="switchTab('register')">Crear cuenta</button>
       </div>
 
+      <!-- Formulario de login -->
       <form id="formLogin" class="login-form" onsubmit="handleLogin(event)">
-        <input type="email" placeholder="Correo electrónico" required/>
-        <input type="password" placeholder="Contraseña" required/>
+        <input id="loginEmail" type="email" placeholder="Correo electrónico" required/>
+        <input id="loginPassword" type="password" placeholder="Contraseña" required/>
         <div class="login-row">
-          <label class="quote-pill" style="flex:1;"><input type="checkbox"/><span>Recordarme</span></label>
-          <a href="#" class="login-link">¿Olvidaste tu contraseña?</a>
+          <label class="quote-pill" style="flex:1;">
+            <input id="rememberMe" type="checkbox"/>
+            <span>Recordarme</span>
+          </label>
+          <a href="#" class="login-link" onclick="handleForgotPassword(event)">¿Olvidaste tu contraseña?</a>
         </div>
-        <button type="submit" class="form-submit">Entrar →</button>
+        <button type="submit" class="form-submit" id="btnLogin">Entrar →</button>
       </form>
 
-      <form id="formRegister" class="login-form" style="display:none;" onsubmit="handleLogin(event)">
-        <input type="text" placeholder="Nombre completo" required/>
-        <input type="email" placeholder="Correo electrónico" required/>
-        <input type="tel" placeholder="Teléfono / WhatsApp" required/>
-        <input type="password" placeholder="Contraseña" required/>
-        <button type="submit" class="form-submit">Crear cuenta →</button>
+      <!-- Formulario de registro -->
+      <form id="formRegister" class="login-form" style="display:none;" onsubmit="handleRegister(event)">
+        <input id="regName" type="text" placeholder="Nombre completo" required/>
+        <input id="regEmail" type="email" placeholder="Correo electrónico" required/>
+        <input id="regPhone" type="tel" placeholder="Teléfono / WhatsApp" required/>
+        <input id="regPassword" type="password" placeholder="Contraseña (mín. 6 caracteres)" required/>
+        <button type="submit" class="form-submit" id="btnRegister">Crear cuenta →</button>
       </form>
     </div>
   </div>
@@ -146,35 +166,169 @@
   </div>
 </footer>
 <div class="footer-bottom">
-  <span>©  2026 Elemsoft · Todos los derechos reservados</span>
- 
+  <span>© 2026 Elemsoft · Todos los derechos reservados</span>
 </div>
 
 <script src="main.js"></script>
+
+<!-- Firebase SDKs (compat — funcionan con <script> sin necesitar bundler) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
 <script>
-  function switchTab(tab) {
-    const tabLogin = document.getElementById('tabLogin');
-    const tabRegister = document.getElementById('tabRegister');
-    const formLogin = document.getElementById('formLogin');
-    const formRegister = document.getElementById('formRegister');
-    if (tab === 'login') {
-      tabLogin.classList.add('active'); tabRegister.classList.remove('active');
-      formLogin.style.display = 'flex'; formRegister.style.display = 'none';
-    } else {
-      tabRegister.classList.add('active'); tabLogin.classList.remove('active');
-      formRegister.style.display = 'flex'; formLogin.style.display = 'none';
-    }
+  // ── Inicialización de Firebase ──────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyAYUz0m5R_ncBFCMFXCOzcArEkQnbVYWGo",
+    authDomain:        "elemsoftgt.firebaseapp.com",
+    projectId:         "elemsoftgt",
+    storageBucket:     "elemsoftgt.firebasestorage.app",
+    messagingSenderId: "482757350889",
+    appId:             "1:482757350889:web:3c45a31d75f6b319562778",
+    measurementId:     "G-8MSTXNK08V"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // ── Observador de sesión ────────────────────────────────────────────────
+  // Si el usuario ya tiene sesión activa, redirigir directo al dashboard
+  auth.onAuthStateChanged(user => {
+    if (user) window.location.href = 'dashboard.html';
+  });
+
+  // ── Mensajes de error en español ────────────────────────────────────────
+  function getErrorMsg(code) {
+    const msgs = {
+      'auth/email-already-in-use':  'Este correo ya está registrado.',
+      'auth/invalid-email':         'El correo electrónico no es válido.',
+      'auth/user-not-found':        'No existe una cuenta con este correo.',
+      'auth/wrong-password':        'Contraseña incorrecta.',
+      'auth/invalid-credential':    'Correo o contraseña incorrectos.',
+      'auth/weak-password':         'La contraseña debe tener al menos 6 caracteres.',
+      'auth/too-many-requests':     'Demasiados intentos. Intenta más tarde.',
+      'auth/network-request-failed':'Sin conexión. Revisa tu internet.',
+      'auth/user-disabled':         'Esta cuenta fue deshabilitada.',
+      'auth/operation-not-allowed': 'El método de inicio de sesión no está activado en Firebase. Activa Email/Contraseña en Authentication → Sign-in method.',
+      'auth/configuration-not-found': 'Configuración de Firebase no encontrada. Verifica que Authentication esté activado.',
+    };
+    return msgs[code] || `Ocurrió un error (${code}). Intenta de nuevo.`;
   }
+
+  // ── Mostrar mensaje dentro del formulario ───────────────────────────────
+  function showMsg(form, text, type) {
+    let el = form.querySelector('.auth-message');
+    if (!el) {
+      el = document.createElement('p');
+      el.className = 'auth-message';
+      form.querySelector('.form-submit').before(el);
+    }
+    el.textContent = text;
+    el.className = `auth-message auth-message--${type}`;
+  }
+
+  // ── INICIAR SESIÓN ──────────────────────────────────────────────────────
   function handleLogin(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('.form-submit');
-    const original = btn.textContent;
-    btn.textContent = 'LISTO';
-    btn.style.background = '#cccccc';
-    setTimeout(() => {
-      btn.textContent = original;
-      btn.style.background = '';
-    }, 2500);
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const remember = document.getElementById('rememberMe').checked;
+    const btn      = document.getElementById('btnLogin');
+
+    btn.textContent = 'Ingresando…';
+    btn.disabled = true;
+
+    // Persistencia: LOCAL (queda entre sesiones) o SESSION (solo esta pestaña)
+    const persistence = remember
+      ? firebase.auth.Auth.Persistence.LOCAL
+      : firebase.auth.Auth.Persistence.SESSION;
+
+    auth.setPersistence(persistence)
+      .then(() => auth.signInWithEmailAndPassword(email, password))
+      .then(result => {
+        showMsg(e.target, `¡Bienvenido, ${result.user.displayName || result.user.email}!`, 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 1400);
+      })
+      .catch(err => {
+        showMsg(e.target, getErrorMsg(err.code), 'error');
+        btn.textContent = 'Entrar →';
+        btn.disabled = false;
+      });
+  }
+
+  // ── CREAR CUENTA ────────────────────────────────────────────────────────
+  function handleRegister(e) {
+    e.preventDefault();
+    const name     = document.getElementById('regName').value.trim();
+    const email    = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const btn      = document.getElementById('btnRegister');
+
+    btn.textContent = 'Creando cuenta…';
+    btn.disabled = true;
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(result => result.user.updateProfile({ displayName: name }))
+      .then(() => {
+        showMsg(e.target, `¡Cuenta creada! Bienvenido a Elemsoft, ${name}.`, 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 1400);
+      })
+      .catch(err => {
+        showMsg(e.target, getErrorMsg(err.code), 'error');
+        btn.textContent = 'Crear cuenta →';
+        btn.disabled = false;
+      });
+  }
+
+  // ── RECUPERAR CONTRASEÑA ────────────────────────────────────────────────
+  function handleForgotPassword(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email) {
+      showMsg(document.getElementById('formLogin'), 'Escribe tu correo primero.', 'error');
+      return;
+    }
+    auth.sendPasswordResetEmail(email)
+      .then(() => {
+        showMsg(document.getElementById('formLogin'),
+          'Te enviamos un correo para restablecer tu contraseña.', 'success');
+      })
+      .catch(err => {
+        showMsg(document.getElementById('formLogin'), getErrorMsg(err.code), 'error');
+      });
+  }
+
+  // ── SESIÓN ACTIVA: mostrar estado de usuario logueado ──────────────────
+  function showLoggedIn(user) {
+    const card = document.querySelector('.login-card');
+    card.innerHTML = `
+      <div class="logged-in-state">
+        <p class="section-eyebrow">Sesión activa</p>
+        <h3>Hola, ${user.displayName || user.email} 👋</h3>
+        <p>Ya tienes sesión iniciada en Elemsoft.</p>
+        <a href="index.html" class="form-submit" style="text-align:center;text-decoration:none;display:block;">
+          Ir al inicio →
+        </a>
+        <button class="form-submit" style="background:transparent;border:1px solid #555;color:#aaa;margin-top:0.5rem;"
+          onclick="auth.signOut().then(() => location.reload())">
+          Cerrar sesión
+        </button>
+      </div>
+    `;
+  }
+
+  // ── Cambio de tab Login / Registro ──────────────────────────────────────
+  function switchTab(tab) {
+    const tabLogin    = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const formLogin   = document.getElementById('formLogin');
+    const formRegister= document.getElementById('formRegister');
+    if (tab === 'login') {
+      tabLogin.classList.add('active');    tabRegister.classList.remove('active');
+      formLogin.style.display = 'flex';   formRegister.style.display = 'none';
+    } else {
+      tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+      formRegister.style.display = 'flex';formLogin.style.display = 'none';
+    }
   }
 </script>
 </body>

@@ -3,6 +3,14 @@
    Animaciones profesionales y ligeras
    ═══════════════════════════════════════════════════ */
 
+/* ── Configuración global del sitio ──────────────────
+   Para deshabilitar el apartado de Ensamble:
+   cambia  ensamble: true  →  ensamble: false
+   ──────────────────────────────────────────────────── */
+const ELEMSOFT_CONFIG = {
+  ensamble: false   // ← pon false para ocultar el módulo de Ensamble
+};
+
 /* ── EmailJS ── */
 const EMAILJS_PUBLIC_KEY = '0MsPuS4wESYBqzNOg';
 const EMAILJS_SERVICE_ID = 'service_1zjy0vu';
@@ -304,4 +312,84 @@ if (buildRows.length) {
     });
   });
   grid.addEventListener('mouseleave', () => { if (!isDesktop()) return; clearActive(); });
+})();
+
+/* ── Control de módulo Ensamble ────────────────────────
+   Si ELEMSOFT_CONFIG.ensamble === false:
+   - Oculta los links de "Ensamble" en el nav de todas las páginas
+   - En ensamble.html, reemplaza el contenido con una pantalla "Próximamente"
+   ──────────────────────────────────────────────────── */
+(function controlEnsamble() {
+  if (ELEMSOFT_CONFIG.ensamble) return; // habilitado → no hacer nada
+
+  // Reemplazar los links dentro de la service-card de Ensamble de PC
+  // con un botón de WhatsApp para cotizar
+  const WA_URL = 'https://wa.me/message/J3GODZO6I6XGD1';
+  const WA_MSG = encodeURIComponent('Hola, me interesa cotizar un ensamble de PC personalizado.');
+  const WA_FULL = `${WA_URL}?text=${WA_MSG}`;
+
+  // Botón estilo consistente con el resto del sitio
+  function waBtnHTML(label, cssClass) {
+    return `<a href="${WA_FULL}" target="_blank" rel="noopener" class="${cssClass}"
+      style="display:inline-flex;align-items:center;gap:0.5rem;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.121 1.522 5.856L.044 23.45a.75.75 0 0 0 .918.918l5.594-1.478A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.693-.503-5.234-1.381l-.374-.214-3.877 1.024 1.024-3.877-.214-.374A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+      </svg>
+      ${label}
+    </a>`;
+  }
+
+  // Reemplazar link "Ver más →" en la vista compacta de la card
+  document.querySelectorAll('.service-card[data-name="Ensamble de PC"] .service-arrow').forEach(el => {
+    el.outerHTML = waBtnHTML('Cotizar por WhatsApp →', 'service-arrow');
+  });
+
+  // Reemplazar botón "Ver página de ensamble" en la vista expandida
+  document.querySelectorAll('.service-card[data-name="Ensamble de PC"] .btn-dark').forEach(el => {
+    el.outerHTML = waBtnHTML('Cotizar ensamble por WhatsApp', 'btn-dark');
+  });
+
+  // Ocultar links de nav que apunten a ensamble.html
+  document.querySelectorAll('a[href="ensamble.html"]').forEach(el => {
+    const li = el.closest('li');
+    if (li) li.style.display = 'none';
+    else el.style.display = 'none';
+  });
+
+  // Si estamos en ensamble.html → mostrar pantalla "Próximamente"
+  if (window.location.pathname.endsWith('ensamble.html')) {
+    document.addEventListener('DOMContentLoaded', () => {
+      // Ocultar todo el body excepto nav y footer
+      document.querySelectorAll('body > *:not(nav):not(footer):not(.footer-bottom):not(script)').forEach(el => {
+        el.style.display = 'none';
+      });
+
+      // Insertar pantalla de próximamente
+      const coming = document.createElement('div');
+      coming.style.cssText = `
+        min-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 4rem 2rem;
+        font-family: 'Space Grotesk', sans-serif;
+      `;
+      coming.innerHTML = `
+        <p style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:1rem;">Ensamble personalizado</p>
+        <h1 style="font-size:clamp(2rem,6vw,4rem);font-weight:700;margin:0 0 1.5rem;color:#fff;line-height:1.1;">Próximamente.</h1>
+        <p style="font-size:1rem;color:#666;max-width:420px;line-height:1.7;margin-bottom:2.5rem;">
+          Estamos trabajando en algo grande. Pronto podrás configurar tu PC ideal desde aquí, pieza por pieza.
+        </p>
+        <a href="contacto.html" style="display:inline-block;padding:0.75rem 2rem;border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#ccc;text-decoration:none;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.2s;"
+          onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff'"
+          onmouseout="this.style.background='';this.style.color='#ccc'">
+          Cotizar por ahora →
+        </a>
+      `;
+      document.querySelector('nav').insertAdjacentElement('afterend', coming);
+    });
+  }
 })();

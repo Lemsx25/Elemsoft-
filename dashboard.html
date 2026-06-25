@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi cuenta – Elemsoft</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <style>
+    /* ── Layout general ── */
+    .dash-wrapper { max-width: 1180px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+    /* ── Header de usuario ── */
+    .dash-header {
+      display: flex; align-items: center; gap: 1.4rem;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .dash-avatar {
+      width: 58px; height: 58px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; font-weight: 700; color: #fff;
+      flex-shrink: 0; letter-spacing: 0;
+    }
+    .dash-header-text .section-eyebrow { margin-bottom: 0.2rem; color: #666; }
+    .dash-header-text h1 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700; margin: 0 0 0.25rem; color: #fff;
+    }
+    .dash-header-text .dash-email { font-size: 0.83rem; color: #666; }
+
+    /* ── Stats ── */
+    .dash-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; margin-bottom: 3rem;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 1.5rem 1.8rem;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+    }
+    .stat-card.accent-blue::before   { background: rgba(100,150,255,0.6); }
+    .stat-card.accent-green::before  { background: rgba(50,200,100,0.6); }
+    .stat-card.accent-yellow::before { background: rgba(255,200,50,0.6); }
+    .stat-card.accent-white::before  { background: rgba(255,255,255,0.25); }
+    .stat-label {
+      font-size: 0.7rem; letter-spacing: 0.13em; text-transform: uppercase;
+      color: #888; margin-bottom: 0.7rem; font-weight: 500;
+    }
+    .stat-value { font-size: 2rem; font-weight: 700; line-height: 1; color: #fff; }
+    .stat-value.stat-value--sm { font-size: 1.15rem; padding-top: 0.3rem; }
+    .stat-sub { font-size: 0.78rem; color: #666; margin-top: 0.4rem; }
+
+    /* ── Secciones ── */
+    .dash-section { margin-bottom: 3.5rem; }
+    .dash-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.4rem;
+    }
+    .dash-section-header h2 {
+      font-size: 1rem; font-weight: 600; margin: 0;
+      color: #fff; letter-spacing: 0.02em;
+    }
+    .dash-section-header .dash-section-link {
+      font-size: 0.75rem; color: #777; text-decoration: none;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .dash-section-header .dash-section-link:hover { color: #ccc; }
+    .dash-divider {
+      height: 1px; background: rgba(255,255,255,0.06);
+      margin-bottom: 1.4rem;
+    }
+
+    /* ── Tabla de servicios ── */
+    .service-table { width: 100%; border-collapse: collapse; }
+    .service-table th {
+      text-align: left; font-size: 0.68rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #666; padding: 0 1.2rem 1rem;
+      font-weight: 500;
+    }
+    .service-table td {
+      padding: 1rem 1.2rem; font-size: 0.9rem; color: #ccc;
+      border-top: 1px solid rgba(255,255,255,0.05); vertical-align: middle;
+    }
+    .service-table .td-date { color: #888; font-size: 0.82rem; white-space: nowrap; }
+    .service-table .td-main { color: #e8e8e8; font-weight: 500; }
+    .service-table .td-tech { color: #999; font-size: 0.85rem; }
+    .service-table tr:hover td { background: rgba(255,255,255,0.025); }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.25rem 0.75rem; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .status-badge::before { content: '●'; font-size: 0.5rem; }
+    .status-done    { background: rgba(50,200,100,0.1); color: #5ddf8e; border: 1px solid rgba(50,200,100,0.18); }
+    .status-pending { background: rgba(255,190,0,0.1);  color: #ffc93d; border: 1px solid rgba(255,190,0,0.18); }
+    .status-sched   { background: rgba(100,150,255,0.1);color: #90b4ff; border: 1px solid rgba(100,150,255,0.18); }
+    .warranty-pill {
+      display: inline-block; font-size: 0.74rem; color: #888;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 0.2rem 0.65rem; border-radius: 20px;
+    }
+
+    /* ── Cupones ── */
+    .coupons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .coupon-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 1.6rem 1.8rem;
+      position: relative; overflow: hidden;
+    }
+    .coupon-card::after {
+      content: '';
+      position: absolute; top: -40px; right: -40px;
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(255,255,255,0.02);
+      pointer-events: none;
+    }
+    .coupon-discount {
+      font-size: 2.6rem; font-weight: 700; line-height: 1;
+      margin-bottom: 0.4rem; color: #fff;
+    }
+    .coupon-desc { font-size: 0.85rem; color: #999; margin-bottom: 1.2rem; line-height: 1.5; }
+    .coupon-code {
+      font-family: 'Space Mono', monospace; font-size: 0.8rem;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px; padding: 0.45rem 0.9rem;
+      letter-spacing: 0.1em; cursor: pointer; user-select: all;
+      display: inline-block; transition: background 0.2s; color: #ddd;
+    }
+    .coupon-code:hover { background: rgba(255,255,255,0.12); }
+    .coupon-copy-hint {
+      display: block; font-size: 0.68rem; color: #555;
+      margin-top: 0.4rem; letter-spacing: 0.05em;
+    }
+    .coupon-expiry { font-size: 0.75rem; color: #666; margin-top: 0.9rem; }
+    .coupon-used { opacity: 0.3; pointer-events: none; }
+    .coupon-used-label {
+      position: absolute; top: 1rem; right: 1rem;
+      font-size: 0.65rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #666;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 0.15rem 0.5rem; border-radius: 4px;
+    }
+
+    /* ── Ofertas ── */
+    .offers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .offer-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 1.8rem;
+      transition: border-color 0.25s, background 0.25s;
+      display: flex; flex-direction: column;
+    }
+    .offer-card:hover {
+      border-color: rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.05);
+    }
+    .offer-tag {
+      display: inline-block; font-size: 0.67rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #777;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 0.2rem 0.65rem; margin-bottom: 1rem;
+      align-self: flex-start;
+    }
+    .offer-card h3 { font-size: 1rem; margin: 0 0 0.5rem; font-weight: 600; color: #e8e8e8; }
+    .offer-card p  { font-size: 0.84rem; color: #888; margin: 0 0 1.4rem; line-height: 1.6; flex: 1; }
+    .offer-price { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 1.2rem; }
+    .price-new { font-size: 1.4rem; font-weight: 700; color: #fff; }
+    .price-old { font-size: 0.84rem; color: #555; text-decoration: line-through; }
+    .offer-cta {
+      display: inline-block; font-size: 0.78rem; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 0.6rem 1.2rem;
+      border: 1px solid rgba(255,255,255,0.18); border-radius: 7px;
+      text-decoration: none; color: #ccc; align-self: flex-start;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .offer-cta:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.3); color: #fff;
+    }
+
+    /* ── Estado vacío ── */
+    .empty-state {
+      text-align: center; padding: 3.5rem 1rem; color: #666;
+      font-size: 0.88rem; line-height: 1.8;
+      border: 1px dashed rgba(255,255,255,0.07); border-radius: 12px;
+    }
+    .empty-state a { color: #999; text-decoration: underline; text-underline-offset: 3px; }
+    .empty-state a:hover { color: #ccc; }
+
+    /* ── Loading ── */
+    .dash-loading { text-align: center; padding: 7rem 2rem; color: #555; }
+    .dash-loading span { display: block; font-size: 0.85rem; margin-top: 1rem; letter-spacing: 0.05em; }
+
+    /* ── Logout nav ── */
+    #btnNavLogout {
+      font-size: 0.75rem; letter-spacing: 0.07em; text-transform: uppercase;
+      color: #666; background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px; padding: 0.4rem 1rem; cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    #btnNavLogout:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .dash-stats { grid-template-columns: repeat(2, 1fr); }
+      .service-table thead { display: none; }
+      .service-table td { display: block; padding: 0.35rem 0.5rem; border: none; }
+      .service-table tr { display: block; border-top: 1px solid rgba(255,255,255,0.06); padding: 0.8rem 0.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav class="solid">
+  <ul class="nav-left">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="ensamble.html">Ensamble</a></li>
+    <li><a href="nosotros.html">Nosotros</a></li>
+  </ul>
+  <a href="index.html" class="nav-logo nav-center">
+    <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+    Elemsoft
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links-secondary">
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><a href="dashboard.html" class="active">Mi cuenta</a></li>
+    </ul>
+    <button id="btnNavLogout" onclick="logOut()">Cerrar sesión</button>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="ensamble.html">Ensamble</a></li>
+    <li><a href="nosotros.html">Nosotros</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+    <li><a href="dashboard.html" class="active">Mi cuenta</a></li>
+  </ul>
+</nav>
+
+<!-- ─── CONTENIDO (se rellena con JS) ─── -->
+<div id="dashContent" class="dash-loading">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+  <span>Cargando tu cuenta…</span>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-brand">
+    <a href="index.html" class="nav-logo">
+      <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+      Elemsoft
+    </a>
+    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Servicios</h4>
+    <ul>
+      <li><a href="servicios.html">Mantenimiento preventivo</a></li>
+      <li><a href="servicios.html">Mantenimiento correctivo</a></li>
+      <li><a href="ensamble.html">Ensamble de PC</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Empresa</h4>
+    <ul>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><a href="dashboard.html">Mi cuenta</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Social</h4>
+    <ul>
+      <li><a href="#">Facebook</a></li>
+      <li><a href="https://www.instagram.com/_elemsoft">Instagram</a></li>
+      <li><a href="#">WhatsApp</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 Elemsoft · Todos los derechos reservados</span>
+</div>
+
+<script src="main.js"></script>
+
+<!-- Firebase SDKs: Auth + Firestore -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  // ── Inicialización ───────────────────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyAYUz0m5R_ncBFCMFXCOzcArEkQnbVYWGo",
+    authDomain:        "elemsoftgt.firebaseapp.com",
+    projectId:         "elemsoftgt",
+    storageBucket:     "elemsoftgt.firebasestorage.app",
+    messagingSenderId: "482757350889",
+    appId:             "1:482757350889:web:3c45a31d75f6b319562778",
+    measurementId:     "G-8MSTXNK08V"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db   = firebase.firestore();
+
+  // ── Ofertas exclusivas (fijas, las editas aquí en el código) ─────────────
+  const OFERTAS = [
+    {
+      tag: 'Solo miembros',
+      title: 'Mantenimiento preventivo completo',
+      desc: 'Limpieza interna, cambio de pasta térmica y revisión general. Cita en 24 horas.',
+      priceNew: 'Q180', priceOld: 'Q220', cta: 'Agendar cita', href: 'contacto.html'
+    },
+    {
+      tag: 'Oferta del mes',
+      title: 'Upgrade de RAM + SSD',
+      desc: 'Instalación incluida. Compatibilidad verificada con tu equipo antes de comprar.',
+      priceNew: 'Q350', priceOld: 'Q420', cta: 'Cotizar', href: 'contacto.html'
+    },
+    {
+      tag: 'Exclusivo',
+      title: 'Revisión y limpieza express',
+      desc: 'Servicio en el día. Limpieza de polvo, puertos y ventiladores. Sin cita previa.',
+      priceNew: 'Q75', priceOld: 'Q100', cta: 'Ver detalles', href: 'servicios.html'
+    },
+  ];
+
+  // ── Protección de ruta ───────────────────────────────────────────────────
+  auth.onAuthStateChanged(async user => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    await cargarDashboard(user);
+  });
+
+  // ── Cerrar sesión ────────────────────────────────────────────────────────
+  function logOut() {
+    auth.signOut().then(() => window.location.href = 'login.html');
+  }
+
+  // ── Cargar todo el dashboard desde Firestore ─────────────────────────────
+  async function cargarDashboard(user) {
+    try {
+      const userRef = db.collection('usuarios').doc(user.uid);
+      await userRef.set({
+        nombre: user.displayName || '',
+        email:  user.email,
+        uid:    user.uid,
+      }, { merge: true });
+
+      const [serviciosSnap, cuponesSnap] = await Promise.all([
+        userRef.collection('servicios').get(),
+        userRef.collection('cupones').get(),
+      ]);
+
+      const servicios = serviciosSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const cupones   = cuponesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      renderDashboard(user, servicios, cupones);
+    } catch (err) {
+      document.getElementById('dashContent').innerHTML = `
+        <div style="max-width:600px;margin:4rem auto;padding:2rem;background:rgba(220,50,50,0.08);border:1px solid rgba(220,50,50,0.2);border-radius:10px;">
+          <p style="color:#ff6b6b;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Error al cargar datos</p>
+          <p style="color:#ccc;font-size:0.9rem;margin-bottom:0.5rem;">${err.message}</p>
+          <p style="color:#666;font-size:0.8rem;">Código: <code style="color:#aaa;">${err.code || 'desconocido'}</code></p>
+          <p style="color:#666;font-size:0.8rem;margin-top:1rem;">Verifica que Firestore esté activado en Firebase y que las reglas permitan lectura.</p>
+        </div>
+      `;
+    }
+  }
+
+  // ── Render principal ─────────────────────────────────────────────────────
+  function renderDashboard(user, servicios, cupones) {
+    const nombre        = user.displayName ? user.displayName.split(' ')[0] : 'Cliente';
+    const inicial       = nombre.charAt(0).toUpperCase();
+    const memberDate    = user.metadata.creationTime
+      ? new Date(user.metadata.creationTime).toLocaleDateString('es-GT', { month: 'short', year: 'numeric' })
+      : '—';
+    const activeCoupons = cupones.filter(c => c.usado !== true).length;
+    const doneSvcs      = servicios.filter(s => s.estado === 'done').length;
+    const nextSvc       = servicios.find(s => s.estado === 'sched');
+
+    document.getElementById('dashContent').innerHTML = `
+      <div class="dash-wrapper">
+
+        <!-- Header con avatar -->
+        <div class="dash-header">
+          <div class="dash-avatar">${inicial}</div>
+          <div class="dash-header-text">
+            <p class="section-eyebrow">Panel de cliente</p>
+            <h1>Hola, ${nombre} 👋</h1>
+            <span class="dash-email">${user.email}</span>
+          </div>
+        </div>
+
+        <!-- Stats con colores de acento -->
+        <div class="dash-stats">
+          <div class="stat-card accent-blue">
+            <div class="stat-label">Servicios realizados</div>
+            <div class="stat-value">${doneSvcs}</div>
+            <div class="stat-sub">en total</div>
+          </div>
+          <div class="stat-card accent-green">
+            <div class="stat-label">Cupones activos</div>
+            <div class="stat-value">${activeCoupons}</div>
+            <div class="stat-sub">disponibles</div>
+          </div>
+          <div class="stat-card accent-yellow">
+            <div class="stat-label">Próxima cita</div>
+            <div class="stat-value stat-value--sm">${nextSvc ? nextSvc.fecha : 'Sin citas'}</div>
+            <div class="stat-sub">${nextSvc ? nextSvc.servicio : 'Agenda la tuya'}</div>
+          </div>
+          <div class="stat-card accent-white">
+            <div class="stat-label">Miembro desde</div>
+            <div class="stat-value stat-value--sm">${memberDate}</div>
+            <div class="stat-sub">cuenta activa</div>
+          </div>
+        </div>
+
+        <!-- Historial -->
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <h2>Historial de servicios</h2>
+            <a href="contacto.html" class="dash-section-link">Agendar nuevo →</a>
+          </div>
+          <div class="dash-divider"></div>
+          ${renderServicios(servicios)}
+        </div>
+
+        <!-- Cupones -->
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <h2>Mis cupones</h2>
+            <span class="dash-section-link">Clic en el código para copiarlo</span>
+          </div>
+          <div class="dash-divider"></div>
+          ${renderCupones(cupones)}
+        </div>
+
+        <!-- Ofertas -->
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <h2>Ofertas exclusivas para ti</h2>
+            <a href="servicios.html" class="dash-section-link">Ver servicios →</a>
+          </div>
+          <div class="dash-divider"></div>
+          <div class="offers-grid">
+            ${OFERTAS.map(o => `
+              <div class="offer-card">
+                <span class="offer-tag">${o.tag}</span>
+                <h3>${o.title}</h3>
+                <p>${o.desc}</p>
+                <div class="offer-price">
+                  <span class="price-new">${o.priceNew}</span>
+                  <span class="price-old">${o.priceOld}</span>
+                </div>
+                <a href="${o.href}" class="offer-cta">${o.cta} →</a>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+      </div>
+    `;
+  }
+
+  function renderServicios(servicios) {
+    if (servicios.length === 0) {
+      return `<div class="empty-state">
+        Aún no tienes servicios registrados.<br>
+        <a href="contacto.html">¡Agenda tu primera cita con nosotros!</a>
+      </div>`;
+    }
+    const statusLabel = { done: 'Completado', pending: 'En proceso', sched: 'Agendado' };
+    const statusClass = { done: 'status-done', pending: 'status-pending', sched: 'status-sched' };
+    return `<table class="service-table">
+      <thead><tr>
+        <th>Fecha</th><th>Servicio</th><th>Técnico</th><th>Estado</th><th>Garantía</th>
+      </tr></thead>
+      <tbody>
+        ${servicios.map(s => `
+          <tr>
+            <td class="td-date">${s.fecha || '—'}</td>
+            <td class="td-main">${s.servicio || '—'}</td>
+            <td class="td-tech">${s.tecnico || '—'}</td>
+            <td><span class="status-badge ${statusClass[s.estado] || ''}">${statusLabel[s.estado] || s.estado || '—'}</span></td>
+            <td><span class="warranty-pill">${s.garantia || '—'}</span></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+  }
+
+  function renderCupones(cupones) {
+    if (cupones.length === 0) {
+      return `<div class="empty-state">
+        Aún no tienes cupones disponibles.<br>
+        ¡Sigue usando nuestros servicios para ganar beneficios exclusivos!
+      </div>`;
+    }
+    return `<div class="coupons-grid">
+      ${cupones.map(c => `
+        <div class="coupon-card ${c.usado === true ? 'coupon-used' : ''}">
+          ${c.usado === true ? '<span class="coupon-used-label">Usado</span>' : ''}
+          <div class="coupon-discount">${c.descuento || '—'}</div>
+          <div class="coupon-desc">${c.descripcion || ''}</div>
+          <span class="coupon-code" onclick="copiarCodigo(this,'${c.codigo}')">${c.codigo || '—'}</span>
+          <span class="coupon-copy-hint">Clic para copiar</span>
+          <div class="coupon-expiry">Válido hasta: ${c.vencimiento || '—'}</div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  // Copia el código con fallback por si navigator.clipboard no está disponible
+  function copiarCodigo(el, codigo) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(codigo).then(() => flashCopy(el));
+    } else {
+      // Fallback para HTTP / browsers sin clipboard API
+      const tmp = document.createElement('textarea');
+      tmp.value = codigo;
+      tmp.style.position = 'fixed'; tmp.style.opacity = '0';
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
+      flashCopy(el);
+    }
+  }
+  function flashCopy(el) {
+    const orig = el.textContent;
+    el.textContent = '¡Copiado!';
+    setTimeout(() => el.textContent = orig, 1600);
+  }
+</script>
+</body>
+</html>

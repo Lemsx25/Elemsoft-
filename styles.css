@@ -114,7 +114,7 @@ nav.solid {
 }
 .hero-bg {
   position: absolute; inset: 0;
-  background-image: url('hero-bg.jpeg');
+  background-image: url('hero-bg.jpg');
   background-size: cover;
   background-position: center 65%;
   filter: brightness(.55) saturate(0) contrast(1.05);
