@@ -369,7 +369,7 @@ nav.solid {
 }
 .split-right-bg {
   position: absolute; inset: 0;
-  background-image: url('hero-bg.jpeg');
+  background-image: url('hero-bg.jpg');
   background-size: cover;
   background-position: 70% 30%;
   filter: brightness(.5) saturate(0) contrast(1.05);
@@ -480,7 +480,7 @@ nav.solid {
 }
 .space-bg {
   position: absolute; inset: 0;
-  background-image: url('hero-bg.jpeg');
+  background-image: url('hero-bg.jpg');
   background-size: cover;
   background-position: 65% 35%;
   filter: brightness(.4) saturate(0) contrast(1.05);
@@ -527,7 +527,7 @@ nav.solid {
 }
 .cta-bg {
   position: absolute; inset: 0;
-  background-image: url('hero-bg.jpeg');
+  background-image: url('hero-bg.jpg');
   background-size: cover;
   background-position: center 40%;
   filter: brightness(.4) saturate(0) contrast(1.05);
@@ -1386,4 +1386,282 @@ footer {
 @media (max-width: 600px) {
   .configurator-controls { grid-template-columns: 1fr; }
   .configurator-preview { max-width: 100%; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE MÓVIL — BLOQUE COMPLETO
+   Cubre todos los elementos del sitio para pantallas de celular.
+   Breakpoints: 768px (tablets/móvil grande) y 480px (móvil pequeño)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── 768px: Ajustes principales ─── */
+@media (max-width: 768px) {
+
+  /* Tipografía global más legible en móvil */
+  .section-title {
+    font-size: clamp(1.9rem, 7vw, 2.8rem);
+    letter-spacing: -1px;
+    line-height: 1.08;
+  }
+
+  .page-header h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+    letter-spacing: -1.5px;
+  }
+
+  .hero h1 { letter-spacing: -1.5px; }
+
+  /* Section base */
+  .section { padding: 64px 20px; }
+  .section-sub { margin-bottom: 40px; font-size: .92rem; }
+
+  /* ── Botones: área táctil mínima de 44px ── */
+  .btn-explore {
+    padding: 16px 36px;
+    font-size: .75rem;
+    letter-spacing: 2px;
+  }
+
+  .btn-dark {
+    padding: 14px 24px;
+    font-size: .72rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .form-submit {
+    padding: 16px;
+    min-height: 44px;
+    font-size: .72rem;
+  }
+
+  /* ── Nav menú móvil mejorado ── */
+  .nav-links.open {
+    padding: 20px;
+    gap: 16px;
+    max-height: calc(100vh - 72px);
+    overflow-y: auto;
+  }
+
+  .nav-links.open a {
+    font-size: .85rem;
+    padding: 10px 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-links.open .nav-cta {
+    padding: 14px 24px;
+    margin-top: 8px;
+    text-align: center;
+    width: 100%;
+    display: block;
+  }
+
+  /* ── Page header ── */
+  .page-header {
+    padding: calc(var(--nav-h) + 40px) 20px 40px;
+  }
+
+  .page-header p {
+    font-size: .92rem;
+    max-width: 100%;
+  }
+
+  /* ── Hero ── */
+  .hero-content { padding: 0 20px; }
+  .hero h1 { margin-bottom: 32px; }
+
+  /* ── Tarjetas de servicios: padding más cómodo ── */
+  .service-card { padding: 32px 24px; }
+  .service-expand-content { padding: 64px 24px 32px; }
+  .service-expand-content .service-tabs {
+    top: 24px; left: 24px; right: 24px;
+  }
+
+  /* ── Split banner ── */
+  .split-left { padding: 48px 24px; }
+  .split-right { min-height: 300px; }
+
+  /* ── About / stats ── */
+  .stat-box { padding: 28px 20px; }
+  .stat-num {
+    font-size: 2.2rem;
+    letter-spacing: -1px;
+  }
+
+  /* ── Values grid: padding reducido ── */
+  .value-card { padding: 32px 24px; }
+
+  /* ── Space banner ── */
+  .space-banner {
+    padding: 60px 20px;
+    min-height: auto;
+  }
+
+  .space-steps { grid-template-columns: 1fr; }
+  .space-step { padding: 20px 18px; }
+
+  /* ── Build rows (split banner visual) ── */
+  .build-row { min-width: 0; width: 100%; }
+
+  /* ── CTA banner ── */
+  .cta-banner { min-height: 320px; padding: 0 20px; }
+  .cta-content h2 { letter-spacing: -1px; }
+
+  /* ── Contact ── */
+  .contact-layout { gap: 48px; }
+  .map-block { height: 240px; margin-top: 48px; }
+
+  /* ── Quote form ── */
+  .quote-card { padding: 20px 18px; }
+
+  /* ── Login ── */
+  .login-benefits-grid .value-card { padding: 32px 24px; }
+
+  /* ── Footer ── */
+  footer { padding: 40px 20px; gap: 36px; }
+  .footer-bottom { padding: 16px 20px; text-align: center; }
+
+  /* ── Configurador ── */
+  .configurator-layout { gap: 40px; }
+  .configurator-progress { padding: 16px 20px 20px; }
+  .configurator-summary { padding: 20px; }
+  .config-summary-list li { font-size: .82rem; }
+
+  /* ── Proceso de ensamble ── */
+  .proceso-grid { gap: 0; }
+
+  /* ── Dashboard ── */
+  .dash-stats { grid-template-columns: repeat(2, 1fr); }
+  .stat-card { padding: 1.1rem 1.2rem; }
+  .stat-value { font-size: 1.7rem; }
+  .coupons-grid { grid-template-columns: 1fr; }
+  .offers-grid { grid-template-columns: 1fr; }
+  .dash-greeting h1 { font-size: 1.6rem; }
+  .dash-wrapper { padding: 2rem 1.2rem 4rem; }
+}
+
+/* ─── 480px: Móvil pequeño / iPhone SE ─── */
+@media (max-width: 480px) {
+
+  /* Tipografía aún más ajustada */
+  .section-title {
+    font-size: clamp(1.65rem, 8vw, 2.2rem);
+    letter-spacing: -.5px;
+  }
+
+  .page-header h1 {
+    font-size: clamp(1.75rem, 9vw, 2.4rem);
+    letter-spacing: -1px;
+  }
+
+  /* Section padding mínimo */
+  .section { padding: 48px 16px; }
+  .page-header { padding: calc(var(--nav-h) + 32px) 16px 32px; }
+
+  /* Hero más ajustado */
+  .hero-content { padding: 0 16px; }
+  .btn-explore {
+    padding: 14px 28px;
+    font-size: .7rem;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* Nav más compacto */
+  nav { padding: 0 16px; }
+
+  /* Tarjetas */
+  .service-card { padding: 24px 18px; }
+  .value-card { padding: 24px 18px; }
+  .stat-box { padding: 20px 16px; }
+  .stat-num { font-size: 1.9rem; }
+
+  /* Split banner */
+  .split-left { padding: 36px 18px; }
+  .split-left p { font-size: .88rem; }
+
+  /* Space banner */
+  .space-banner { padding: 48px 16px; }
+  .space-step h4 { font-size: .92rem; }
+
+  /* Quote form en columna única */
+  .quote-grid { grid-template-columns: 1fr; }
+  .quote-card { border-right: none; border-bottom: 1px solid var(--gray-7); }
+  .quote-card:last-child { border-bottom: none; }
+
+  /* CTA banner */
+  .cta-banner { min-height: 280px; }
+
+  /* Inputs más cómodos al tacto */
+  input, textarea, select { padding: 15px 16px; font-size: .88rem; }
+
+  /* Footer ultra compacto */
+  footer { padding: 32px 16px; gap: 28px; }
+  .footer-bottom { padding: 14px 16px; }
+  .footer-bottom span { font-size: .5rem; }
+
+  /* Dashboard en móvil pequeño */
+  .dash-stats { grid-template-columns: 1fr 1fr; gap: .7rem; }
+  .stat-value { font-size: 1.5rem; }
+  .stat-value--sm { font-size: .95rem !important; }
+  .dash-wrapper { padding: 1.5rem 1rem 3rem; }
+  .dash-header { gap: 1rem; }
+  .dash-avatar { width: 46px; height: 46px; font-size: 1.1rem; }
+
+  /* Configurador */
+  .configurator-controls { grid-template-columns: 1fr; gap: 16px; }
+  .configurator-preview { max-width: 100%; }
+  .case-diagram-3d { height: 280px; }
+
+  /* Servicio expandible en móvil */
+  .service-expand-content { padding: 52px 18px 24px; }
+  .service-expand-list li { font-size: .6rem; padding: 6px 10px; }
+
+  /* Proceso */
+  .proceso-card { padding: 28px 20px; }
+  .proceso-title { font-size: 1rem; }
+
+  /* Login card */
+  .login-card { padding: 4px; }
+  .login-form { padding: 16px 10px; }
+  .login-tab { font-size: .7rem; padding: 14px 10px; }
+
+  /* Formulario de contacto */
+  .form-row { grid-template-columns: 1fr; }
+  .form-row input:first-child { border-right: 1px solid var(--gray-7); }
+  .map-block { height: 200px; }
+}
+
+/* ─── Touch targets globales ─────────────────────────────────
+   Todos los elementos interactivos en móvil tienen al menos 44px
+   de altura para que sean cómodos al tacto (estándar Apple/Google)
+   ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  a, button, select, input[type="submit"], input[type="button"],
+  .quote-pill, .service-arrow, .login-tab, .offer-cta,
+  .coupon-code, #btnNavLogout {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  select, .config-field select {
+    min-height: 44px;
+  }
+
+  .quote-pill {
+    padding: 12px 14px;
+    min-height: 44px;
+  }
+
+  .nav-cta {
+    padding: 12px 22px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
 }
