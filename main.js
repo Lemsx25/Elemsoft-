@@ -8,7 +8,7 @@
    cambia  ensamble: true  →  ensamble: false
    ──────────────────────────────────────────────────── */
 const ELEMSOFT_CONFIG = {
-  ensamble: false   // ← pon false para ocultar el módulo de Ensamble
+  ensamble: true   // ← pon false para ocultar el módulo de Ensamble
 };
 
 /* ── EmailJS ── */
@@ -53,11 +53,26 @@ function handleContactSubmit(e) {
   const btn = f.querySelector('.form-submit');
   const original = btn.textContent;
 
+  // Validación: ningún campo obligatorio puede estar vacío
+  const nombre  = f.nombre.value.trim();
+  const correo  = f.correo.value.trim();
+  const mensaje = f.mensaje.value.trim();
+
+  if (!nombre || !correo || !mensaje) {
+    btn.textContent = 'Completa todos los campos →';
+    btn.style.background = '#c0392b';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.background = '';
+    }, 2500);
+    return;
+  }
+
   const params = {
-    nombre:    f.nombre.value.trim(),
-    correo:    f.correo.value.trim(),
+    nombre,
+    correo,
     servicio:  f.servicio.value || 'No especificado',
-    mensaje:   f.mensaje.value.trim() || 'Sin detalles adicionales',
+    mensaje,
     telefono:  '—',
     prioridad: '—',
     entrega:   '—'
@@ -393,3 +408,60 @@ if (buildRows.length) {
     });
   }
 })();
+
+/* ── Firebase Auth — indicador de sesión en el nav ────────────
+   Carga Firebase dinámicamente en las páginas que no son login
+   ni dashboard, y actualiza el link "Iniciar sesión" por el
+   nombre del usuario cuando hay sesión activa. Esto hace que
+   la sesión persista visualmente al navegar entre páginas.
+   ──────────────────────────────────────────────────────────── */
+(function initNavAuth() {
+  const page = window.location.pathname;
+  // login.html y dashboard.html manejan Firebase por sí solos
+  if (page.endsWith('login.html') || page.endsWith('dashboard.html')) return;
+
+  const VER = '9.22.2';
+  const FB_CONFIG = {
+    apiKey:            'AIzaSyAYUz0m5R_ncBFCMFXCOzcArEkQnbVYWGo',
+    authDomain:        'elemsoftgt.firebaseapp.com',
+    projectId:         'elemsoftgt',
+    storageBucket:     'elemsoftgt.firebasestorage.app',
+    messagingSenderId: '482757350889',
+    appId:             '1:482757350889:web:3c45a31d75f6b319562778'
+  };
+
+  function loadScript(src, cb) {
+    const s = document.createElement('script');
+    s.src = src; s.onload = cb;
+    document.head.appendChild(s);
+  }
+
+  loadScript(
+    'https://www.gstatic.com/firebasejs/' + VER + '/firebase-app-compat.js',
+    function() {
+      loadScript(
+        'https://www.gstatic.com/firebasejs/' + VER + '/firebase-auth-compat.js',
+        function() {
+          if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+          firebase.auth().onAuthStateChanged(function(user) {
+            actualizarNavSesion(user);
+          });
+        }
+      );
+    }
+  );
+})();
+
+function actualizarNavSesion(user) {
+  if (!user) return;
+  const nombre  = user.displayName ? user.displayName.split(' ')[0] : 'Mi cuenta';
+  const inicial = nombre.charAt(0).toUpperCase();
+
+  // Reemplazar todos los links "Iniciar sesión" por el indicador de cuenta
+  document.querySelectorAll('a[href="login.html"]').forEach(function(el) {
+    el.href      = 'dashboard.html';
+    el.innerHTML = '<span class="nav-user-initial">' + inicial + '</span>' + nombre;
+    el.classList.add('nav-user-link');
+    el.classList.remove('active');
+  });
+}
