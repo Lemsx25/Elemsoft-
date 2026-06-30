@@ -8,19 +8,283 @@
   <link rel="stylesheet" href="styles.css"/>
   <link rel="icon" type="image/png" href="favicon.png"/>
   <style>
-    .auth-message {
-      font-size: 0.85rem;
-      padding: 0.6rem 0.9rem;
-      border-radius: 6px;
-      margin-bottom: 0.5rem;
-      text-align: center;
+
+    /* ── Hero: pantalla completa con imagen de fondo ── */
+    .login-hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--nav-h) + 48px) 24px 64px;
+      overflow: hidden;
     }
-    .auth-message--error   { background: rgba(220,50,50,0.12); color: #ff6b6b; border: 1px solid rgba(220,50,50,0.25); }
-    .auth-message--success { background: rgba(50,200,100,0.12); color: #4cda80; border: 1px solid rgba(50,200,100,0.25); }
-    .form-submit:disabled  { opacity: 0.6; cursor: not-allowed; }
-    .logged-in-state       { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem 0; }
-    .logged-in-state h3    { font-size: 1.3rem; margin: 0; }
-    .logged-in-state p     { color: var(--color-muted, #888); margin: 0; }
+
+    /* Imagen de fondo — cambia 'hero-bg.jpg' por la tuya */
+    .login-hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('hero-bg.jpg');
+      background-size: cover;
+      background-position: center 40%;
+      filter: brightness(0.45) saturate(0.8) contrast(1.05);
+      z-index: 0;
+    }
+
+    /* Overlay gradiente para profundidad */
+    .login-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at center, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.65) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.55) 100%);
+      z-index: 1;
+    }
+
+    /* ── Card de login — dark glass ── */
+    .login-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 420px;
+      background: rgba(8, 8, 8, 0.78);
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-top-color: rgba(255,255,255,0.14);
+      border-left-color: rgba(255,255,255,0.10);
+      box-shadow:
+        0 32px 64px rgba(0,0,0,0.55),
+        0 8px 20px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      padding: 8px;
+      animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+
+    /* ── Cabecera del card ── */
+    .login-card-header {
+      text-align: center;
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 0;
+    }
+
+    .login-card-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--white, #f5f5f5);
+      margin-bottom: 20px;
+    }
+
+    .login-card-logo .mark {
+      width: 28px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .login-card-logo .mark svg { width: 100%; height: 100%; }
+
+    .login-card-logo span {
+      font-size: 1rem; font-weight: 700; letter-spacing: 1px;
+    }
+
+    .login-card-title {
+      font-size: 1.15rem; font-weight: 600;
+      color: var(--white, #f5f5f5);
+      letter-spacing: -0.3px; margin: 0 0 6px;
+    }
+
+    .login-card-sub {
+      font-size: 0.78rem; color: rgba(255,255,255,0.38);
+      font-family: 'Space Mono', monospace; letter-spacing: 0.04em;
+    }
+
+    /* ── Tabs ── */
+    .login-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .login-tab {
+      flex: 1; padding: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.30);
+      background: transparent; border: none; cursor: pointer;
+      border-bottom: 1px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .login-tab.active {
+      color: var(--white, #f5f5f5);
+      border-bottom-color: rgba(255,255,255,0.60);
+    }
+
+    .login-tab:hover:not(.active) { color: rgba(255,255,255,0.55); }
+
+    /* ── Formulario ── */
+    .login-form {
+      display: flex; flex-direction: column;
+      padding: 20px 16px 16px; gap: 10px;
+    }
+
+    /* Inputs adaptados para dark glass */
+    .login-form input {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-top: 1px solid rgba(255,255,255,0.10);
+      color: var(--white, #f5f5f5);
+      padding: 14px 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.88rem;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .login-form input::placeholder { color: rgba(255,255,255,0.25); }
+
+    .login-form input:focus {
+      border-color: rgba(255,255,255,0.30);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .login-form input:-webkit-autofill,
+    .login-form input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px rgba(15,15,15,0.95) inset;
+      -webkit-text-fill-color: #f5f5f5;
+    }
+
+    /* Fila recordarme / olvidé */
+    .login-row {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
+      padding: 2px 0;
+    }
+
+    .login-row .quote-pill {
+      border-color: rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem; padding: 6px 10px;
+      flex: none;
+    }
+
+    .login-row .quote-pill:has(input:checked) {
+      border-color: rgba(255,255,255,0.30);
+      color: var(--white, #f5f5f5);
+    }
+
+    .login-link {
+      font-size: 0.75rem; color: rgba(255,255,255,0.38);
+      text-decoration: none; transition: color 0.2s;
+      white-space: nowrap;
+    }
+
+    .login-link:hover { color: rgba(255,255,255,0.75); }
+
+    /* Botón submit */
+    .login-form .form-submit {
+      background: rgba(255,255,255,0.92);
+      color: #0a0a0a;
+      border: none;
+      padding: 15px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: 0.75rem; letter-spacing: 2.5px;
+      text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 2px;
+    }
+
+    .login-form .form-submit:hover:not(:disabled) {
+      background: #fff;
+      transform: translateY(-1px);
+    }
+
+    .login-form .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── Mensajes ── */
+    .auth-message {
+      font-size: 0.8rem; padding: 10px 14px;
+      text-align: center; line-height: 1.5;
+    }
+
+    .auth-message--error {
+      background: rgba(220,50,50,0.12);
+      color: #ff8080;
+      border: 1px solid rgba(220,50,50,0.20);
+    }
+
+    .auth-message--success {
+      background: rgba(50,200,100,0.10);
+      color: #5ddf8e;
+      border: 1px solid rgba(50,200,100,0.18);
+    }
+
+    /* ── Beneficios — sutil, abajo ── */
+    .login-benefits-bar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      padding: 28px 24px;
+      margin-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      width: 100%;
+      max-width: 760px;
+      flex-wrap: wrap;
+    }
+
+    .login-benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0.45;
+      transition: opacity 0.2s;
+    }
+
+    .login-benefit-item:hover { opacity: 0.70; }
+
+    .login-benefit-icon {
+      width: 28px; height: 28px;
+      border: 1px solid rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .login-benefit-icon svg {
+      width: 13px; height: 13px;
+      fill: none; stroke: rgba(255,255,255,0.8);
+      stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .login-benefit-text {
+      font-size: 0.72rem;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.70);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .login-hero { padding: calc(var(--nav-h) + 32px) 16px 48px; }
+      .login-card { max-width: 100%; }
+      .login-card-header { padding: 20px 16px 16px; }
+      .login-benefits-bar { gap: 24px; margin-top: 28px; padding: 20px 16px; }
+      .login-benefit-item { gap: 8px; }
+    }
   </style>
 </head>
 <body>
@@ -58,77 +322,79 @@
   </ul>
 </nav>
 
-<!-- ─── PAGE HEADER ─── -->
-<header class="page-header page-header--image" style="--header-img: url('hero-bg.jpeg');">
-  <p class="section-eyebrow">Cuenta Elemsoft</p>
-  <h1>Bienvenido<br/>de vuelta.</h1>
-  <p>Accede a tu cuenta para ver el historial de tu equipo, recibir cupones de descuento y promociones exclusivas.</p>
-</header>
+<!-- ─── HERO + LOGIN CARD ─── -->
+<section class="login-hero">
 
-<!-- ─── LOGIN ─── -->
-<section class="section">
-  <div class="login-layout">
-    <div class="login-benefits">
-      <p class="section-eyebrow">Beneficios de tu cuenta</p>
-      <h2 class="section-title">Más que<br/>un mantenimiento.</h2>
-      <div class="values-grid login-benefits-grid">
-        <div class="value-card">
-          <h3>Cupones exclusivos</h3>
-          <p>Descuentos especiales en mantenimientos, ensambles y actualizaciones de hardware.</p>
-        </div>
-        <div class="value-card">
-          <h3>Historial de servicio</h3>
-          <p>Consulta el historial de tu equipo: qué se hizo, cuándo y qué garantía aplica.</p>
-        </div>
-        <div class="value-card">
-          <h3>Prioridad en citas</h3>
-          <p>Agenda más rápido y con prioridad en horarios de alta demanda.</p>
-        </div>
-      </div>
+  <!-- Fondo -->
+  <div class="login-hero-bg"></div>
+  <div class="login-hero-overlay"></div>
+
+  <!-- Card centrado -->
+  <div class="login-card">
+
+    <!-- Cabecera -->
+    <div class="login-card-header">
+      <a href="index.html" class="login-card-logo">
+        <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+        <span>Elemsoft</span>
+      </a>
+      <h1 class="login-card-title">Bienvenido de vuelta</h1>
+      <p class="login-card-sub">Accede a tu cuenta Elemsoft</p>
     </div>
 
-    <div class="login-card">
-      <div class="login-tabs">
-        <button class="login-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar sesión</button>
-        <button class="login-tab" id="tabRegister" onclick="switchTab('register')">Crear cuenta</button>
+    <!-- Tabs -->
+    <div class="login-tabs">
+      <button class="login-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="login-tab" id="tabRegister" onclick="switchTab('register')">Crear cuenta</button>
+    </div>
+
+    <!-- Form Login -->
+    <form id="formLogin" class="login-form" onsubmit="handleLogin(event)">
+      <input id="loginEmail" type="email" placeholder="Correo electrónico" required/>
+      <input id="loginPassword" type="password" placeholder="Contraseña" required/>
+      <div class="login-row">
+        <label class="quote-pill">
+          <input id="rememberMe" type="checkbox"/>
+          <span>Recordarme</span>
+        </label>
+        <a href="#" class="login-link" onclick="handleForgotPassword(event)">¿Olvidaste tu contraseña?</a>
       </div>
+      <button type="submit" class="form-submit" id="btnLogin">Entrar →</button>
+    </form>
 
-      <!-- Formulario de login -->
-      <form id="formLogin" class="login-form" onsubmit="handleLogin(event)">
-        <input id="loginEmail" type="email" placeholder="Correo electrónico" required/>
-        <input id="loginPassword" type="password" placeholder="Contraseña" required/>
-        <div class="login-row">
-          <label class="quote-pill" style="flex:1;">
-            <input id="rememberMe" type="checkbox"/>
-            <span>Recordarme</span>
-          </label>
-          <a href="#" class="login-link" onclick="handleForgotPassword(event)">¿Olvidaste tu contraseña?</a>
-        </div>
-        <button type="submit" class="form-submit" id="btnLogin">Entrar →</button>
-      </form>
+    <!-- Form Registro -->
+    <form id="formRegister" class="login-form" style="display:none;" onsubmit="handleRegister(event)">
+      <input id="regName" type="text" placeholder="Nombre completo" required/>
+      <input id="regEmail" type="email" placeholder="Correo electrónico" required/>
+      <input id="regPhone" type="tel" placeholder="Teléfono / WhatsApp" required/>
+      <input id="regPassword" type="password" placeholder="Contraseña (mín. 6 caracteres)" required/>
+      <button type="submit" class="form-submit" id="btnRegister">Crear cuenta →</button>
+    </form>
+  </div>
 
-      <!-- Formulario de registro -->
-      <form id="formRegister" class="login-form" style="display:none;" onsubmit="handleRegister(event)">
-        <input id="regName" type="text" placeholder="Nombre completo" required/>
-        <input id="regEmail" type="email" placeholder="Correo electrónico" required/>
-        <input id="regPhone" type="tel" placeholder="Teléfono / WhatsApp" required/>
-        <input id="regPassword" type="password" placeholder="Contraseña (mín. 6 caracteres)" required/>
-        <button type="submit" class="form-submit" id="btnRegister">Crear cuenta →</button>
-      </form>
+  <!-- Beneficios: sutiles, abajo del card -->
+  <div class="login-benefits-bar">
+    <div class="login-benefit-item">
+      <div class="login-benefit-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+      </div>
+      <span class="login-benefit-text">Cupones exclusivos</span>
+    </div>
+    <div class="login-benefit-item">
+      <div class="login-benefit-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <span class="login-benefit-text">Historial de servicio</span>
+    </div>
+    <div class="login-benefit-item">
+      <div class="login-benefit-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <span class="login-benefit-text">Prioridad en citas</span>
     </div>
   </div>
+
 </section>
-
-<!-- ─── CTA BANNER ─── -->
-<div class="cta-banner">
-  <div class="cta-bg"></div>
-  <div class="cta-overlay"></div>
-  <div class="cta-content">
-    <p class="section-eyebrow">¿Aún sin cuenta?</p>
-    <h2>Regístrate y obtén<br/>tu primer cupón.</h2>
-    <a href="#" class="btn-explore" onclick="switchTab('register');document.querySelector('.login-card').scrollIntoView({behavior:'smooth'});return false;">Crear cuenta</a>
-  </div>
-</div>
 
 <!-- ─── FOOTER ─── -->
 <footer>
@@ -137,7 +403,7 @@
       <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
       Elemsoft
     </a>
-    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala. Tu equipo en las mejores manos.</p>
+    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala.</p>
   </div>
   <div class="footer-col">
     <h4>Servicios</h4>
@@ -170,13 +436,10 @@
 </div>
 
 <script src="main.js"></script>
-
-<!-- Firebase SDKs (compat — funcionan con <script> sin necesitar bundler) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
 <script>
-  // ── Inicialización de Firebase ──────────────────────────────────────────
   const firebaseConfig = {
     apiKey:            "AIzaSyAYUz0m5R_ncBFCMFXCOzcArEkQnbVYWGo",
     authDomain:        "elemsoftgt.firebaseapp.com",
@@ -190,31 +453,27 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  // ── Observador de sesión ────────────────────────────────────────────────
-  // Si el usuario ya tiene sesión activa, redirigir directo al dashboard
   auth.onAuthStateChanged(user => {
     if (user) window.location.href = 'dashboard.html';
   });
 
-  // ── Mensajes de error en español ────────────────────────────────────────
   function getErrorMsg(code) {
     const msgs = {
-      'auth/email-already-in-use':  'Este correo ya está registrado.',
-      'auth/invalid-email':         'El correo electrónico no es válido.',
-      'auth/user-not-found':        'No existe una cuenta con este correo.',
-      'auth/wrong-password':        'Contraseña incorrecta.',
-      'auth/invalid-credential':    'Correo o contraseña incorrectos.',
-      'auth/weak-password':         'La contraseña debe tener al menos 6 caracteres.',
-      'auth/too-many-requests':     'Demasiados intentos. Intenta más tarde.',
-      'auth/network-request-failed':'Sin conexión. Revisa tu internet.',
-      'auth/user-disabled':         'Esta cuenta fue deshabilitada.',
-      'auth/operation-not-allowed': 'El método de inicio de sesión no está activado en Firebase. Activa Email/Contraseña en Authentication → Sign-in method.',
-      'auth/configuration-not-found': 'Configuración de Firebase no encontrada. Verifica que Authentication esté activado.',
+      'auth/email-already-in-use':    'Este correo ya está registrado.',
+      'auth/invalid-email':           'El correo electrónico no es válido.',
+      'auth/user-not-found':          'No existe una cuenta con este correo.',
+      'auth/wrong-password':          'Contraseña incorrecta.',
+      'auth/invalid-credential':      'Correo o contraseña incorrectos.',
+      'auth/weak-password':           'La contraseña debe tener al menos 6 caracteres.',
+      'auth/too-many-requests':       'Demasiados intentos. Intenta más tarde.',
+      'auth/network-request-failed':  'Sin conexión. Revisa tu internet.',
+      'auth/user-disabled':           'Esta cuenta fue deshabilitada.',
+      'auth/operation-not-allowed':   'Método de login no activado en Firebase.',
+      'auth/configuration-not-found': 'Configuración de Firebase no encontrada.',
     };
-    return msgs[code] || `Ocurrió un error (${code}). Intenta de nuevo.`;
+    return msgs[code] || `Error (${code}). Intenta de nuevo.`;
   }
 
-  // ── Mostrar mensaje dentro del formulario ───────────────────────────────
   function showMsg(form, text, type) {
     let el = form.querySelector('.auth-message');
     if (!el) {
@@ -226,22 +485,17 @@
     el.className = `auth-message auth-message--${type}`;
   }
 
-  // ── INICIAR SESIÓN ──────────────────────────────────────────────────────
   function handleLogin(e) {
     e.preventDefault();
     const email    = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     const remember = document.getElementById('rememberMe').checked;
     const btn      = document.getElementById('btnLogin');
-
     btn.textContent = 'Ingresando…';
     btn.disabled = true;
-
-    // Persistencia: LOCAL (queda entre sesiones) o SESSION (solo esta pestaña)
     const persistence = remember
       ? firebase.auth.Auth.Persistence.LOCAL
       : firebase.auth.Auth.Persistence.SESSION;
-
     auth.setPersistence(persistence)
       .then(() => auth.signInWithEmailAndPassword(email, password))
       .then(result => {
@@ -255,17 +509,14 @@
       });
   }
 
-  // ── CREAR CUENTA ────────────────────────────────────────────────────────
   function handleRegister(e) {
     e.preventDefault();
     const name     = document.getElementById('regName').value.trim();
     const email    = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value;
     const btn      = document.getElementById('btnRegister');
-
     btn.textContent = 'Creando cuenta…';
     btn.disabled = true;
-
     auth.createUserWithEmailAndPassword(email, password)
       .then(result => result.user.updateProfile({ displayName: name }))
       .then(() => {
@@ -279,7 +530,6 @@
       });
   }
 
-  // ── RECUPERAR CONTRASEÑA ────────────────────────────────────────────────
   function handleForgotPassword(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
@@ -288,35 +538,10 @@
       return;
     }
     auth.sendPasswordResetEmail(email)
-      .then(() => {
-        showMsg(document.getElementById('formLogin'),
-          'Te enviamos un correo para restablecer tu contraseña.', 'success');
-      })
-      .catch(err => {
-        showMsg(document.getElementById('formLogin'), getErrorMsg(err.code), 'error');
-      });
+      .then(() => showMsg(document.getElementById('formLogin'), 'Revisa tu correo para restablecer tu contraseña.', 'success'))
+      .catch(err => showMsg(document.getElementById('formLogin'), getErrorMsg(err.code), 'error'));
   }
 
-  // ── SESIÓN ACTIVA: mostrar estado de usuario logueado ──────────────────
-  function showLoggedIn(user) {
-    const card = document.querySelector('.login-card');
-    card.innerHTML = `
-      <div class="logged-in-state">
-        <p class="section-eyebrow">Sesión activa</p>
-        <h3>Hola, ${user.displayName || user.email} 👋</h3>
-        <p>Ya tienes sesión iniciada en Elemsoft.</p>
-        <a href="index.html" class="form-submit" style="text-align:center;text-decoration:none;display:block;">
-          Ir al inicio →
-        </a>
-        <button class="form-submit" style="background:transparent;border:1px solid #555;color:#aaa;margin-top:0.5rem;"
-          onclick="auth.signOut().then(() => location.reload())">
-          Cerrar sesión
-        </button>
-      </div>
-    `;
-  }
-
-  // ── Cambio de tab Login / Registro ──────────────────────────────────────
   function switchTab(tab) {
     const tabLogin    = document.getElementById('tabLogin');
     const tabRegister = document.getElementById('tabRegister');
