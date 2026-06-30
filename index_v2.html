@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elemsoft – Servicios Profesionales de PC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    /* ── Variables ── */
+    :root {
+      --bg:        #040404;
+      --win:       #0d0d0d;
+      --sidebar:   #0a0a0a;
+      --card:      #141414;
+      --card2:     #111111;
+      --border:    rgba(255,255,255,0.07);
+      --border2:   rgba(255,255,255,0.12);
+      --text:      #f0f0f0;
+      --muted:     #555;
+      --muted2:    #888;
+      --radius:    22px;
+      --r-card:    16px;
+      --sidebar-w: 68px;
+      --topbar-h:  64px;
+      --right-w:   272px;
+      --font:      'Space Grotesk', sans-serif;
+      --mono:      'Space Mono', monospace;
+    }
+
+    /* ── App body — fondo exterior muy oscuro ── */
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      overflow: hidden;
+      /* Glow ambiental sutil alrededor de la ventana */
+      background-image:
+        radial-gradient(ellipse 70% 55% at 50% 60%, rgba(255,255,255,0.025) 0%, transparent 70%);
+    }
+
+    /* ── Ventana principal (el "app frame") ── */
+    .win {
+      width: 100%;
+      max-width: 1380px;
+      height: calc(100vh - 36px);
+      min-height: 560px;
+      background: var(--win);
+      border-radius: var(--radius);
+      display: flex;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03),
+        0 80px 160px rgba(0,0,0,0.85),
+        0 20px 40px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    /* ═══════════════════════════════════════
+       SIDEBAR IZQUIERDO
+    ═══════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      border-radius: var(--radius) 0 0 var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      gap: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Logo mark en la esquina superior del sidebar */
+    .sidebar-logo {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo svg { width: 28px; height: 20px; color: #fff; }
+
+    /* Separador */
+    .sidebar-sep {
+      width: 28px; height: 1px;
+      background: var(--border);
+      margin: 8px 0;
+    }
+
+    /* Iconos de navegación */
+    .sidebar-nav {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      flex: 1;
+    }
+
+    .s-icon {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .18s, background .18s;
+      position: relative;
+    }
+
+    .s-icon:hover { color: #ccc; background: rgba(255,255,255,0.05); }
+    .s-icon.active { color: #fff; background: rgba(255,255,255,0.08); }
+
+    .s-icon svg {
+      width: 18px; height: 18px;
+      fill: none; stroke: currentColor;
+      stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* Tooltip al hover */
+    .s-icon::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: calc(100% + 10px);
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(8px);
+      color: #e0e0e0;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transform: translateX(-4px);
+      transition: opacity .18s, transform .18s;
+      border: 1px solid var(--border2);
+    }
+
+    .s-icon:hover::after { opacity: 1; transform: translateX(0); }
+
+    .sidebar-bottom {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      margin-top: auto; padding-top: 12px;
+      border-top: 1px solid var(--border);
+      width: 100%; padding: 12px 0 0;
+    }
+
+    /* ═══════════════════════════════════════
+       CONTENIDO PRINCIPAL
+    ═══════════════════════════════════════ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    /* ── Top Bar ── */
+    .topbar {
+      height: var(--topbar-h);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .topbar-brand {
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Nav pills centrado */
+    .topbar-nav {
+      display: flex; gap: 4px;
+      margin: 0 auto;
+    }
+
+    .topbar-pill {
+      padding: 7px 18px;
+      border-radius: 20px;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.04em;
+      color: var(--muted2); text-decoration: none;
+      border: 1px solid transparent;
+      transition: color .18s, background .18s, border-color .18s;
+      white-space: nowrap;
+    }
+
+    .topbar-pill:hover { color: #ccc; background: rgba(255,255,255,0.05); }
+
+    .topbar-pill.active {
+      color: var(--text);
+      background: rgba(255,255,255,0.08);
+      border-color: var(--border2);
+    }
+
+    .topbar-actions {
+      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .topbar-cta {
+      padding: 8px 20px;
+      background: rgba(255,255,255,0.92);
+      color: #0a0a0a;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; text-decoration: none;
+      border-radius: 8px;
+      transition: background .18s;
+    }
+
+    .topbar-cta:hover { background: #fff; }
+
+    .topbar-icon-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted2); cursor: pointer; text-decoration: none;
+      transition: color .18s, background .18s;
+    }
+
+    .topbar-icon-btn:hover { color: #ccc; background: rgba(255,255,255,0.06); }
+    .topbar-icon-btn svg {
+      width: 15px; height: 15px;
+      fill: none; stroke: currentColor;
+      stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ── Stage: hero + right panel ── */
+    .stage {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* ── HERO (área central grande) ── */
+    .hero {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('hero-bg.jpg');
+      background-size: cover;
+      background-position: center 40%;
+      filter: brightness(0.55) saturate(0.7) contrast(1.1);
+      transition: transform 8s ease;
+    }
+
+    .hero:hover .hero-bg { transform: scale(1.03); }
+
+    /* Viñeta interna del hero */
+    .hero-vignette {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 70% at 60% 40%, transparent 30%, rgba(0,0,0,0.5) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.10) 50%),
+        linear-gradient(to right, rgba(0,0,0,0.45) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Botón de acción en el centro del hero (el icono de arrow en la referencia) */
+    .hero-action {
+      position: absolute;
+      bottom: 50%;
+      right: 50%;
+      transform: translate(50%, 50%);
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.20);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; text-decoration: none;
+      transition: background .2s, transform .2s;
+      z-index: 3;
+    }
+
+    .hero-action:hover { background: rgba(255,255,255,0.18); transform: translate(50%, 50%) scale(1.08); }
+    .hero-action svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* Tarjeta inferior-izquierda (como "ZI50 STEREO SPEAKERS" en la referencia) */
+    .hero-info-card {
+      position: absolute;
+      bottom: 28px; left: 28px;
+      z-index: 5;
+      max-width: 320px;
+    }
+
+    .hero-info-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 6px;
+    }
+
+    .hero-info-title {
+      font-size: clamp(1.1rem, 2.5vw, 1.55rem);
+      font-weight: 700; color: #fff; letter-spacing: -0.5px;
+      line-height: 1.15; margin-bottom: 4px;
+    }
+
+    .hero-info-stars {
+      font-size: 0.75rem; color: rgba(255,255,255,0.5);
+      letter-spacing: 2px; margin-bottom: 8px;
+    }
+
+    .hero-info-desc {
+      font-size: 0.8rem; color: rgba(255,255,255,0.55);
+      line-height: 1.55; max-width: 280px; margin-bottom: 16px;
+    }
+
+    .hero-info-actions {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .hero-info-location {
+      font-family: var(--mono);
+      font-size: 0.65rem; color: rgba(255,255,255,0.45);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    .hero-info-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.92);
+      color: #0a0a0a; text-decoration: none;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; border-radius: 8px;
+      transition: background .18s, transform .18s;
+    }
+
+    .hero-info-cta:hover { background: #fff; transform: translateY(-1px); }
+    .hero-info-cta svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* Paginación / tabs del hero (los puntos de la referencia) */
+    .hero-dots {
+      position: absolute;
+      bottom: 28px; right: 28px;
+      z-index: 5;
+      display: flex; gap: 5px;
+    }
+
+    .hero-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      cursor: pointer; transition: background .18s, transform .18s;
+    }
+
+    .hero-dot.active { background: #fff; transform: scale(1.3); }
+
+    /* ═══════════════════════════════════════
+       PANEL DERECHO
+    ═══════════════════════════════════════ */
+    .right-panel {
+      width: var(--right-w);
+      flex-shrink: 0;
+      background: var(--win);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Tarjeta superior del panel derecho */
+    .r-card {
+      flex: 1;
+      padding: 22px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .r-card:last-child { border-bottom: none; }
+
+    .r-card-tag {
+      font-family: var(--mono);
+      font-size: 0.55rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .r-card-title {
+      font-size: 1rem; font-weight: 700; color: #fff;
+      letter-spacing: -0.2px; line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .r-card-desc {
+      font-size: 0.77rem; color: rgba(255,255,255,0.45);
+      line-height: 1.6; max-width: 220px;
+    }
+
+    /* Visual: mini gráfico (como la waveform en la referencia) */
+    .r-card-visual {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      margin: 16px 0 12px;
+      height: 60px;
+    }
+
+    .r-bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      background: rgba(255,255,255,0.15);
+      transition: background .3s;
+    }
+
+    .r-bar.hi { background: rgba(255,255,255,0.70); }
+    .r-bar.md { background: rgba(255,255,255,0.38); }
+
+    .r-card-dots {
+      display: flex; gap: 5px;
+      margin-top: auto;
+    }
+
+    .r-card-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.20);
+      cursor: pointer;
+    }
+
+    .r-card-dot.active { background: rgba(255,255,255,0.75); }
+
+    .r-card-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color .18s;
+      margin-top: 12px;
+      font-family: var(--mono);
+      letter-spacing: 0.04em;
+    }
+
+    .r-card-link:hover { color: #fff; }
+    .r-card-link svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* Tarjeta inferior: "EASY CONTROLS" / "Ensamble" con el círculo central */
+    .r-card-circle {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 16px 0;
+    }
+
+    .r-knob {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #2a2a2a, #0a0a0a);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow:
+        0 12px 30px rgba(0,0,0,0.8),
+        inset 0 2px 4px rgba(255,255,255,0.08),
+        0 0 0 6px rgba(255,255,255,0.03);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+
+    /* Indicador del knob */
+    .r-knob::after {
+      content: '';
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.70);
+      top: 14px; left: 50%; transform: translateX(-50%);
+    }
+
+    .r-knob-icon {
+      width: 32px; height: 32px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .r-knob-icon svg {
+      width: 100%; height: 100%;
+      fill: none; stroke: currentColor;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ═══════════════════════════════════════
+       MOBILE — la ventana se aplana a pantalla completa
+    ═══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      body { padding: 0; }
+      .win {
+        border-radius: 0;
+        height: 100vh;
+        height: 100dvh;
+        max-width: 100%;
+        border: none;
+      }
+      .right-panel { display: none; }
+      :root { --sidebar-w: 56px; }
+    }
+
+    @media (max-width: 600px) {
+      .topbar-brand { display: none; }
+      .topbar-nav { gap: 2px; }
+      .topbar-pill { padding: 6px 12px; font-size: 0.7rem; }
+      .topbar-cta { display: none; }
+      .hero-info-card { left: 16px; bottom: 16px; }
+    }
+
+    /* ── Animación de entrada ── */
+    .win { animation: winIn .5s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes winIn {
+      from { opacity: 0; transform: scale(0.97) translateY(10px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0); }
+    }
+
+    .hero-info-card { animation: slideUp .6s .2s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .r-card { animation: fadeIn .5s ease both; }
+    .r-card:nth-child(1) { animation-delay: .15s; }
+    .r-card:nth-child(2) { animation-delay: .25s; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     VENTANA PRINCIPAL
+═══════════════════════════════════════════ -->
+<div class="win">
+
+  <!-- ─── SIDEBAR IZQUIERDO ─── -->
+  <aside class="sidebar">
+
+    <!-- Logo mark -->
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <g stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+          <path d="M48 30 L74 16 L112 36 L86 50 Z"/>
+        </g>
+        <path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/>
+        <path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="sidebar-sep"></div>
+
+    <!-- Nav icons -->
+    <nav class="sidebar-nav">
+      <a class="s-icon active" href="index.html" data-tip="Inicio">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </a>
+      <a class="s-icon" href="servicios.html" data-tip="Servicios">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </a>
+      <a class="s-icon" href="ensamble.html" data-tip="Ensamble">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      </a>
+      <a class="s-icon" href="nosotros.html" data-tip="Nosotros">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </a>
+
+      <div class="sidebar-sep" style="margin:8px 0;"></div>
+
+      <a class="s-icon" href="contacto.html" data-tip="Contacto">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </a>
+      <a class="s-icon" href="#" data-tip="Notificaciones">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </a>
+    </nav>
+
+    <!-- Bottom icons -->
+    <div class="sidebar-bottom">
+      <a class="s-icon" href="login.html" data-tip="Mi cuenta">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ─── CONTENIDO PRINCIPAL ─── -->
+  <div class="main">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <a href="index.html" class="topbar-brand">
+        Elemsoft
+      </a>
+
+      <!-- Nav pills -->
+      <nav class="topbar-nav">
+        <a class="topbar-pill active" href="index.html">Inicio</a>
+        <a class="topbar-pill" href="servicios.html">Servicios</a>
+        <a class="topbar-pill" href="ensamble.html">Ensamble</a>
+        <a class="topbar-pill" href="nosotros.html">Nosotros</a>
+      </nav>
+
+      <!-- Acciones derechas -->
+      <div class="topbar-actions">
+        <a class="topbar-icon-btn" href="contacto.html" title="Contacto">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </a>
+        <a class="topbar-icon-btn" href="login.html" title="Mi cuenta">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="contacto.html" class="topbar-cta">Cotizar</a>
+      </div>
+    </header>
+
+    <!-- Stage: hero + panel derecho -->
+    <div class="stage">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-vignette"></div>
+
+        <!-- Botón central de explorar (como el arrow icon de la referencia) -->
+        <a href="servicios.html" class="hero-action">
+          <svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
+
+        <!-- Tarjeta de info inferior-izquierda -->
+        <div class="hero-info-card">
+          <p class="hero-info-eyebrow">Guatemala · Tecnología profesional</p>
+          <h2 class="hero-info-title">Mantenimiento<br/>& Ensamble de PC</h2>
+          <div class="hero-info-stars">★★★★★</div>
+          <p class="hero-info-desc">Diagnóstico, reparación y ensamble a medida. Tu equipo en las mejores manos.</p>
+          <div class="hero-info-actions">
+            <span class="hero-info-location">Desde Q 00.00</span>
+            <a href="contacto.html" class="hero-info-cta">
+              Cotizar ahora
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Dots de navegación (decorativos) -->
+        <div class="hero-dots">
+          <div class="hero-dot active"></div>
+          <div class="hero-dot"></div>
+          <div class="hero-dot"></div>
+        </div>
+      </section>
+
+      <!-- PANEL DERECHO -->
+      <aside class="right-panel">
+
+        <!-- Tarjeta 1: Mantenimiento -->
+        <div class="r-card">
+          <p class="r-card-tag">Servicio estrella</p>
+          <h3 class="r-card-title">Mantenimiento<br/>Preventivo</h3>
+          <p class="r-card-desc">Limpieza interna, pasta térmica y revisión completa para máximo rendimiento.</p>
+
+          <!-- Mini gráfico / visualización (como la waveform de la referencia) -->
+          <div class="r-card-visual">
+            <div class="r-bar md" style="height:30%"></div>
+            <div class="r-bar md" style="height:55%"></div>
+            <div class="r-bar hi" style="height:75%"></div>
+            <div class="r-bar hi" style="height:100%"></div>
+            <div class="r-bar hi" style="height:85%"></div>
+            <div class="r-bar md" style="height:60%"></div>
+            <div class="r-bar md" style="height:40%"></div>
+            <div class="r-bar md" style="height:65%"></div>
+            <div class="r-bar hi" style="height:90%"></div>
+            <div class="r-bar md" style="height:50%"></div>
+            <div class="r-bar md" style="height:35%"></div>
+            <div class="r-bar md" style="height:70%"></div>
+          </div>
+
+          <div class="r-card-dots">
+            <div class="r-card-dot active"></div>
+            <div class="r-card-dot"></div>
+            <div class="r-card-dot"></div>
+          </div>
+
+          <a href="servicios.html" class="r-card-link">
+            Ver servicios
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+
+        <!-- Tarjeta 2: Ensamble -->
+        <div class="r-card">
+          <!-- El icono tipo "knob" de la referencia -->
+          <div class="r-card-circle">
+            <div class="r-knob">
+              <div class="r-knob-icon">
+                <svg viewBox="0 0 24 24">
+                  <rect x="4" y="4" width="16" height="16" rx="2"/>
+                  <rect x="9" y="9" width="6" height="6"/>
+                  <line x1="9" y1="1" x2="9" y2="4"/>
+                  <line x1="15" y1="1" x2="15" y2="4"/>
+                  <line x1="9" y1="20" x2="9" y2="23"/>
+                  <line x1="15" y1="20" x2="15" y2="23"/>
+                  <line x1="20" y1="9" x2="23" y2="9"/>
+                  <line x1="20" y1="14" x2="23" y2="14"/>
+                  <line x1="1" y1="9" x2="4" y2="9"/>
+                  <line x1="1" y1="14" x2="4" y2="14"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="r-card-title" style="font-size:0.95rem;">Ensamble Personalizado</h3>
+          <p class="r-card-desc">Arma tu PC a medida. Asesoría completa según tu presupuesto y uso.</p>
+
+          <a href="ensamble.html" class="r-card-link" style="margin-top:auto;">
+            Configurar PC
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+
+      </aside>
+    </div><!-- /stage -->
+  </div><!-- /main -->
+</div><!-- /win -->
+
+<script src="main.js"></script>
+<script>
+  /* Dots del hero — simples para decoración */
+  document.querySelectorAll('.hero-dot').forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('.hero-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+    });
+  });
+
+  /* Dots del panel derecho */
+  document.querySelectorAll('.r-card-dot').forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('.r-card-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

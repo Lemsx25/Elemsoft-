@@ -8,7 +8,7 @@
    cambia  ensamble: true  →  ensamble: false
    ──────────────────────────────────────────────────── */
 const ELEMSOFT_CONFIG = {
-  ensamble: false   // ← pon false para ocultar el módulo de Ensamble
+  ensamble: true   // ← pon false para ocultar el módulo de Ensamble
 };
 
 /* ── EmailJS ── */
@@ -68,11 +68,16 @@ function handleContactSubmit(e) {
     return;
   }
 
+  const cupon = f.cupon ? f.cupon.value.trim().toUpperCase() : '';
+  const mensajeFinal = cupon
+    ? `${mensaje}\n\n— Código de descuento ingresado: ${cupon}`
+    : mensaje;
+
   const params = {
     nombre,
     correo,
     servicio:  f.servicio.value || 'No especificado',
-    mensaje,
+    mensaje:   mensajeFinal,
     telefono:  '—',
     prioridad: '—',
     entrega:   '—'
@@ -89,13 +94,19 @@ function handleQuoteSubmit(e) {
   const btn = f.querySelector('.form-submit');
   const original = btn.textContent;
 
+  const detalle = f.detalle.value.trim() || 'Sin detalles adicionales';
+  const cupon = f.cupon ? f.cupon.value.trim().toUpperCase() : '';
+  const detalleFinal = cupon
+    ? `${detalle}\n\n— Código de descuento ingresado: ${cupon}`
+    : detalle;
+
   const params = {
     nombre:    f.nombre.value.trim(),
     telefono:  f.telefono.value.trim(),
     servicio:  f.servicio.value || 'No especificado',
     prioridad: f.prioridad.value,
     entrega:   f.entrega.value,
-    mensaje:   f.detalle.value.trim() || 'Sin detalles adicionales',
+    mensaje:   detalleFinal,
     correo:    '—'
   };
 
