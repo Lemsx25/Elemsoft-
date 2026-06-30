@@ -8,7 +8,7 @@
    cambia  ensamble: true  →  ensamble: false
    ──────────────────────────────────────────────────── */
 const ELEMSOFT_CONFIG = {
-  ensamble: true   // ← pon false para ocultar el módulo de Ensamble
+  ensamble: false   // ← pon false para ocultar el módulo de Ensamble
 };
 
 /* ── EmailJS ── */
