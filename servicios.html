@@ -9,17 +9,17 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 </head>
 <body>
+<canvas id="bg"></canvas>
 
-<!-- ─── NAV ─── -->
-<nav class="solid">
+<nav id="mainNav" class="solid">
   <ul class="nav-left">
     <li><a href="index.html">Inicio</a></li>
     <li><a href="servicios.html" class="active">Servicios</a></li>
     <li><a href="ensamble.html">Ensamble</a></li>
     <li><a href="nosotros.html">Nosotros</a></li>
   </ul>
-  <a href="index.html" class="nav-logo nav-center">
-    <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+  <a href="index.html" class="nav-logo">
+    <span class="mark"><svg viewBox="0 0 120 80" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30L74 16L112 36L86 50Z"/></g><path d="M8 50L34 36L72 56L46 70Z" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
     Elemsoft
   </a>
   <div class="nav-right">
@@ -28,283 +28,194 @@
       <li><a href="login.html">Iniciar sesión</a></li>
     </ul>
     <a href="contacto.html" class="nav-cta">Cotizar</a>
-    <div class="hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-links').classList.toggle('open')">
-      <span></span><span></span><span></span>
+    <div class="hamburger" id="ham" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<nav class="nav-mobile" id="mobileMenu">
+  <a href="index.html">Inicio</a>
+  <a href="servicios.html">Servicios</a>
+  <a href="ensamble.html">Ensamble</a>
+  <a href="nosotros.html">Nosotros</a>
+  <a href="contacto.html">Contacto</a>
+  <a href="login.html">Iniciar sesión</a>
+  <a href="contacto.html" class="nav-cta-mob">Cotizar</a>
+</nav>
+
+<main>
+  <!-- ─── PAGE HEADER ─── -->
+  <header class="page-header">
+    <p class="section-eyebrow">Servicios</p>
+    <h1>Lo que hacemos.</h1>
+    <p>Diagnóstico, reparación, actualización y ensamble de computadoras en Guatemala.</p>
+  </header>
+
+  <!-- ─── COTIZACIÓN RÁPIDA ─── -->
+  <div class="quote-section">
+    <p class="section-eyebrow reveal">Cotización rápida</p>
+    <h2 class="section-title reveal reveal-d1">Cuéntanos<br/>qué necesitas.</h2>
+    <p class="section-sub reveal reveal-d2">Completa el formulario y te respondemos con un presupuesto en menos de 24 horas.</p>
+
+    <form id="formCotizacion" onsubmit="handleQuoteSubmit(event)">
+      <div class="quote-grid reveal">
+        <div class="quote-card">
+          <span class="quote-label">Tipo de servicio</span>
+          <select name="servicio" required>
+            <option value="" disabled selected>Selecciona un servicio</option>
+            <option>Mantenimiento preventivo</option>
+            <option>Mantenimiento correctivo</option>
+            <option>Actualización de hardware</option>
+            <option>Instalación de software</option>
+            <option>Optimización de software</option>
+            <option>Ensamble de PC</option>
+          </select>
+        </div>
+        <div class="quote-card">
+          <span class="quote-label">Prioridad</span>
+          <div class="quote-options">
+            <label class="quote-pill"><input type="radio" name="prioridad" value="Normal" checked/><span>Normal</span></label>
+            <label class="quote-pill"><input type="radio" name="prioridad" value="Urgente"/><span>Urgente</span></label>
+            <label class="quote-pill"><input type="radio" name="prioridad" value="Programada"/><span>Programada</span></label>
+          </div>
+        </div>
+        <div class="quote-card">
+          <span class="quote-label">Método de entrega</span>
+          <div class="quote-options">
+            <label class="quote-pill"><input type="radio" name="entrega" value="A domicilio" checked/><span>A domicilio</span></label>
+            <label class="quote-pill"><input type="radio" name="entrega" value="Llevo al taller"/><span>Llevo al taller</span></label>
+          </div>
+        </div>
+        <div class="quote-card">
+          <span class="quote-label">Contacto</span>
+          <input type="text" name="nombre" placeholder="Nombre completo" required/>
+          <input type="tel" name="telefono" placeholder="Teléfono / WhatsApp" required style="margin-top:1px;"/>
+        </div>
+        <div class="quote-card">
+          <span class="quote-label">Código de descuento <span style="opacity:.4;font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span></span>
+          <input type="text" name="cupon" placeholder="Ej. BIENVENIDO25" style="text-transform:uppercase;"/>
+        </div>
+        <div class="quote-card" style="grid-column: span 1;">
+          <span class="quote-label">Detalles</span>
+          <textarea name="detalle" placeholder="Describe tu equipo y el problema…" required style="min-height:95px;background:transparent;border:none;padding:0;resize:none;font-size:.88rem;color:var(--white);"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="form-submit reveal">Solicitar cotización →</button>
+    </form>
+  </div>
+
+  <!-- ─── LISTA DE SERVICIOS ─── -->
+  <div class="section">
+    <p class="section-eyebrow reveal">Catálogo</p>
+    <h2 class="section-title reveal reveal-d1">Nuestros servicios.</h2>
+    <div class="services-list">
+
+      <div class="svc-row reveal">
+        <span class="svc-num">01</span>
+        <div class="svc-body">
+          <div class="svc-name">Mantenimiento preventivo</div>
+          <div class="svc-desc">Limpieza interna, pasta térmica y revisión completa para máximo rendimiento.</div>
+        </div>
+        <a href="contacto.html" class="svc-link">Agendar →</a>
+      </div>
+      <div class="svc-detail">
+        <p class="svc-detail-text">Extendemos la vida útil de tu equipo con limpieza profunda, renovación de pasta térmica, revisión de ventiladores, fuente de poder y temperatura general del sistema.</p>
+        <ul class="svc-detail-list"><li>Limpieza profunda</li><li>Pasta térmica</li><li>Revisión de ventiladores</li><li>Diagnóstico completo</li></ul>
+        <a href="contacto.html" class="svc-link">Agendar este servicio →</a>
+      </div>
+
+      <div class="svc-row reveal reveal-d1">
+        <span class="svc-num">02</span>
+        <div class="svc-body">
+          <div class="svc-name">Mantenimiento correctivo</div>
+          <div class="svc-desc">Diagnóstico y reparación de fallas de hardware y software.</div>
+        </div>
+        <a href="contacto.html" class="svc-link">Agendar →</a>
+      </div>
+      <div class="svc-detail">
+        <p class="svc-detail-text">Diagnosticamos y reparamos fallas de hardware y software: pantallazos azules, equipos que no encienden, sobrecalentamiento, fallas de disco, virus y más.</p>
+        <ul class="svc-detail-list"><li>Diagnóstico sin costo</li><li>Reemplazo de hardware</li><li>Eliminación de virus</li><li>Solución de arranque</li></ul>
+        <a href="contacto.html" class="svc-link">Agendar este servicio →</a>
+      </div>
+
+      <div class="svc-row reveal reveal-d2">
+        <span class="svc-num">03</span>
+        <div class="svc-body">
+          <div class="svc-name">Actualización de hardware</div>
+          <div class="svc-desc">Mejora el rendimiento con RAM, SSD, GPU y más.</div>
+        </div>
+        <a href="contacto.html" class="svc-link">Agendar →</a>
+      </div>
+      <div class="svc-detail">
+        <p class="svc-detail-text">Asesoría y montaje de componentes para mejorar el rendimiento: más RAM, discos SSD, tarjetas gráficas y fuentes de poder. Compatibilidad verificada antes de comprar.</p>
+        <ul class="svc-detail-list"><li>Ampliación de RAM</li><li>Migración a SSD/NVMe</li><li>Cambio de GPU</li><li>Asesoría de compatibilidad</li></ul>
+        <a href="contacto.html" class="svc-link">Agendar este servicio →</a>
+      </div>
+
+      <div class="svc-row reveal reveal-d3">
+        <span class="svc-num">04</span>
+        <div class="svc-body">
+          <div class="svc-name">Instalación de software</div>
+          <div class="svc-desc">Sistema operativo, drivers, paquetes y configuración inicial.</div>
+        </div>
+        <a href="contacto.html" class="svc-link">Agendar →</a>
+      </div>
+      <div class="svc-detail">
+        <p class="svc-detail-text">Instalamos Windows 10/11, Linux, drivers actualizados, suite de ofimática, antivirus y configuración completa lista para usar desde el primer día.</p>
+        <ul class="svc-detail-list"><li>Windows 10/11</li><li>Drivers y actualizaciones</li><li>Ofimática</li><li>Antivirus</li></ul>
+        <a href="contacto.html" class="svc-link">Agendar este servicio →</a>
+      </div>
+
+      <div class="svc-row reveal reveal-d4">
+        <span class="svc-num">05</span>
+        <div class="svc-body">
+          <div class="svc-name">Optimización de software</div>
+          <div class="svc-desc">Limpieza de archivos, procesos en segundo plano y ajuste de rendimiento.</div>
+        </div>
+        <a href="contacto.html" class="svc-link">Agendar →</a>
+      </div>
+      <div class="svc-detail">
+        <p class="svc-detail-text">Liberamos espacio y mejoramos la velocidad de tu equipo: limpieza de archivos temporales, desactivación de programas innecesarios, ajuste del sistema y actualizaciones clave.</p>
+        <ul class="svc-detail-list"><li>Limpieza de temporales</li><li>Gestión de inicio</li><li>Ajustes de rendimiento</li><li>Actualizaciones</li></ul>
+        <a href="contacto.html" class="svc-link">Agendar este servicio →</a>
+      </div>
+
     </div>
   </div>
-  <ul class="nav-links">
-    <li><a href="index.html">Inicio</a></li>
-    <li><a href="servicios.html" class="active">Servicios</a></li>
-    <li><a href="ensamble.html">Ensamble</a></li>
+
+  <!-- ─── CTA ─── -->
+  <div class="cta-section">
+    <p class="section-eyebrow reveal">¿No encuentras lo que buscas?</p>
+    <h2 class="section-title reveal reveal-d1">Escríbenos.<br/>Lo solucionamos.</h2>
+    <p class="reveal reveal-d2">Atendemos casos personalizados. El diagnóstico no tiene costo.</p>
+    <div class="reveal reveal-d3"><a href="contacto.html" class="btn-primary">Contactar ahora</a></div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-brand">
+    <a href="index.html" class="f-logo"><svg viewBox="0 0 120 80" fill="none" width="22" height="16"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30L74 16L112 36L86 50Z"/></g><path d="M8 50L34 36L72 56L46 70Z" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>Elemsoft</a>
+    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala.</p>
+  </div>
+  <div class="footer-col"><h4>Servicios</h4><ul>
+    <li><a href="servicios.html">Mantenimiento preventivo</a></li>
+    <li><a href="servicios.html">Mantenimiento correctivo</a></li>
+    <li><a href="ensamble.html">Ensamble de PC</a></li>
+    <li><a href="servicios.html">Actualización de hardware</a></li>
+  </ul></div>
+  <div class="footer-col"><h4>Empresa</h4><ul>
     <li><a href="nosotros.html">Nosotros</a></li>
     <li><a href="contacto.html">Contacto</a></li>
     <li><a href="login.html">Iniciar sesión</a></li>
-    <li><a href="contacto.html" class="nav-cta">Cotizar</a></li>
-  </ul>
-</nav>
-
-<!-- ─── PAGE HEADER ─── -->
-<header class="page-header page-header--image" style="--header-img: url('hero-bg.jpeg');">
-  <p class="section-eyebrow">Servicios</p>
-  <h1>Lo que hacemos.</h1>
-  <p>Soluciones técnicas completas para mantener tu equipo funcionando al máximo rendimiento. Diagnóstico preciso, soluciones rápidas y garantía en todo nuestro trabajo.</p>
-</header>
-
-<!-- ─── COTIZACIÓN RÁPIDA ─── -->
-<section class="section">
-  <p class="section-eyebrow">Cotización rápida</p>
-  <h2 class="section-title">Cuéntanos qué necesitas</h2>
-  <p class="section-sub">Completa el formulario y te enviaremos un presupuesto estimado en menos de 24 horas.</p>
-
-  <form id="formCotizacion" class="quote-form" onsubmit="handleQuoteSubmit(event)">
-    <div class="quote-grid">
-      <div class="quote-card">
-        <p class="c-label">Tipo de servicio</p>
-        <select name="servicio" required>
-          <option value="" disabled selected>Selecciona un servicio</option>
-          <option>Mantenimiento preventivo</option>
-          <option>Mantenimiento correctivo</option>
-          <option>Actualización de hardware</option>
-          <option>Instalación de software</option>
-          <option>Optimización de software</option>
-          <option>Ensamble de PC</option>
-        </select>
-      </div>
-      <div class="quote-card">
-        <p class="c-label">Prioridad</p>
-        <div class="quote-options">
-          <label class="quote-pill"><input type="radio" name="prioridad" value="Normal" checked/><span>Normal</span></label>
-          <label class="quote-pill"><input type="radio" name="prioridad" value="Urgente"/><span>Urgente</span></label>
-          <label class="quote-pill"><input type="radio" name="prioridad" value="Programada"/><span>Programada</span></label>
-        </div>
-      </div>
-      <div class="quote-card">
-        <p class="c-label">Método de entrega</p>
-        <div class="quote-options">
-          <label class="quote-pill"><input type="radio" name="entrega" value="A domicilio" checked/><span>A domicilio</span></label>
-          <label class="quote-pill"><input type="radio" name="entrega" value="Llevo al taller"/><span>Llevo al taller</span></label>
-        </div>
-      </div>
-      <div class="quote-card">
-        <p class="c-label">Información de contacto</p>
-        <input type="text" name="nombre" placeholder="Nombre completo" required/>
-        <input type="tel" name="telefono" placeholder="Teléfono / WhatsApp" required/>
-      </div>
-      <div class="quote-card">
-        <p class="c-label">¿Tienes un código de descuento? <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span></p>
-        <input type="text" name="cupon" placeholder="Ej. BIENVENIDO25" style="text-transform:uppercase;"/>
-      </div>
-    </div>
-    <textarea name="detalle" placeholder="Describe brevemente tu equipo y el problema o necesidad..." required></textarea>
-    <button type="submit" class="form-submit">Solicitar cotización →</button>
-  </form>
-</section>
-
-<!-- ─── SERVICIOS GRID (expandible al hover) ─── -->
-<section class="section" id="servicios">
-  <p class="section-eyebrow">Servicios</p>
-  <h2 class="section-title">Lo que hacemos</h2>
-  <p class="section-sub">Soluciones técnicas completas para mantener tu equipo funcionando al máximo rendimiento.</p>
-
-  <div class="services-grid services-grid--expand">
-    <div class="service-card" data-name="Mantenimiento preventivo">
-      <div class="service-main">
-        <h3>Mantenimiento preventivo</h3>
-        <p>Limpieza interna, cambio de pasta térmica, revisión de componentes y cuidado para alargar la vida útil de tu equipo.</p>
-        <a href="contacto.html" class="service-arrow">Agendar →</a>
-      </div>
-      <div class="service-expand">
-        <div class="service-expand-bg"></div>
-        <div class="service-expand-overlay"></div>
-        <div class="service-expand-content">
-          <div class="service-tabs"></div>
-          <h3>Mantenimiento preventivo</h3>
-          <p>Incluye limpieza profunda de componentes internos, cambio de pasta térmica, revisión de ventiladores y disipadores. Ideal cada 6 a 12 meses para alargar la vida útil de tu equipo y prevenir sobrecalentamientos.</p>
-          <ul class="service-expand-list">
-            <li>Limpieza interna completa</li>
-            <li>Cambio de pasta térmica</li>
-            <li>Revisión de ventiladores</li>
-            <li>Optimización del sistema</li>
-          </ul>
-          <a href="contacto.html" class="btn-dark">Agendar este servicio</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="service-card" data-name="Mantenimiento correctivo">
-      <div class="service-main">
-        <h3>Mantenimiento correctivo</h3>
-        <p>Diagnóstico y reparación de fallas de hardware y software. Desde pantallazos azules hasta daños físicos en componentes*.</p>
-        <a href="contacto.html" class="service-arrow">Agendar →</a>
-      </div>
-      <div class="service-expand">
-        <div class="service-expand-bg"></div>
-        <div class="service-expand-overlay"></div>
-        <div class="service-expand-content">
-          <div class="service-tabs"></div>
-          <h3>Mantenimiento correctivo</h3>
-          <p>Diagnosticamos y reparamos fallas de hardware y software: pantallazos azules, equipos que no encienden, sobrecalentamiento, fallas de disco, virus y más. Si un componente está dañado, lo reemplazamos con tu aprobación previa.</p>
-          <ul class="service-expand-list">
-            <li>Diagnóstico sin costo</li>
-            <li>Reemplazo de hardware</li>
-            <li>Eliminación de virus y malware</li>
-            <li>Solución de fallas de arranque</li>
-          </ul>
-          <a href="contacto.html" class="btn-dark">Agendar este servicio</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="service-card" data-name="Actualización de hardware">
-      <div class="service-main">
-        <h3>Actualización de hardware</h3>
-        <p>Mejora el rendimiento de tu equipo con upgrades de RAM, almacenamiento, tarjeta gráfica y más.</p>
-        <a href="contacto.html" class="service-arrow">Agendar →</a>
-      </div>
-      <div class="service-expand">
-        <div class="service-expand-bg"></div>
-        <div class="service-expand-overlay"></div>
-        <div class="service-expand-content">
-          <div class="service-tabs"></div>
-          <h3>Actualización de hardware</h3>
-          <p>Asesoría y montaje de componentes para mejorar el rendimiento de tu equipo: más memoria RAM, discos SSD, tarjetas gráficas y fuentes de poder. Compatibilidad verificada antes de comprar.</p>
-          <ul class="service-expand-list">
-            <li>Ampliación de memoria RAM</li>
-            <li>Migración a SSD / NVMe</li>
-            <li>Cambio de tarjeta gráfica</li>
-            <li>Asesoría de compatibilidad</li>
-          </ul>
-          <a href="contacto.html" class="btn-dark">Agendar este servicio</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="service-card" data-name="Ensamble de PC">
-      <div class="service-main">
-        <h3>Ensamble de PC</h3>
-        <p>Armamos tu PC a medida: gaming, trabajo, diseño o uso general. Asesoría completa en selección de componentes según tu presupuesto.</p>
-        <a href="ensamble.html" class="service-arrow">Ver más →</a>
-      </div>
-      <div class="service-expand">
-        <div class="service-expand-bg"></div>
-        <div class="service-expand-overlay"></div>
-        <div class="service-expand-content">
-          <div class="service-tabs"></div>
-          <h3>Ensamble de PC</h3>
-          <p>Diseñamos y ensamblamos computadoras a medida: gaming de alta gama, estaciones de trabajo o setups compactos. Te asesoramos en cada paso, desde el presupuesto hasta la entrega, con garantía sobre mano de obra.</p>
-          <ul class="service-expand-list">
-            <li>Asesoría según presupuesto</li>
-            <li>Componentes verificados</li>
-            <li>Pruebas antes de entrega</li>
-            <li>Garantía sobre mano de obra</li>
-          </ul>
-          <a href="ensamble.html" class="btn-dark">Ver página de ensamble</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="service-card" data-name="Instalación de software">
-      <div class="service-main">
-        <h3>Instalación de software</h3>
-        <p>Sistemas operativos, programas, antivirus y configuración completa de tu entorno de trabajo o entretenimiento.</p>
-        <a href="contacto.html" class="service-arrow">Agendar →</a>
-      </div>
-      <div class="service-expand">
-        <div class="service-expand-bg"></div>
-        <div class="service-expand-overlay"></div>
-        <div class="service-expand-content">
-          <div class="service-tabs"></div>
-          <h3>Instalación de software</h3>
-          <p>Instalación y configuración de sistemas operativos (Windows, Linux), suites de oficina, antivirus, controladores y programas específicos para trabajo, estudio o entretenimiento. Activación y licencias incluidas según disponibilidad.</p>
-          <ul class="service-expand-list">
-            <li>Instalación de Windows / Linux</li>
-            <li>Drivers y controladores</li>
-            <li>Antivirus y seguridad</li>
-            <li>Programas de oficina y diseño</li>
-          </ul>
-          <a href="contacto.html" class="btn-dark">Agendar este servicio</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="service-card" data-name="Optimización de software">
-      <div class="service-main">
-        <h3>Optimización de software</h3>
-        <p>Limpieza de archivos, ajuste de procesos en segundo plano y configuración para mayor velocidad.</p>
-        <a href="contacto.html" class="service-arrow">Agendar →</a>
-      </div>
-      <div class="service-expand">
-        <div class="service-expand-bg"></div>
-        <div class="service-expand-overlay"></div>
-        <div class="service-expand-content">
-          <div class="service-tabs"></div>
-          <h3>Optimización de software</h3>
-          <p>Liberamos espacio y mejoramos la velocidad de tu equipo: limpieza de archivos temporales, desactivación de programas innecesarios, ajuste de configuración del sistema y actualización de software clave.</p>
-          <ul class="service-expand-list">
-            <li>Limpieza de archivos temporales</li>
-            <li>Gestión de inicio del sistema</li>
-            <li>Ajustes de rendimiento</li>
-            <li>Actualizaciones de software</li>
-          </ul>
-          <a href="contacto.html" class="btn-dark">Agendar este servicio</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── CTA BANNER ─── -->
-<div class="cta-banner">
-  <div class="cta-bg"></div>
-  <div class="cta-overlay"></div>
-  <div class="cta-content">
-    <p class="section-eyebrow">¿No encuentras lo que buscas?</p>
-    <h2>Escríbenos y te<br/>asesoramos gratis.</h2>
-    <a href="contacto.html" class="btn-explore">Contactar</a>
-  </div>
-</div>
-
-<!-- ─── FOOTER ─── -->
-<footer>
-  <div class="footer-brand">
-    <a href="index.html" class="nav-logo">
-      <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
-      Elemsoft
-    </a>
-    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala. Tu equipo en las mejores manos.</p>
-  </div>
-  <div class="footer-col">
-    <h4>Servicios</h4>
-    <ul>
-      <li><a href="servicios.html">Mantenimiento preventivo</a></li>
-      <li><a href="servicios.html">Mantenimiento correctivo</a></li>
-      <li><a href="ensamble.html">Ensamble de PC</a></li>
-      <li><a href="servicios.html">Actualización de hardware</a></li>
-    </ul>
-  </div>
-  <div class="footer-col">
-    <h4>Empresa</h4>
-    <ul>
-      <li><a href="nosotros.html">Nosotros</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
-      <li><a href="login.html">Iniciar sesión</a></li>
-    </ul>
-  </div>
-  <div class="footer-col">
-    <h4>Social</h4>
-    <ul>
-      <li><a href="#">Facebook</a></li>
-      <li><a href="https://www.instagram.com/_elemsoft?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">Instagram</a></li>
-      <li><a href="#">WhatsApp</a></li>
-    </ul>
-  </div>
+  </ul></div>
+  <div class="footer-col"><h4>Social</h4><ul>
+    <li><a href="#">Facebook</a></li>
+    <li><a href="https://www.instagram.com/_elemsoft?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">Instagram</a></li>
+    <li><a href="https://wa.me/message/J3GODZO6I6XGD1" target="_blank">WhatsApp</a></li>
+  </ul></div>
 </footer>
-<div class="footer-bottom">
-  <span>©  2026 Elemsoft · Todos los derechos reservados</span>
- 
-</div>
+<div class="footer-bottom"><span>© 2026 Elemsoft · Todos los derechos reservados</span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init(EMAILJS_PUBLIC_KEY);</script>
 <script src="main.js"></script>
 </body>
 </html>

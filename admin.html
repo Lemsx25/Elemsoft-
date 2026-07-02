@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de administración – Elemsoft</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <style>
+    /* ── Layout general (mismo lenguaje visual que dashboard.html) ── */
+    .dash-wrapper { max-width: 1180px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+    .dash-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1.6rem; margin-bottom: 2.5rem;
+      padding: 2rem 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .dash-header h1 {
+      font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700;
+      margin: 0 0 0.3rem; color: var(--white, #f5f5f5); letter-spacing: -0.5px;
+    }
+    .dash-header .section-eyebrow { margin-bottom: 0.3rem; color: #555; }
+
+    .refresh-btn {
+      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #999; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;
+      padding: 0.5rem 1rem; cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .refresh-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
+    /* ── Tabs de filtro ── */
+    .admin-tabs { display: flex; gap: 8px; margin-bottom: 1.6rem; flex-wrap: wrap; }
+    .admin-tab {
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: #666; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+      padding: 0.45rem 1rem; cursor: pointer; transition: all 0.2s;
+    }
+    .admin-tab.active { color: #fff; border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.08); }
+    .admin-tab:hover:not(.active) { color: #ccc; }
+
+    /* ── Tarjetas de cita ── */
+    .citas-grid { display: flex; flex-direction: column; gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); }
+    .cita-card {
+      background: var(--gray-9, #111);
+      padding: 1.3rem 1.6rem;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 1.2rem;
+      align-items: center;
+    }
+    .cita-main { min-width: 0; }
+    .cita-nombre { font-size: 0.98rem; font-weight: 600; color: #f0f0f0; margin-bottom: 0.3rem; }
+    .cita-meta { font-size: 0.78rem; color: #777; font-family: 'Space Mono', monospace; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .cita-meta a { color: #8aaeff; text-decoration: none; }
+    .cita-meta a:hover { text-decoration: underline; }
+
+    .cita-fecha { text-align: right; }
+    .cita-fecha-label { font-size: 0.6rem; color: #555; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
+    .cita-fecha-val { font-size: 0.85rem; color: #ccc; font-family: 'Space Mono', monospace; }
+
+    .cita-estado-select {
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 0.4rem 0.7rem; border-radius: 6px; cursor: pointer;
+      background: rgba(255,255,255,0.05); color: #ccc;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .cita-estado-select option { background: #111; color: #ccc; }
+
+    .estado-pendiente   { border-color: rgba(255,200,0,0.3) !important;  color: #ffd04d !important; }
+    .estado-confirmada  { border-color: rgba(100,150,255,0.3) !important; color: #8aaeff !important; }
+    .estado-completada  { border-color: rgba(50,200,100,0.3) !important; color: #5ddf8e !important; }
+    .estado-cancelada   { border-color: rgba(220,50,50,0.3) !important;  color: #ff8080 !important; opacity: 0.6; }
+
+    .empty-state {
+      text-align: center; padding: 4rem 1rem; color: #555;
+      font-size: 0.88rem; border: 1px dashed rgba(255,255,255,0.07);
+    }
+
+    .admin-loading { text-align: center; padding: 6rem 2rem; color: #555; }
+    .admin-loading span { display: block; font-size: 0.85rem; margin-top: 1rem; }
+
+    .admin-denied {
+      max-width: 480px; margin: 6rem auto; text-align: center;
+      padding: 2.5rem 2rem; border: 1px solid rgba(220,50,50,0.2);
+      background: rgba(220,50,50,0.06);
+    }
+    .admin-denied h2 { color: #ff8080; font-size: 1.1rem; margin-bottom: 0.6rem; }
+    .admin-denied p { color: #999; font-size: 0.85rem; line-height: 1.6; }
+
+    @media (max-width: 700px) {
+      .cita-card { grid-template-columns: 1fr; gap: 0.8rem; }
+      .cita-fecha { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav class="solid">
+  <ul class="nav-left">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="ensamble.html">Ensamble</a></li>
+    <li><a href="nosotros.html">Nosotros</a></li>
+  </ul>
+  <a href="index.html" class="nav-logo nav-center">
+    <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+    Elemsoft
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links-secondary">
+      <li><a href="dashboard.html">Mi cuenta</a></li>
+    </ul>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="ensamble.html">Ensamble</a></li>
+    <li><a href="nosotros.html">Nosotros</a></li>
+    <li><a href="dashboard.html">Mi cuenta</a></li>
+  </ul>
+</nav>
+
+<div id="adminContent" class="admin-loading">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+  <span>Verificando acceso…</span>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  /* ════════════════════════════════════════════════════════════════
+     IMPORTANTE — Lista de correos con acceso al panel de administración.
+     Agrega aquí tu correo (y el de quien más administre) para poder
+     entrar. Cualquier otra cuenta será rechazada.
+     ════════════════════════════════════════════════════════════════ */
+  const ADMIN_EMAILS = [
+    'emprendpc825@gmail.com',
+    // 'otro-correo@gmail.com',
+  ];
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyAYUz0m5R_ncBFCMFXCOzcArEkQnbVYWGo",
+    authDomain:        "elemsoftgt.firebaseapp.com",
+    projectId:         "elemsoftgt",
+    storageBucket:     "elemsoftgt.firebasestorage.app",
+    messagingSenderId: "482757350889",
+    appId:             "1:482757350889:web:3c45a31d75f6b319562778",
+    measurementId:     "G-8MSTXNK08V"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db   = firebase.firestore();
+
+  let TODAS_LAS_CITAS = [];
+  let FILTRO_ACTUAL = 'activas'; // activas | todas | pendiente | confirmada | completada | cancelada
+
+  auth.onAuthStateChanged(user => {
+    if (!user) { window.location.href = 'login.html'; return; }
+
+    if (!ADMIN_EMAILS.includes(user.email)) {
+      document.getElementById('adminContent').innerHTML = `
+        <div class="admin-denied">
+          <h2>Acceso restringido</h2>
+          <p>Esta cuenta (${user.email}) no tiene permisos de administrador.
+          Si deberías tener acceso, agrega tu correo a la lista ADMIN_EMAILS en admin.html.</p>
+        </div>`;
+      return;
+    }
+
+    cargarCitas();
+  });
+
+  function cargarCitas() {
+    document.getElementById('adminContent').innerHTML = `
+      <div class="admin-loading">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span>Cargando citas…</span>
+      </div>`;
+
+    db.collection('citas_rapidas').orderBy('creadoEn', 'desc').get()
+      .then(snap => {
+        TODAS_LAS_CITAS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderAdmin();
+      })
+      .catch(err => {
+        document.getElementById('adminContent').innerHTML = `
+          <div class="dash-wrapper">
+            <div style="padding:2rem;background:rgba(220,50,50,0.08);border:1px solid rgba(220,50,50,0.2);">
+              <p style="color:#ff6b6b;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Error al cargar citas</p>
+              <p style="color:#ccc;font-size:0.9rem;margin-bottom:0.5rem;">${err.message}</p>
+              <p style="color:#666;font-size:0.8rem;">Código: <code style="color:#aaa;">${err.code || 'desconocido'}</code></p>
+              <p style="color:#666;font-size:0.8rem;margin-top:1rem;">Esto casi siempre significa que las reglas de Firestore están bloqueando la lectura de "citas_rapidas". Revisa la pestaña Reglas en Firebase.</p>
+            </div>
+          </div>`;
+      });
+  }
+
+  function renderAdmin() {
+    const activas = TODAS_LAS_CITAS.filter(c => c.estado === 'pendiente' || c.estado === 'confirmada');
+    let lista;
+    if (FILTRO_ACTUAL === 'activas') lista = activas;
+    else if (FILTRO_ACTUAL === 'todas') lista = TODAS_LAS_CITAS;
+    else lista = TODAS_LAS_CITAS.filter(c => c.estado === FILTRO_ACTUAL);
+
+    document.getElementById('adminContent').innerHTML = `
+      <div class="dash-wrapper">
+        <div class="dash-header">
+          <div>
+            <p class="section-eyebrow">Panel de administración</p>
+            <h1>Citas agendadas</h1>
+          </div>
+          <button class="refresh-btn" onclick="cargarCitas()">↻ Actualizar</button>
+        </div>
+
+        <div class="admin-tabs">
+          ${tabBtn('activas', `Activas (${activas.length})`)}
+          ${tabBtn('pendiente', 'Pendientes')}
+          ${tabBtn('confirmada', 'Confirmadas')}
+          ${tabBtn('completada', 'Completadas')}
+          ${tabBtn('cancelada', 'Canceladas')}
+          ${tabBtn('todas', `Todas (${TODAS_LAS_CITAS.length})`)}
+        </div>
+
+        ${lista.length === 0 ? `<div class="empty-state">No hay citas en esta categoría.</div>` : `
+        <div class="citas-grid">
+          ${lista.map(c => citaCardHTML(c)).join('')}
+        </div>`}
+      </div>
+    `;
+  }
+
+  function tabBtn(value, label) {
+    const active = FILTRO_ACTUAL === value ? 'active' : '';
+    return `<button class="admin-tab ${active}" onclick="cambiarFiltro('${value}')">${label}</button>`;
+  }
+
+  function cambiarFiltro(valor) {
+    FILTRO_ACTUAL = valor;
+    renderAdmin();
+  }
+
+  function citaCardHTML(c) {
+    const tel = (c.telefono || '').replace(/[^0-9+]/g, '');
+    const waLink = tel ? `https://wa.me/${tel.replace(/^\+/, '')}` : null;
+    const creado = c.creadoEn && c.creadoEn.toDate
+      ? c.creadoEn.toDate().toLocaleDateString('es-GT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+      : '—';
+
+    return `
+      <div class="cita-card">
+        <div class="cita-main">
+          <div class="cita-nombre">${c.nombre || 'Sin nombre'}</div>
+          <div class="cita-meta">
+            <span>${c.servicio || '—'}</span>
+            ${waLink ? `<a href="${waLink}" target="_blank" rel="noopener">${c.telefono} →</a>` : `<span>${c.telefono || '—'}</span>`}
+            <span>Agendado: ${creado}</span>
+          </div>
+        </div>
+        <div class="cita-fecha">
+          <div class="cita-fecha-label">Fecha preferida</div>
+          <div class="cita-fecha-val">${c.fechaPreferida || '—'}</div>
+        </div>
+        <select class="cita-estado-select estado-${c.estado || 'pendiente'}" onchange="cambiarEstado('${c.id}', this)">
+          <option value="pendiente"   ${c.estado === 'pendiente'   ? 'selected' : ''}>Pendiente</option>
+          <option value="confirmada"  ${c.estado === 'confirmada'  ? 'selected' : ''}>Confirmada</option>
+          <option value="completada"  ${c.estado === 'completada'  ? 'selected' : ''}>Completada</option>
+          <option value="cancelada"   ${c.estado === 'cancelada'   ? 'selected' : ''}>Cancelada</option>
+        </select>
+      </div>
+    `;
+  }
+
+  function cambiarEstado(citaId, selectEl) {
+    const nuevoEstado = selectEl.value;
+    selectEl.disabled = true;
+    db.collection('citas_rapidas').doc(citaId).update({ estado: nuevoEstado })
+      .then(() => {
+        const cita = TODAS_LAS_CITAS.find(c => c.id === citaId);
+        if (cita) cita.estado = nuevoEstado;
+        selectEl.className = `cita-estado-select estado-${nuevoEstado}`;
+        selectEl.disabled = false;
+      })
+      .catch(err => {
+        alert('Error al actualizar: ' + err.message);
+        selectEl.disabled = false;
+      });
+  }
+</script>
+</body>
+</html>

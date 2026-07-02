@@ -9,17 +9,17 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 </head>
 <body>
+<canvas id="bg"></canvas>
 
-<!-- ─── NAV ─── -->
-<nav class="solid">
+<nav id="mainNav" class="solid">
   <ul class="nav-left">
     <li><a href="index.html">Inicio</a></li>
     <li><a href="servicios.html">Servicios</a></li>
     <li><a href="ensamble.html">Ensamble</a></li>
     <li><a href="nosotros.html">Nosotros</a></li>
   </ul>
-  <a href="index.html" class="nav-logo nav-center">
-    <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+  <a href="index.html" class="nav-logo">
+    <span class="mark"><svg viewBox="0 0 120 80" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30L74 16L112 36L86 50Z"/></g><path d="M8 50L34 36L72 56L46 70Z" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
     Elemsoft
   </a>
   <div class="nav-right">
@@ -28,128 +28,99 @@
       <li><a href="login.html">Iniciar sesión</a></li>
     </ul>
     <a href="contacto.html" class="nav-cta">Cotizar</a>
-    <div class="hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-links').classList.toggle('open')">
-      <span></span><span></span><span></span>
-    </div>
+    <div class="hamburger" id="ham" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
   </div>
-  <ul class="nav-links">
-    <li><a href="index.html">Inicio</a></li>
-    <li><a href="servicios.html">Servicios</a></li>
-    <li><a href="ensamble.html">Ensamble</a></li>
-    <li><a href="nosotros.html">Nosotros</a></li>
-    <li><a href="contacto.html" class="active">Contacto</a></li>
-    <li><a href="login.html">Iniciar sesión</a></li>
-    <li><a href="contacto.html" class="nav-cta">Cotizar</a></li>
-  </ul>
+</nav>
+<nav class="nav-mobile" id="mobileMenu">
+  <a href="index.html">Inicio</a><a href="servicios.html">Servicios</a>
+  <a href="ensamble.html">Ensamble</a><a href="nosotros.html">Nosotros</a>
+  <a href="contacto.html">Contacto</a><a href="login.html">Iniciar sesión</a>
+  <a href="contacto.html" class="nav-cta-mob">Cotizar</a>
 </nav>
 
-<!-- ─── PAGE HEADER ─── -->
-<header class="page-header page-header--image" style="--header-img: url('hero-bg.jpeg');">
-  <p class="section-eyebrow">Contacto</p>
-  <h1>Hablemos.</h1>
-  <p>¿Problema con tu equipo o quieres un ensamble? Te respondemos en menos de 24 horas.</p>
-</header>
+<main>
+  <header class="page-header">
+    <p class="section-eyebrow">Contacto</p>
+    <h1>Hablemos.</h1>
+    <p>¿Problema con tu equipo o quieres un ensamble? Te respondemos en menos de 24 horas.</p>
+  </header>
 
-<!-- ─── CONTACT ─── -->
-<section class="section page-contact">
-  <div class="contact-layout">
-    <div class="contact-info-block">
-      <h3>Información de contacto</h3>
-      <div class="c-item">
-        <div>
-          <p class="c-label">WhatsApp</p>
+  <div class="section">
+    <div class="contact-layout">
+      <!-- Info -->
+      <div class="contact-info reveal-left">
+        <h3>Información de contacto</h3>
+        <div class="c-item">
+          <span class="c-label">WhatsApp</span>
           <p class="c-val">+502 3696 8854</p>
-          <a href="https://wa.me/message/J3GODZO6I6XGD1" target="_blank" rel="noopener" class="c-whatsapp-btn">
-            Abrir WhatsApp →
-          </a>
+          <a href="https://wa.me/message/J3GODZO6I6XGD1" target="_blank" rel="noopener" class="c-whatsapp-btn">Abrir WhatsApp →</a>
         </div>
-      </div>
-      <div class="c-item">
-        <div>
-          <p class="c-label">Ubicación</p>
+        <div class="c-item">
+          <span class="c-label">Ubicación</span>
           <p class="c-val">Ciudad de Guatemala</p>
         </div>
-      </div>
-      <div class="c-item">
-        <div>
-          <p class="c-label">Horario</p>
+        <div class="c-item">
+          <span class="c-label">Horario</span>
           <p class="c-val">Lun – Sab · 6:00 am – 10:00 pm</p>
         </div>
       </div>
+
+      <!-- Formulario -->
+      <div class="reveal-right">
+        <form id="formContacto" onsubmit="handleContactSubmit(event)">
+          <div class="form-row">
+            <input type="text"  name="nombre" placeholder="Nombre" required/>
+            <input type="email" name="correo" placeholder="Correo electrónico" required/>
+          </div>
+          <select name="servicio">
+            <option value="" disabled selected>Selecciona un servicio</option>
+            <option>Mantenimiento preventivo</option>
+            <option>Mantenimiento correctivo</option>
+            <option>Ensamble de PC</option>
+            <option>Reemplazo de hardware</option>
+            <option>Instalación de software</option>
+            <option>Optimización de software</option>
+            <option>Otro</option>
+          </select>
+          <input type="text" name="cupon" placeholder="Código de descuento (opcional)" style="text-transform:uppercase;"/>
+          <textarea name="mensaje" placeholder="Describe tu problema o consulta..." required></textarea>
+          <button type="submit" class="form-submit">Enviar mensaje →</button>
+        </form>
+      </div>
     </div>
 
-    <form id="formContacto" onsubmit="handleContactSubmit(event)">
-      <div class="form-row">
-        <input type="text" name="nombre" placeholder="Nombre" required/>
-        <input type="email" name="correo" placeholder="Correo electrónico" required/>
-      </div>
-      <select name="servicio">
-        <option value="" disabled selected>Selecciona un servicio</option>
-        <option>Mantenimiento preventivo</option>
-        <option>Mantenimiento correctivo</option>
-        <option>Ensamble de PC</option>
-        <option>Reemplazo de hardware</option>
-        <option>Instalación de software</option>
-        <option>Optimización de software</option>
-        <option>Otro</option>
-      </select>
-      <input type="text" name="cupon" placeholder="Código de descuento (opcional)" style="text-transform:uppercase;"/>
-      <textarea name="mensaje" placeholder="Describe tu problema o consulta..." required></textarea>
-      <button type="submit" class="form-submit">Enviar mensaje →</button>
-    </form>
+    <!-- Mapa -->
+    <div class="map-block reveal" style="margin-top:4rem;">
+      <iframe src="https://maps.google.com/maps?q=14.505722,-90.544803&z=17&output=embed" loading="lazy" allowfullscreen></iframe>
+    </div>
   </div>
+</main>
 
-<!-- ─── MAPA ─── -->
-<div class="map-block">
-  <iframe 
-    src="https://maps.google.com/maps?q=14.505722,-90.544803&z=17&output=embed" 
-    loading="lazy" 
-    allowfullscreen>
-  </iframe>
-</div>
-</section>
-
-<!-- ─── FOOTER ─── -->
 <footer>
   <div class="footer-brand">
-    <a href="index.html" class="nav-logo">
-      <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
-      Elemsoft
-    </a>
-    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala. Tu equipo en las mejores manos.</p>
+    <a href="index.html" class="f-logo"><svg viewBox="0 0 120 80" fill="none" width="22" height="16"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30L74 16L112 36L86 50Z"/></g><path d="M8 50L34 36L72 56L46 70Z" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>Elemsoft</a>
+    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala.</p>
   </div>
-  <div class="footer-col">
-    <h4>Servicios</h4>
-    <ul>
-      <li><a href="servicios.html">Mantenimiento preventivo</a></li>
-      <li><a href="servicios.html">Mantenimiento correctivo</a></li>
-      <li><a href="ensamble.html">Ensamble de PC</a></li>
-      <li><a href="servicios.html">Actualización de hardware</a></li>
-    </ul>
-  </div>
-  <div class="footer-col">
-    <h4>Empresa</h4>
-    <ul>
-      <li><a href="nosotros.html">Nosotros</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
-      <li><a href="login.html">Iniciar sesión</a></li>
-    </ul>
-  </div>
-  <div class="footer-col">
-    <h4>Social</h4>
-    <ul>
-      <li><a href="#">Facebook</a></li>
-      <li><a href="https://www.instagram.com/_elemsoft?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">Instagram</a></li>
-      <li><a href="#">WhatsApp</a></li>
-    </ul>
-  </div>
+  <div class="footer-col"><h4>Servicios</h4><ul>
+    <li><a href="servicios.html">Mantenimiento preventivo</a></li>
+    <li><a href="servicios.html">Mantenimiento correctivo</a></li>
+    <li><a href="ensamble.html">Ensamble de PC</a></li>
+    <li><a href="servicios.html">Actualización de hardware</a></li>
+  </ul></div>
+  <div class="footer-col"><h4>Empresa</h4><ul>
+    <li><a href="nosotros.html">Nosotros</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+    <li><a href="login.html">Iniciar sesión</a></li>
+  </ul></div>
+  <div class="footer-col"><h4>Social</h4><ul>
+    <li><a href="#">Facebook</a></li>
+    <li><a href="https://www.instagram.com/_elemsoft?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">Instagram</a></li>
+    <li><a href="https://wa.me/message/J3GODZO6I6XGD1" target="_blank">WhatsApp</a></li>
+  </ul></div>
 </footer>
-<div class="footer-bottom">
-  <span>©  2026 Elemsoft · Todos los derechos reservados</span>
- 
-</div>
-
+<div class="footer-bottom"><span>© 2026 Elemsoft · Todos los derechos reservados</span></div>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init(EMAILJS_PUBLIC_KEY);</script>
 <script src="main.js"></script>
 </body>
 </html>

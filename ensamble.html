@@ -9,16 +9,17 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 </head>
 <body>
+<canvas id="bg"></canvas>
 
 <!-- ─── NAV ─── -->
-<nav class="solid">
+<nav id="mainNav" class="solid">
   <ul class="nav-left">
     <li><a href="index.html">Inicio</a></li>
     <li><a href="servicios.html">Servicios</a></li>
     <li><a href="ensamble.html" class="active">Ensamble</a></li>
     <li><a href="nosotros.html">Nosotros</a></li>
   </ul>
-  <a href="index.html" class="nav-logo nav-center">
+  <a href="index.html" class="nav-logo">
     <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
     Elemsoft
   </a>
@@ -28,19 +29,19 @@
       <li><a href="login.html">Iniciar sesión</a></li>
     </ul>
     <a href="contacto.html" class="nav-cta">Cotizar</a>
-    <div class="hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-links').classList.toggle('open')">
+    <div class="hamburger" id="ham" onclick="toggleMobileMenu()">
       <span></span><span></span><span></span>
     </div>
   </div>
-  <ul class="nav-links">
-    <li><a href="index.html">Inicio</a></li>
-    <li><a href="servicios.html">Servicios</a></li>
-    <li><a href="ensamble.html" class="active">Ensamble</a></li>
-    <li><a href="nosotros.html">Nosotros</a></li>
-    <li><a href="contacto.html">Contacto</a></li>
-    <li><a href="login.html">Iniciar sesión</a></li>
-    <li><a href="contacto.html" class="nav-cta">Cotizar</a></li>
-  </ul>
+</nav>
+<nav class="nav-mobile" id="mobileMenu">
+  <a href="index.html">Inicio</a>
+  <a href="servicios.html">Servicios</a>
+  <a href="ensamble.html">Ensamble</a>
+  <a href="nosotros.html">Nosotros</a>
+  <a href="contacto.html">Contacto</a>
+  <a href="login.html">Iniciar sesión</a>
+  <a href="contacto.html" class="nav-cta-mob">Cotizar</a>
 </nav>
 
 <!-- ─── PAGE HEADER ─── -->

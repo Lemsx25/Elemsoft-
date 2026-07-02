@@ -8,335 +8,235 @@
   <link rel="stylesheet" href="styles.css"/>
   <link rel="icon" type="image/png" href="favicon.png"/>
   <style>
-    /* ── Layout general ── */
-    .dash-wrapper { max-width: 1180px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+    /* ── Wrapper ── */
+    .d { max-width: 940px; margin: 0 auto; padding: 4rem 2rem 8rem; }
 
-    /* ── Header de usuario ── */
-    .dash-header {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 1.6rem; flex-wrap: wrap;
-      margin-bottom: 2.2rem;
-      padding: 2.2rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      border-top: 1px solid rgba(255,255,255,0.07);
+    /* ── Header ── */
+    .d-head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      padding: 2.4rem 0 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 2.8rem;
     }
-    .dash-header-left { display: flex; align-items: center; gap: 1.5rem; }
-    .dash-avatar {
-      width: 56px; height: 56px;
-      background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-      border: 1px solid rgba(255,255,255,0.16);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Space Mono', monospace;
-      font-size: 1.2rem; font-weight: 700; color: var(--white, #f5f5f5);
-      flex-shrink: 0; letter-spacing: 0;
-      position: relative;
+    .d-name {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 700; letter-spacing: -0.5px;
+      color: #f0f0f0; margin: 0 0 0.2rem;
     }
-    .dash-avatar::after {
-      content: '';
-      position: absolute; inset: -1px;
-      border: 1px solid rgba(140,180,255,0.35);
-      pointer-events: none;
-    }
-    .dash-header-text .section-eyebrow { margin-bottom: 0.35rem; color: #555; }
-    .dash-header-text h1 {
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 700; margin: 0 0 0.3rem;
-      color: var(--white, #f5f5f5);
-      letter-spacing: -0.5px;
-    }
-    .dash-header-text .dash-email {
+    .d-email {
       font-family: 'Space Mono', monospace;
       font-size: 0.65rem; color: #555;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
     }
-
-    /* ── Barra de acciones rápidas ── */
-    .dash-quick-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-    .dash-quick-btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
+    .d-head-actions { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.2rem; }
+    .d-btn {
       font-family: 'Space Mono', monospace;
-      font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
-      color: #aaa; text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 0.6rem 1rem;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-      background: rgba(255,255,255,0.02);
+      font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.55rem 1rem; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12); color: #888;
+      background: none; cursor: pointer;
+      transition: color .18s, border-color .18s;
     }
-    .dash-quick-btn svg {
-      width: 13px; height: 13px;
-      fill: none; stroke: currentColor;
-      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
-      flex-shrink: 0;
-    }
-    .dash-quick-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); }
-    .dash-quick-btn.primary {
-      background: rgba(255,255,255,0.92); color: #0a0a0a; border-color: transparent;
-    }
-    .dash-quick-btn.primary:hover { background: #fff; color: #0a0a0a; }
+    .d-btn:hover { color: #fff; border-color: rgba(255,255,255,0.35); }
+    .d-btn.accent { background: rgba(255,255,255,0.92); color: #0a0a0a; border-color: transparent; }
+    .d-btn.accent:hover { background: #fff; color: #0a0a0a; }
 
-    /* ── Stats ── */
-    .dash-stats {
+    /* ── Stats strip ── */
+    .d-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1px; margin-bottom: 3.2rem;
+      grid-template-columns: repeat(4, 1fr);
       border: 1px solid rgba(255,255,255,0.07);
       background: rgba(255,255,255,0.07);
+      gap: 1px;
+      margin-bottom: 3.2rem;
     }
-    .stat-card {
-      background: var(--gray-9, #111);
-      padding: 1.5rem 1.7rem;
-      position: relative;
-      transition: background 0.2s;
+    .d-stat {
+      background: #0d0d0d;
+      padding: 1.4rem 1.6rem;
     }
-    .stat-card:hover { background: #131313; }
-    .stat-card::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: rgba(255,255,255,0.10);
-      transition: background 0.2s;
+    .d-stat-n {
+      font-size: 1.9rem; font-weight: 700;
+      color: #f0f0f0; letter-spacing: -0.5px;
+      line-height: 1; margin-bottom: 0.4rem;
     }
-    .stat-card.accent-blue:hover::before   { background: #8aaeff; }
-    .stat-card.accent-green:hover::before  { background: #5ddf8e; }
-    .stat-card.accent-yellow:hover::before { background: #ffd04d; }
-    .stat-card.accent-white:hover::before  { background: rgba(255,255,255,0.6); }
-    .stat-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
-    .stat-icon {
-      width: 26px; height: 26px;
-      display: flex; align-items: center; justify-content: center;
-      color: #555;
+    .d-stat-n.sm { font-size: 1.1rem; padding-top: 0.4rem; }
+    .d-stat-l {
+      font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #555; font-family: 'Space Mono', monospace;
     }
-    .stat-icon svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-    .accent-blue .stat-icon   { color: #8aaeff; }
-    .accent-green .stat-icon  { color: #5ddf8e; }
-    .accent-yellow .stat-icon { color: #ffd04d; }
-    .stat-label {
-      font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: #777; font-weight: 500;
-    }
-    .stat-value { font-size: 2.1rem; font-weight: 700; line-height: 1; color: #fff; letter-spacing: -0.5px; }
-    .stat-value.stat-value--sm { font-size: 1.2rem; padding-top: 0.3rem; }
-    .stat-sub { font-size: 0.78rem; color: #666; margin-top: 0.5rem; }
+    .d-stat-sub { font-size: 0.75rem; color: #666; margin-top: 0.25rem; }
 
-    /* ── Secciones ── */
-    .dash-section { margin-bottom: 3.6rem; }
-    .dash-section-header {
+    /* ── Sección ── */
+    .d-sec { margin-bottom: 3rem; }
+    .d-sec-head {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 1.2rem;
-    }
-    .dash-section-title { display: flex; align-items: center; gap: 0.6rem; }
-    .dash-section-title svg {
-      width: 14px; height: 14px;
-      fill: none; stroke: #555;
-      stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
-    }
-    .dash-section-header h2 {
-      font-size: 0.7rem; font-weight: 500; margin: 0;
-      color: #777; letter-spacing: 0.12em; text-transform: uppercase;
-      font-family: 'Space Mono', monospace;
-    }
-    .dash-section-header .dash-section-link {
-      font-size: 0.72rem; color: #555; text-decoration: none;
-      letter-spacing: 0.07em; text-transform: uppercase;
-      transition: color 0.2s; font-family: 'Space Mono', monospace;
-      display: inline-flex; align-items: center; gap: 0.3rem;
-    }
-    .dash-section-header .dash-section-link span { transition: transform 0.2s; display: inline-block; }
-    .dash-section-header .dash-section-link:hover { color: #ddd; }
-    .dash-section-header .dash-section-link:hover span { transform: translateX(2px); }
-    .dash-divider {
-      height: 1px; background: rgba(255,255,255,0.07);
-      margin-bottom: 1.3rem;
-    }
-
-    /* ── Tabla de servicios ── */
-    .service-table { width: 100%; border-collapse: collapse; border: 1px solid rgba(255,255,255,0.08); }
-    .service-table th {
-      text-align: left; font-size: 0.62rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: #666; padding: 0.9rem 1.3rem;
-      font-weight: 500; font-family: 'Space Mono', monospace;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.015);
-    }
-    .service-table td {
-      padding: 1.05rem 1.3rem; font-size: 0.88rem; color: #ccc;
-      border-top: 1px solid rgba(255,255,255,0.05); vertical-align: middle;
-    }
-    .service-table .td-date { color: #888; font-size: 0.8rem; white-space: nowrap; font-family: 'Space Mono', monospace; }
-    .service-table .td-main { color: #f0f0f0; font-weight: 500; }
-    .service-table .td-tech { color: #777; font-size: 0.83rem; }
-    .service-table tbody tr { transition: background 0.15s; }
-    .service-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
-    .status-badge {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.25rem 0.7rem;
-      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
-      text-transform: uppercase; font-family: 'Space Mono', monospace;
-      background: rgba(255,255,255,0.02);
-    }
-    .status-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-    .status-done    { color: #4cda80; border: 1px solid rgba(50,200,100,0.22); }
-    .status-done::before { background: #4cda80; box-shadow: 0 0 6px rgba(50,200,100,0.6); }
-    .status-pending { color: #ffd04d; border: 1px solid rgba(255,200,0,0.22); }
-    .status-pending::before { background: #ffd04d; box-shadow: 0 0 6px rgba(255,200,0,0.6); }
-    .status-sched   { color: #8aaeff; border: 1px solid rgba(100,150,255,0.22); }
-    .status-sched::before { background: #8aaeff; box-shadow: 0 0 6px rgba(100,150,255,0.6); }
-    .warranty-pill {
-      display: inline-block; font-size: 0.65rem; color: #666;
-      font-family: 'Space Mono', monospace;
-      border: 1px solid rgba(255,255,255,0.07);
-      padding: 0.18rem 0.6rem; letter-spacing: 0.05em;
-    }
-
-    /* ── Cupones ── */
-    .coupons-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1px; background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-    .coupon-card {
-      background: var(--gray-9, #111);
-      padding: 1.8rem 1.9rem;
-      position: relative;
-      transition: background 0.2s;
-    }
-    .coupon-card:hover:not(.coupon-used) { background: #131313; }
-    .coupon-discount {
-      font-size: 2.7rem; font-weight: 700; line-height: 1;
-      margin-bottom: 0.5rem; color: #fff;
-      letter-spacing: -1.5px;
-    }
-    .coupon-desc { font-size: 0.83rem; color: #777; margin-bottom: 1.3rem; line-height: 1.55; }
-    .coupon-divider {
-      border-top: 1px dashed rgba(255,255,255,0.14);
-      margin-bottom: 1.1rem;
-      position: relative;
-    }
-    .coupon-code {
-      font-family: 'Space Mono', monospace; font-size: 0.78rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 0.5rem 0.95rem;
-      letter-spacing: 0.12em; cursor: pointer; user-select: all;
-      display: inline-block; transition: background 0.2s, border-color 0.2s; color: #ddd;
-    }
-    .coupon-code:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.25); }
-    .coupon-copy-hint {
-      display: block; font-size: 0.62rem; color: #444;
-      margin-top: 0.5rem; letter-spacing: 0.08em;
-      font-family: 'Space Mono', monospace; text-transform: uppercase;
-    }
-    .coupon-expiry {
-      font-size: 0.68rem; color: #555; margin-top: 1.1rem;
-      font-family: 'Space Mono', monospace; letter-spacing: 0.05em;
-      text-transform: uppercase;
-      display: flex; align-items: center; gap: 0.4rem;
-    }
-    .coupon-expiry svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.7; }
-    .coupon-used { opacity: 0.32; pointer-events: none; }
-    .coupon-used-label {
-      position: absolute; top: 1.1rem; right: 1.1rem;
-      font-size: 0.55rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: #666;
-      font-family: 'Space Mono', monospace;
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 0.2rem 0.55rem;
-    }
-
-    /* ── Ofertas ── */
-    .offers-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1px; background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-    .offer-card {
-      background: var(--gray-9, #111);
-      padding: 2rem;
-      transition: background 0.2s, transform 0.2s;
-      display: flex; flex-direction: column;
-    }
-    .offer-card:hover { background: #131313; transform: translateY(-2px); }
-    .offers-members-note {
-      font-size: 0.7rem; color: #555;
-      font-family: 'Space Mono', monospace;
-      letter-spacing: 0.04em;
-      margin-bottom: 1rem;
-      margin-top: -0.5rem;
-    }
-    .offer-members-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 0.6rem; letter-spacing: 0.08em;
-      text-transform: uppercase; color: #4cda80;
-      font-family: 'Space Mono', monospace;
       margin-bottom: 0.8rem;
     }
-    .offer-members-badge svg {
-      width: 10px; height: 10px;
-      fill: none; stroke: currentColor;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-    }
-    .offer-tag {
-      display: inline-block; font-size: 0.55rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: #555;
+    .d-sec-title {
       font-family: 'Space Mono', monospace;
-      border: 1px solid rgba(255,255,255,0.07);
-      padding: 0.2rem 0.65rem; margin-bottom: 1.2rem;
-      align-self: flex-start;
+      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #666; margin: 0;
     }
-    .offer-card h3 { font-size: 1.02rem; margin: 0 0 0.5rem; font-weight: 600; color: #f0f0f0; letter-spacing: -0.2px; }
-    .offer-card p  { font-size: 0.84rem; color: #777; margin: 0 0 1.4rem; line-height: 1.65; flex: 1; }
-    .offer-price { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 1.2rem; }
-    .price-new { font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
-    .price-varies {
-      font-size: 0.78rem; color: #888;
+    .d-sec-link {
       font-family: 'Space Mono', monospace;
-      letter-spacing: 0.04em; text-transform: uppercase;
+      font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #555; text-decoration: none;
+      transition: color .18s;
     }
-    .price-old { font-size: 0.83rem; color: #444; text-decoration: line-through; }
-    .offer-cta {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      font-size: 0.7rem; letter-spacing: 0.1em;
-      text-transform: uppercase; padding: 0.6rem 1.2rem;
-      border: 1px solid rgba(255,255,255,0.15);
-      text-decoration: none; color: #999; align-self: flex-start;
+    .d-sec-link:hover { color: #ddd; }
+    .d-divider { height: 1px; background: rgba(255,255,255,0.07); margin-bottom: 1.2rem; }
+
+    /* ── Tabla ── */
+    .d-table { width: 100%; border-collapse: collapse; }
+    .d-table th {
       font-family: 'Space Mono', monospace;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #555; padding: 0 1rem 0.7rem; text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
     }
-    .offer-cta:hover { border-color: rgba(255,255,255,0.35); color: #fff; background: rgba(255,255,255,0.05); }
+    .d-table td {
+      padding: 0.95rem 1rem; font-size: 0.88rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      vertical-align: middle; color: #ccc;
+    }
+    .d-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+    .d-table .t-main { color: #eee; font-weight: 500; }
+    .d-table .t-mono { font-family: 'Space Mono', monospace; font-size: 0.78rem; color: #777; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+    }
+    .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .badge-pending { color: #ffd04d; border: 1px solid rgba(255,200,0,.22); }
+    .badge-pending::before { background: #ffd04d; }
+    .badge-sched   { color: #8aaeff; border: 1px solid rgba(100,150,255,.22); }
+    .badge-sched::before { background: #8aaeff; }
+    .badge-done    { color: #5ddf8e; border: 1px solid rgba(50,200,100,.22); }
+    .badge-done::before { background: #5ddf8e; }
+    .badge-cancel  { color: #999; border: 1px solid rgba(255,255,255,.1); opacity: .6; }
+    .badge-cancel::before { background: #666; }
+
+    /* ── Cupones ── */
+    .d-coupons {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1px; border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.07);
+    }
+    .d-coupon {
+      background: #0d0d0d; padding: 1.6rem 1.8rem;
+      position: relative; transition: background .18s;
+    }
+    .d-coupon:hover:not(.d-coupon--used) { background: #111; }
+    .d-coupon--used { opacity: .3; pointer-events: none; }
+    .d-coupon-used-tag {
+      position: absolute; top: 1rem; right: 1rem;
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #555; border: 1px solid rgba(255,255,255,.08);
+      padding: 0.15rem 0.5rem;
+    }
+    .d-coupon-pct {
+      font-size: 2.5rem; font-weight: 700; color: #f0f0f0;
+      letter-spacing: -1px; line-height: 1; margin-bottom: 0.3rem;
+    }
+    .d-coupon-desc { font-size: 0.8rem; color: #777; margin-bottom: 1.2rem; line-height: 1.5; }
+    .d-coupon-sep { border-top: 1px dashed rgba(255,255,255,.12); margin-bottom: 1rem; }
+    .d-coupon-code {
+      font-family: 'Space Mono', monospace; font-size: 0.75rem;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+      padding: 0.45rem 0.85rem; letter-spacing: 0.1em;
+      cursor: pointer; user-select: all; color: #ccc;
+      transition: background .18s;
+    }
+    .d-coupon-code:hover { background: rgba(255,255,255,.09); }
+    .d-coupon-hint { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: #444; margin-top: 0.35rem; display: block; }
+    .d-coupon-exp { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: #555; margin-top: 0.9rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    /* ── Ofertas ── */
+    .d-offers {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px; border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.07);
+    }
+    .d-offer {
+      background: #0d0d0d; padding: 1.8rem;
+      display: flex; flex-direction: column;
+      transition: background .18s;
+    }
+    .d-offer:hover { background: #111; }
+    .d-offer-badge {
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      color: #5ddf8e; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+    .d-offer-tag {
+      font-family: 'Space Mono', monospace; font-size: 0.58rem;
+      color: #555; letter-spacing: 0.1em; text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,.07); padding: 0.15rem 0.6rem;
+      margin-bottom: 1rem; align-self: flex-start;
+    }
+    .d-offer h3 { font-size: 0.98rem; font-weight: 600; color: #eee; margin: 0 0 0.45rem; }
+    .d-offer p  { font-size: 0.82rem; color: #777; margin: 0 0 1.3rem; line-height: 1.6; flex: 1; }
+    .d-offer-price { margin-bottom: 1.1rem; }
+    .d-offer-price-new { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; }
+    .d-offer-price-old { font-size: 0.8rem; color: #444; text-decoration: line-through; margin-left: 0.5rem; }
+    .d-offer-price-var { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #666; text-transform: uppercase; letter-spacing: 0.04em; }
+    .d-offer-cta {
+      font-family: 'Space Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.55rem 1rem; border: 1px solid rgba(255,255,255,.14);
+      color: #888; text-decoration: none; align-self: flex-start;
+      transition: color .18s, border-color .18s;
+    }
+    .d-offer-cta:hover { color: #fff; border-color: rgba(255,255,255,.35); }
+    .d-members-note {
+      font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #555;
+      letter-spacing: 0.04em; margin: -0.3rem 0 1rem;
+    }
 
     /* ── Estado vacío ── */
-    .empty-state {
-      text-align: center; padding: 3.2rem 1rem; color: #666;
-      font-size: 0.85rem; line-height: 1.8;
-      border: 1px dashed rgba(255,255,255,0.08);
+    .d-empty {
+      padding: 3rem 1rem; text-align: center;
+      color: #555; font-size: 0.84rem; line-height: 1.8;
+      border: 1px dashed rgba(255,255,255,.07);
     }
-    .empty-state a { color: #999; text-decoration: underline; text-underline-offset: 3px; }
-    .empty-state a:hover { color: #ddd; }
+    .d-empty a { color: #888; text-decoration: underline; text-underline-offset: 3px; }
 
     /* ── Loading ── */
-    .dash-loading { text-align: center; padding: 7rem 2rem; color: #555; }
-    .dash-loading span { display: block; font-size: 0.85rem; margin-top: 1rem; letter-spacing: 0.05em; }
+    .d-loading { text-align: center; padding: 8rem 2rem; color: #555; }
+    .d-loading span { display: block; font-size: 0.82rem; margin-top: 1rem; font-family: 'Space Mono', monospace; letter-spacing: 0.05em; }
 
-    /* ── Logout nav ── */
+    /* ── Nav logout ── */
     #btnNavLogout {
-      font-size: 0.75rem; letter-spacing: 0.07em; text-transform: uppercase;
-      color: #666; background: none;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 6px; padding: 0.4rem 1rem; cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
+      font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;
+      color: #666; background: none; border: 1px solid rgba(255,255,255,.1);
+      padding: 0.4rem 0.9rem; cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+      transition: color .18s, border-color .18s;
     }
-    #btnNavLogout:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+    #btnNavLogout:hover { color: #fff; border-color: rgba(255,255,255,.3); }
+
+    /* ── Warranty pill ── */
+    .d-pill {
+      font-family: 'Space Mono', monospace; font-size: 0.62rem;
+      color: #666; border: 1px solid rgba(255,255,255,.07);
+      padding: 0.15rem 0.55rem; letter-spacing: 0.04em;
+    }
 
     /* ── Responsive ── */
-    @media (max-width: 640px) {
-      .dash-header { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
-      .dash-quick-actions { width: 100%; }
-      .dash-quick-btn { flex: 1; justify-content: center; }
-      .dash-stats { grid-template-columns: repeat(2, 1fr); }
-      .service-table thead { display: none; }
-      .service-table td { display: block; padding: 0.35rem 0.5rem; border: none; }
-      .service-table tr { display: block; border-top: 1px solid rgba(255,255,255,0.06); padding: 0.8rem 0.3rem; }
+    @media (max-width: 680px) {
+      .d-stats { grid-template-columns: repeat(2, 1fr); }
+      .d-head { flex-direction: column; }
+      .d-table thead { display: none; }
+      .d-table td { display: block; border: none; padding: 0.3rem 0.5rem; }
+      .d-table tr { display: block; border-top: 1px solid rgba(255,255,255,.06); padding: 0.7rem 0.3rem; }
     }
   </style>
 </head>
@@ -371,59 +271,17 @@
   </ul>
 </nav>
 
-<!-- ─── CONTENIDO (se rellena con JS) ─── -->
-<div id="dashContent" class="dash-loading">
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+<div id="dashContent" class="d-loading">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
   <span>Cargando tu cuenta…</span>
 </div>
 
-<!-- ─── FOOTER ─── -->
-<footer>
-  <div class="footer-brand">
-    <a href="index.html" class="nav-logo">
-      <span class="mark"><svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g><path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/><path d="M8 50 L34 36 L72 56 L46 70 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
-      Elemsoft
-    </a>
-    <p>Mantenimiento, ensamble y soporte técnico de computadoras en Guatemala.</p>
-  </div>
-  <div class="footer-col">
-    <h4>Servicios</h4>
-    <ul>
-      <li><a href="servicios.html">Mantenimiento preventivo</a></li>
-      <li><a href="servicios.html">Mantenimiento correctivo</a></li>
-      <li><a href="ensamble.html">Ensamble de PC</a></li>
-    </ul>
-  </div>
-  <div class="footer-col">
-    <h4>Empresa</h4>
-    <ul>
-      <li><a href="nosotros.html">Nosotros</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
-      <li><a href="dashboard.html">Mi cuenta</a></li>
-    </ul>
-  </div>
-  <div class="footer-col">
-    <h4>Social</h4>
-    <ul>
-      <li><a href="#">Facebook</a></li>
-      <li><a href="https://www.instagram.com/_elemsoft">Instagram</a></li>
-      <li><a href="#">WhatsApp</a></li>
-    </ul>
-  </div>
-</footer>
-<div class="footer-bottom">
-  <span>© 2026 Elemsoft · Todos los derechos reservados</span>
-</div>
-
 <script src="main.js"></script>
-
-<!-- Firebase SDKs: Auth + Firestore -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script>
-  // ── Inicialización ───────────────────────────────────────────────────────
   const firebaseConfig = {
     apiKey:            "AIzaSyAYUz0m5R_ncBFCMFXCOzcArEkQnbVYWGo",
     authDomain:        "elemsoftgt.firebaseapp.com",
@@ -437,385 +295,241 @@
   const auth = firebase.auth();
   const db   = firebase.firestore();
 
-  // ── Ofertas exclusivas (fijas, las editas aquí en el código) ─────────────
   const OFERTAS = [
-    {
-      tag: 'Solo miembros',
-      title: 'Mantenimiento preventivo completo',
-      desc: 'Limpieza interna, cambio de pasta térmica y revisión general. Cita en 24 horas.',
-      priceNew: 'Q180', priceOld: 'Q220', cta: 'Agendar cita', href: 'contacto.html'
-    },
-    {
-      tag: 'Oferta del mes',
-      title: 'Una segunda vida para tu PC',
-      desc: 'Upgrade de RAM + SSD con instalación incluida. Compatibilidad verificada con tu equipo antes de comprar.',
-      priceNew: null, priceOld: null, cta: 'Cotizar', href: 'contacto.html'
-    },
-    {
-      tag: 'Exclusivo',
-      title: 'Revisión y limpieza express',
-      desc: 'Servicio en el día. Limpieza de polvo, puertos y ventiladores. Sin cita previa.',
-      priceNew: 'Q75', priceOld: 'Q100', cta: 'Ver detalles', href: 'servicios.html'
-    },
+    { tag:'Solo miembros',    title:'Mantenimiento preventivo completo', desc:'Limpieza interna, cambio de pasta térmica y revisión general.',        priceNew:'Q180', priceOld:'Q220', href:'contacto.html' },
+    { tag:'Oferta del mes',   title:'Una segunda vida para tu PC',       desc:'Upgrade de RAM + SSD con instalación incluida. Compatibilidad verificada.', priceNew:null,   priceOld:null,   href:'contacto.html' },
+    { tag:'Exclusivo',        title:'Revisión y limpieza express',        desc:'Servicio en el día. Sin cita previa.',                               priceNew:'Q75',  priceOld:'Q100', href:'servicios.html' },
   ];
 
-  // ── Protección de ruta ───────────────────────────────────────────────────
   auth.onAuthStateChanged(async user => {
     if (!user) { window.location.href = 'login.html'; return; }
-    await cargarDashboard(user);
+    await cargar(user);
   });
 
-  // ── Cerrar sesión ────────────────────────────────────────────────────────
-  function logOut() {
-    auth.signOut().then(() => window.location.href = 'login.html');
+  function logOut() { auth.signOut().then(() => window.location.href = 'login.html'); }
+
+  function fechaVenc90() {
+    const d = new Date(); d.setDate(d.getDate() + 90);
+    return d.toLocaleDateString('es-GT', { day:'2-digit', month:'short', year:'numeric' }).replace('.','');
   }
 
-  // ── Helper: fecha de vencimiento a 90 días desde hoy, formato "DD Mon AAAA" ──
-  function fechaVencimiento90Dias() {
-    const d = new Date();
-    d.setDate(d.getDate() + 90);
-    return d.toLocaleDateString('es-GT', { day: '2-digit', month: 'short', year: 'numeric' })
-      .replace('.', '');
-  }
-
-  // ── Helper: formatea una fecha ISO (yyyy-mm-dd) a "DD Mon" en español ──
-  function formatearFechaISO(iso) {
+  function fmtISO(iso) {
     if (!iso) return '—';
-    const [y, m, d] = iso.split('-').map(Number);
+    const [y,m,d] = iso.split('-').map(Number);
     if (!y || !m || !d) return iso;
-    const date = new Date(y, m - 1, d);
-    return date.toLocaleDateString('es-GT', { day: '2-digit', month: 'short' }).replace('.', '');
+    return new Date(y,m-1,d).toLocaleDateString('es-GT', { day:'2-digit', month:'short' }).replace('.','');
   }
 
-  // ── Calcula la próxima cita real del cliente: prioriza citas rápidas
-  // pendientes/confirmadas (fecha exacta elegida por el cliente), y si no
-  // tiene ninguna, cae de vuelta al próximo servicio agendado por un admin ──
-  function calcularProximaCita(citas, servicios) {
-    const activas = citas
-      .filter(c => c.estado === 'pendiente' || c.estado === 'confirmada')
-      .slice()
-      .sort((a, b) => (a.fechaPreferida || '').localeCompare(b.fechaPreferida || ''));
-
-    if (activas.length > 0) {
-      const c = activas[0];
-      return { fecha: formatearFechaISO(c.fechaPreferida), label: c.servicio || 'Cita agendada' };
-    }
-    const nextSvc = servicios.find(s => s.estado === 'sched');
-    if (nextSvc) return { fecha: nextSvc.fecha, label: nextSvc.servicio || 'Servicio agendado' };
+  function proximaCita(citas, servicios) {
+    const act = citas.filter(c => c.estado==='pendiente' || c.estado==='confirmada')
+      .sort((a,b)=>(a.fechaPreferida||'').localeCompare(b.fechaPreferida||''));
+    if (act.length) return { fecha: fmtISO(act[0].fechaPreferida), label: act[0].servicio||'Cita agendada' };
+    const s = servicios.find(s=>s.estado==='sched');
+    if (s) return { fecha: s.fecha||'—', label: s.servicio||'Servicio agendado' };
     return null;
   }
 
-  // ── Cargar todo el dashboard desde Firestore ─────────────────────────────
-  async function cargarDashboard(user) {
+  async function cargar(user) {
     try {
-      const userRef = db.collection('usuarios').doc(user.uid);
-
-      // Leer el documento ANTES de escribir, para saber si es la primera vez
-      const userSnap = await userRef.get();
-      const yaTieneCuponBienvenida = userSnap.exists && userSnap.data().cuponBienvenidaCreado === true;
-
-      await userRef.set({
-        nombre: user.displayName || '',
-        email:  user.email,
-        uid:    user.uid,
-      }, { merge: true });
-
-      // ── Cupón de bienvenida: 25% en mantenimiento completo ──────────────
-      // Se otorga una sola vez por usuario, controlado por el flag
-      // 'cuponBienvenidaCreado' en su documento (así no se vuelve a crear
-      // aunque el usuario use o borre el cupón después).
-      if (!yaTieneCuponBienvenida) {
-        const codigoCupon = 'BIENVENIDO25';
-        await userRef.collection('cupones').add({
-          descuento:   '25%',
-          descripcion: 'En tu próximo mantenimiento completo',
-          codigo:      codigoCupon,
-          vencimiento: fechaVencimiento90Dias(),
-          usado:       false,
-        });
-        await userRef.set({ cuponBienvenidaCreado: true }, { merge: true });
+      const uRef = db.collection('usuarios').doc(user.uid);
+      const uSnap = await uRef.get();
+      const tieneBonus = uSnap.exists && uSnap.data().cuponBienvenidaCreado === true;
+      await uRef.set({ nombre: user.displayName||'', email: user.email, uid: user.uid }, { merge:true });
+      if (!tieneBonus) {
+        await uRef.collection('cupones').add({ descuento:'25%', descripcion:'En tu próximo mantenimiento completo', codigo:'BIENVENIDO25', vencimiento: fechaVenc90(), usado:false });
+        await uRef.set({ cuponBienvenidaCreado:true }, { merge:true });
       }
-
-      const [serviciosSnap, cuponesSnap, citasSnap] = await Promise.all([
-        userRef.collection('servicios').get(),
-        userRef.collection('cupones').get(),
-        db.collection('citas_rapidas').where('uid', '==', user.uid).get(),
+      const [sSnap, cSnap, citSnap] = await Promise.all([
+        uRef.collection('servicios').get(),
+        uRef.collection('cupones').get(),
+        db.collection('citas_rapidas').where('uid','==',user.uid).get(),
       ]);
-
-      const servicios = serviciosSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-      const cupones   = cuponesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-      const citas     = citasSnap.docs.map(d => ({ id: d.id, ...d.data() }))
-        .sort((a, b) => {
-          const ta = a.creadoEn && a.creadoEn.toMillis ? a.creadoEn.toMillis() : 0;
-          const tb = b.creadoEn && b.creadoEn.toMillis ? b.creadoEn.toMillis() : 0;
-          return tb - ta; // más reciente primero
+      const servicios = sSnap.docs.map(d=>({id:d.id,...d.data()}));
+      const cupones   = cSnap.docs.map(d=>({id:d.id,...d.data()}));
+      const citas     = citSnap.docs.map(d=>({id:d.id,...d.data()}))
+        .sort((a,b)=>{
+          const ta=a.creadoEn?.toMillis?.()||0, tb=b.creadoEn?.toMillis?.()||0;
+          return tb-ta;
         });
-
-      renderDashboard(user, servicios, cupones, citas);
-    } catch (err) {
+      render(user, servicios, cupones, citas);
+    } catch(err) {
       document.getElementById('dashContent').innerHTML = `
-        <div style="max-width:600px;margin:4rem auto;padding:2rem;background:rgba(220,50,50,0.08);border:1px solid rgba(220,50,50,0.2);border-radius:10px;">
-          <p style="color:#ff6b6b;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Error al cargar datos</p>
-          <p style="color:#ccc;font-size:0.9rem;margin-bottom:0.5rem;">${err.message}</p>
-          <p style="color:#666;font-size:0.8rem;">Código: <code style="color:#aaa;">${err.code || 'desconocido'}</code></p>
-          <p style="color:#666;font-size:0.8rem;margin-top:1rem;">Verifica que Firestore esté activado en Firebase y que las reglas permitan lectura.</p>
-        </div>
-      `;
+        <div style="max-width:560px;margin:5rem auto;padding:1.8rem 2rem;border:1px solid rgba(220,50,50,.2);background:rgba(220,50,50,.06);">
+          <p style="color:#ff6b6b;font-size:0.8rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;">Error al cargar</p>
+          <p style="color:#ccc;font-size:.88rem;margin-bottom:.3rem;">${err.message}</p>
+          <p style="color:#666;font-size:.78rem;">Código: <code style="color:#aaa;">${err.code||'—'}</code></p>
+        </div>`;
     }
   }
 
-  // ── Render principal ─────────────────────────────────────────────────────
-  function renderDashboard(user, servicios, cupones, citas) {
-    const nombre        = user.displayName ? user.displayName.split(' ')[0] : 'Cliente';
-    const inicial       = nombre.charAt(0).toUpperCase();
-    const memberDate    = user.metadata.creationTime
-      ? new Date(user.metadata.creationTime).toLocaleDateString('es-GT', { month: 'short', year: 'numeric' })
+  function render(user, servicios, cupones, citas) {
+    const nombre      = user.displayName ? user.displayName.split(' ')[0] : 'Cliente';
+    const email       = user.email;
+    const miembro     = user.metadata.creationTime
+      ? new Date(user.metadata.creationTime).toLocaleDateString('es-GT',{month:'short',year:'numeric'}).replace('.','')
       : '—';
-    const activeCoupons = cupones.filter(c => c.usado !== true).length;
-    const doneSvcs      = servicios.filter(s => s.estado === 'done').length;
-    const proximaCita   = calcularProximaCita(citas, servicios);
+    const doneSvcs    = servicios.filter(s=>s.estado==='done').length;
+    const actCoupons  = cupones.filter(c=>c.usado!==true).length;
+    const proxCita    = proximaCita(citas, servicios);
 
-    document.getElementById('dashContent').innerHTML = `
-      <div class="dash-wrapper">
+    document.getElementById('dashContent').innerHTML = `<div class="d">
 
-        <!-- Header con avatar y acciones rápidas -->
-        <div class="dash-header">
-          <div class="dash-header-left">
-            <div class="dash-avatar">${inicial}</div>
-            <div class="dash-header-text">
-              <p class="section-eyebrow">Panel de cliente</p>
-              <h1>Hola, ${nombre}</h1>
-              <span class="dash-email">${user.email}</span>
-            </div>
-          </div>
-          <div class="dash-quick-actions">
-            <a href="login.html" class="dash-quick-btn primary">
-              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              Agendar cita
-            </a>
-            <a href="contacto.html" class="dash-quick-btn">
-              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              Cotizar
-            </a>
-            <button class="dash-quick-btn" onclick="logOut()">
-              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Salir
-            </button>
-          </div>
+      <!-- Header -->
+      <div class="d-head">
+        <div>
+          <h1 class="d-name">${nombre}</h1>
+          <span class="d-email">${email}</span>
         </div>
-
-        <!-- Stats con iconos y colores de acento -->
-        <div class="dash-stats">
-          <div class="stat-card accent-blue">
-            <div class="stat-card-top">
-              <span class="stat-label">Servicios realizados</span>
-              <span class="stat-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span>
-            </div>
-            <div class="stat-value">${doneSvcs}</div>
-            <div class="stat-sub">en total</div>
-          </div>
-          <div class="stat-card accent-green">
-            <div class="stat-card-top">
-              <span class="stat-label">Cupones activos</span>
-              <span class="stat-icon"><svg viewBox="0 0 24 24"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
-            </div>
-            <div class="stat-value">${activeCoupons}</div>
-            <div class="stat-sub">disponibles</div>
-          </div>
-          <div class="stat-card accent-yellow">
-            <div class="stat-card-top">
-              <span class="stat-label">Próxima cita</span>
-              <span class="stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-            </div>
-            <div class="stat-value stat-value--sm">${proximaCita ? proximaCita.fecha : 'Sin citas'}</div>
-            <div class="stat-sub">${proximaCita ? proximaCita.label : 'Agenda la tuya'}</div>
-          </div>
-          <div class="stat-card accent-white">
-            <div class="stat-card-top">
-              <span class="stat-label">Miembro desde</span>
-              <span class="stat-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-            </div>
-            <div class="stat-value stat-value--sm">${memberDate}</div>
-            <div class="stat-sub">cuenta activa</div>
-          </div>
+        <div class="d-head-actions">
+          <a href="login.html" class="d-btn accent">Agendar cita →</a>
+          <a href="contacto.html" class="d-btn">Cotizar</a>
+          <button class="d-btn" onclick="logOut()">Salir</button>
         </div>
-
-        <!-- Mis citas (agendadas desde login con sesión iniciada) -->
-        <div class="dash-section">
-          <div class="dash-section-header">
-            <div class="dash-section-title">
-              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <h2>Mis citas</h2>
-            </div>
-            <a href="login.html" class="dash-section-link">Agendar nueva <span>→</span></a>
-          </div>
-          <div class="dash-divider"></div>
-          ${renderCitas(citas)}
-        </div>
-
-        <!-- Historial -->
-        <div class="dash-section">
-          <div class="dash-section-header">
-            <div class="dash-section-title">
-              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
-              <h2>Historial de servicios</h2>
-            </div>
-            <a href="contacto.html" class="dash-section-link">Agendar nuevo <span>→</span></a>
-          </div>
-          <div class="dash-divider"></div>
-          ${renderServicios(servicios)}
-        </div>
-
-        <!-- Cupones -->
-        <div class="dash-section">
-          <div class="dash-section-header">
-            <div class="dash-section-title">
-              <svg viewBox="0 0 24 24"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-              <h2>Mis cupones</h2>
-            </div>
-            <span class="dash-section-link">Clic en el código para copiarlo</span>
-          </div>
-          <div class="dash-divider"></div>
-          ${renderCupones(cupones)}
-        </div>
-
-        <!-- Ofertas -->
-        <div class="dash-section">
-          <div class="dash-section-header">
-            <div class="dash-section-title">
-              <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-              <h2>Ofertas exclusivas para ti</h2>
-            </div>
-            <a href="servicios.html" class="dash-section-link">Ver servicios <span>→</span></a>
-          </div>
-          <p class="offers-members-note">Disponibles únicamente para miembros con cuenta Elemsoft.</p>
-          <div class="dash-divider"></div>
-          <div class="offers-grid">
-            ${OFERTAS.map(o => `
-              <div class="offer-card">
-                <span class="offer-members-badge">
-                  <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-                  Solo miembros
-                </span>
-                <span class="offer-tag">${o.tag}</span>
-                <h3>${o.title}</h3>
-                <p>${o.desc}</p>
-                ${o.priceNew ? `
-                <div class="offer-price">
-                  <span class="price-new">${o.priceNew}</span>
-                  <span class="price-old">${o.priceOld}</span>
-                </div>` : `
-                <div class="offer-price">
-                  <span class="price-varies">Precio según diagnóstico</span>
-                </div>`}
-                <a href="${o.href}" class="offer-cta">${o.cta} →</a>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
       </div>
-    `;
-  }
 
-  function renderCitas(citas) {
-    if (citas.length === 0) {
-      return `<div class="empty-state">
-        Aún no has agendado ninguna cita rápida.<br>
-        <a href="login.html">Agenda una desde tu cuenta.</a>
-      </div>`;
-    }
-    const statusLabel = { pendiente: 'Pendiente', confirmada: 'Confirmada', completada: 'Completada', cancelada: 'Cancelada' };
-    const statusClass = { pendiente: 'status-pending', confirmada: 'status-sched', completada: 'status-done', cancelada: 'status-pending' };
-    return `<table class="service-table">
-      <thead><tr>
-        <th>Fecha preferida</th><th>Servicio</th><th>Teléfono</th><th>Estado</th>
-      </tr></thead>
-      <tbody>
-        ${citas.map(c => `
-          <tr>
-            <td class="td-date">${c.fechaPreferida || '—'}</td>
-            <td class="td-main">${c.servicio || '—'}</td>
-            <td class="td-tech">${c.telefono || '—'}</td>
-            <td><span class="status-badge ${statusClass[c.estado] || 'status-pending'}">${statusLabel[c.estado] || 'Pendiente'}</span></td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>`;
-  }
-
-  function renderServicios(servicios) {
-    if (servicios.length === 0) {
-      return `<div class="empty-state">
-        Aún no tienes servicios registrados.<br>
-        <a href="contacto.html">¡Agenda tu primera cita con nosotros!</a>
-      </div>`;
-    }
-    const statusLabel = { done: 'Completado', pending: 'En proceso', sched: 'Agendado' };
-    const statusClass = { done: 'status-done', pending: 'status-pending', sched: 'status-sched' };
-    return `<table class="service-table">
-      <thead><tr>
-        <th>Fecha</th><th>Servicio</th><th>Técnico</th><th>Estado</th><th>Garantía</th>
-      </tr></thead>
-      <tbody>
-        ${servicios.map(s => `
-          <tr>
-            <td class="td-date">${s.fecha || '—'}</td>
-            <td class="td-main">${s.servicio || '—'}</td>
-            <td class="td-tech">${s.tecnico || '—'}</td>
-            <td><span class="status-badge ${statusClass[s.estado] || ''}">${statusLabel[s.estado] || s.estado || '—'}</span></td>
-            <td><span class="warranty-pill">${s.garantia || '—'}</span></td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>`;
-  }
-
-  function renderCupones(cupones) {
-    if (cupones.length === 0) {
-      return `<div class="empty-state">
-        Aún no tienes cupones disponibles.<br>
-        ¡Sigue usando nuestros servicios para ganar beneficios exclusivos!
-      </div>`;
-    }
-    return `<div class="coupons-grid">
-      ${cupones.map(c => `
-        <div class="coupon-card ${c.usado === true ? 'coupon-used' : ''}">
-          ${c.usado === true ? '<span class="coupon-used-label">Usado</span>' : ''}
-          <div class="coupon-discount">${c.descuento || '—'}</div>
-          <div class="coupon-desc">${c.descripcion || ''}</div>
-          <div class="coupon-divider"></div>
-          <span class="coupon-code" onclick="copiarCodigo(this,'${c.codigo}')">${c.codigo || '—'}</span>
-          <span class="coupon-copy-hint">Clic para copiar</span>
-          <div class="coupon-expiry">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Válido hasta: ${c.vencimiento || '—'}
-          </div>
+      <!-- Stats -->
+      <div class="d-stats">
+        <div class="d-stat">
+          <div class="d-stat-n">${doneSvcs}</div>
+          <div class="d-stat-l">Servicios</div>
+          <div class="d-stat-sub">realizados</div>
         </div>
-      `).join('')}
+        <div class="d-stat">
+          <div class="d-stat-n">${actCoupons}</div>
+          <div class="d-stat-l">Cupones</div>
+          <div class="d-stat-sub">disponibles</div>
+        </div>
+        <div class="d-stat">
+          <div class="d-stat-n sm">${proxCita ? proxCita.fecha : '—'}</div>
+          <div class="d-stat-l">Próxima cita</div>
+          <div class="d-stat-sub">${proxCita ? proxCita.label : 'Sin citas'}</div>
+        </div>
+        <div class="d-stat">
+          <div class="d-stat-n sm">${miembro}</div>
+          <div class="d-stat-l">Miembro desde</div>
+          <div class="d-stat-sub">cuenta activa</div>
+        </div>
+      </div>
+
+      <!-- Mis citas -->
+      <div class="d-sec">
+        <div class="d-sec-head">
+          <h2 class="d-sec-title">Mis citas</h2>
+          <a href="login.html" class="d-sec-link">Agendar nueva →</a>
+        </div>
+        <div class="d-divider"></div>
+        ${renderCitas(citas)}
+      </div>
+
+      <!-- Historial -->
+      <div class="d-sec">
+        <div class="d-sec-head">
+          <h2 class="d-sec-title">Historial de servicios</h2>
+          <a href="contacto.html" class="d-sec-link">Agendar →</a>
+        </div>
+        <div class="d-divider"></div>
+        ${renderServicios(servicios)}
+      </div>
+
+      <!-- Cupones -->
+      <div class="d-sec">
+        <div class="d-sec-head">
+          <h2 class="d-sec-title">Mis cupones</h2>
+          <span class="d-sec-link">Clic en el código para copiarlo</span>
+        </div>
+        <div class="d-divider"></div>
+        ${renderCupones(cupones)}
+      </div>
+
+      <!-- Ofertas -->
+      <div class="d-sec">
+        <div class="d-sec-head">
+          <h2 class="d-sec-title">Ofertas exclusivas para ti</h2>
+          <a href="servicios.html" class="d-sec-link">Ver servicios →</a>
+        </div>
+        <p class="d-members-note">Solo para miembros con cuenta Elemsoft.</p>
+        <div class="d-divider"></div>
+        <div class="d-offers">
+          ${OFERTAS.map(o=>`
+            <div class="d-offer">
+              <span class="d-offer-badge">★ Solo miembros</span>
+              <span class="d-offer-tag">${o.tag}</span>
+              <h3>${o.title}</h3>
+              <p>${o.desc}</p>
+              <div class="d-offer-price">
+                ${o.priceNew
+                  ? `<span class="d-offer-price-new">${o.priceNew}</span><span class="d-offer-price-old">${o.priceOld}</span>`
+                  : `<span class="d-offer-price-var">Precio según diagnóstico</span>`}
+              </div>
+              <a href="${o.href}" class="d-offer-cta">Cotizar →</a>
+            </div>`).join('')}
+        </div>
+      </div>
+
     </div>`;
   }
 
-  // Copia el código con fallback por si navigator.clipboard no está disponible
-  function copiarCodigo(el, codigo) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(codigo).then(() => flashCopy(el));
-    } else {
-      // Fallback para HTTP / browsers sin clipboard API
-      const tmp = document.createElement('textarea');
-      tmp.value = codigo;
-      tmp.style.position = 'fixed'; tmp.style.opacity = '0';
-      document.body.appendChild(tmp);
-      tmp.select();
-      document.execCommand('copy');
-      document.body.removeChild(tmp);
-      flashCopy(el);
-    }
+  /* ── Estado badge ── */
+  function badge(estado) {
+    const map = { pendiente:'badge-pending', confirmada:'badge-sched', done:'badge-done', sched:'badge-sched', pending:'badge-pending', completada:'badge-done', cancelada:'badge-cancel' };
+    const txt = { pendiente:'Pendiente', confirmada:'Confirmada', done:'Completado', sched:'Agendado', pending:'En proceso', completada:'Completada', cancelada:'Cancelada' };
+    const cls = map[estado] || 'badge-pending';
+    return `<span class="badge ${cls}">${txt[estado] || estado || '—'}</span>`;
   }
-  function flashCopy(el) {
-    const orig = el.textContent;
-    el.textContent = '¡Copiado!';
-    setTimeout(() => el.textContent = orig, 1600);
+
+  /* ── Citas ── */
+  function renderCitas(citas) {
+    if (!citas.length) return `<div class="d-empty">Aún no tienes citas.<br><a href="login.html">Agenda una desde tu cuenta.</a></div>`;
+    return `<table class="d-table">
+      <thead><tr><th>Fecha</th><th>Servicio</th><th>Teléfono</th><th>Cupón</th><th>Estado</th></tr></thead>
+      <tbody>${citas.map(c=>`<tr>
+        <td class="t-mono">${fmtISO(c.fechaPreferida)}</td>
+        <td class="t-main">${c.servicio||'—'}</td>
+        <td class="t-mono">${c.telefono||'—'}</td>
+        <td class="t-mono">${c.cupon||'—'}</td>
+        <td>${badge(c.estado)}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  /* ── Servicios ── */
+  function renderServicios(servicios) {
+    if (!servicios.length) return `<div class="d-empty">Aún no tienes servicios registrados.<br><a href="contacto.html">Agenda tu primera cita.</a></div>`;
+    return `<table class="d-table">
+      <thead><tr><th>Fecha</th><th>Servicio</th><th>Técnico</th><th>Estado</th><th>Garantía</th></tr></thead>
+      <tbody>${servicios.map(s=>`<tr>
+        <td class="t-mono">${s.fecha||'—'}</td>
+        <td class="t-main">${s.servicio||'—'}</td>
+        <td class="t-mono">${s.tecnico||'—'}</td>
+        <td>${badge(s.estado)}</td>
+        <td><span class="d-pill">${s.garantia||'—'}</span></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  /* ── Cupones ── */
+  function renderCupones(cupones) {
+    if (!cupones.length) return `<div class="d-empty">Aún no tienes cupones.<br>¡Sigue usando nuestros servicios para ganar beneficios!</div>`;
+    return `<div class="d-coupons">${cupones.map(c=>`
+      <div class="d-coupon ${c.usado===true?'d-coupon--used':''}">
+        ${c.usado===true?'<span class="d-coupon-used-tag">Usado</span>':''}
+        <div class="d-coupon-pct">${c.descuento||'—'}</div>
+        <div class="d-coupon-desc">${c.descripcion||''}</div>
+        <div class="d-coupon-sep"></div>
+        <span class="d-coupon-code" onclick="copiar(this,'${c.codigo||''}')">${c.codigo||'—'}</span>
+        <span class="d-coupon-hint">Clic para copiar</span>
+        <div class="d-coupon-exp">Válido hasta: ${c.vencimiento||'—'}</div>
+      </div>`).join('')}</div>`;
+  }
+
+  function copiar(el, codigo) {
+    const copy = t => { el.textContent=t; setTimeout(()=>el.textContent=codigo, 1600); };
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(codigo).then(()=>copy('¡Copiado!'));
+    else {
+      const t=document.createElement('textarea'); t.value=codigo; t.style.cssText='position:fixed;opacity:0';
+      document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t);
+      copy('¡Copiado!');
+    }
   }
 </script>
 </body>

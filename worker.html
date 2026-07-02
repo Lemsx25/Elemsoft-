@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de trabajo – Elemsoft</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    :root {
+      --bg:      #080808;
+      --surface: #0f0f0f;
+      --card:    #141414;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --text:    #f0f0f0;
+      --muted:   #888;
+      --dim:     #555;
+      --font:    'Space Grotesk', sans-serif;
+      --mono:    'Space Mono', monospace;
+      --sidebar: 220px;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ══════════════════════════════
+       SIDEBAR
+    ══════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar);
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 1.4rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .sidebar-logo svg { width: 22px; height: 16px; }
+    .sidebar-logo span { font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; }
+
+    .sidebar-section-label {
+      font-family: var(--mono);
+      font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--dim); padding: 1.1rem 1.2rem 0.5rem;
+    }
+
+    .sidebar-nav { display: flex; flex-direction: column; flex: 1; overflow-y: auto; }
+
+    .s-link {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.65rem 1.2rem;
+      color: var(--muted); text-decoration: none;
+      font-size: 0.88rem; cursor: pointer; background: none; border: none; width: 100%;
+      text-align: left;
+      transition: color .15s, background .15s;
+      position: relative;
+    }
+    .s-link svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .s-link:hover { color: #ccc; background: rgba(255,255,255,0.03); }
+    .s-link.active { color: var(--text); background: rgba(255,255,255,0.06); }
+    .s-link.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 2px; background: rgba(255,255,255,0.5); }
+
+    .s-badge {
+      margin-left: auto;
+      font-family: var(--mono); font-size: 0.6rem;
+      background: rgba(255,255,255,0.08); color: var(--muted);
+      padding: 0.1rem 0.4rem; letter-spacing: 0.04em;
+    }
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border);
+      padding: 1rem 1.2rem;
+    }
+    .worker-info { font-size: 0.78rem; color: var(--dim); margin-bottom: 0.6rem; }
+    .worker-info strong { display: block; color: var(--muted); font-weight: 500; margin-bottom: 0.1rem; }
+    .btn-logout {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--dim);
+      background: none; border: 1px solid var(--border);
+      padding: 0.4rem 0.8rem; cursor: pointer; width: 100%;
+      transition: color .15s, border-color .15s;
+    }
+    .btn-logout:hover { color: #fff; border-color: var(--border2); }
+
+    /* ══════════════════════════════
+       MAIN
+    ══════════════════════════════ */
+    .main {
+      margin-left: var(--sidebar);
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column;
+    }
+
+    .topbar {
+      height: 52px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.8rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+    .topbar-right { display: flex; gap: 0.6rem; align-items: center; }
+    .tb-btn {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase;
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      padding: 0.4rem 0.85rem; cursor: pointer; text-decoration: none;
+      transition: color .15s, border-color .15s;
+    }
+    .tb-btn:hover { color: #fff; border-color: var(--border2); }
+    .tb-btn.primary { background: rgba(255,255,255,0.92); color: #0a0a0a; border-color: transparent; }
+    .tb-btn.primary:hover { background: #fff; }
+
+    .content { flex: 1; padding: 2rem 1.8rem 4rem; overflow-y: auto; }
+
+    /* Loading / Auth */
+    .w-loading {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 60vh; gap: 1rem; color: var(--dim);
+      font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em;
+    }
+
+    /* ══════════════════════════════
+       COMPONENTES COMUNES
+    ══════════════════════════════ */
+    .section-title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; letter-spacing: -0.3px; }
+    .section-sub   { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.6rem; }
+
+    /* Tabla */
+    .w-table { width: 100%; border-collapse: collapse; }
+    .w-table th {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); padding: 0 1rem 0.7rem; text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .w-table td {
+      padding: 0.9rem 1rem; font-size: 0.87rem; color: #ccc;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .w-table tbody tr { transition: background .12s; cursor: pointer; }
+    .w-table tbody tr:hover td { background: rgba(255,255,255,0.025); }
+    .w-table .t-main  { color: var(--text); font-weight: 500; }
+    .w-table .t-mono  { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+    .w-table .t-dim   { color: var(--dim); font-size: 0.82rem; }
+
+    /* Badge de estado */
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+    }
+    .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .b-pending  { color: #ffd04d; border: 1px solid rgba(255,200,0,.22); } .b-pending::before  { background: #ffd04d; }
+    .b-sched    { color: #8aaeff; border: 1px solid rgba(100,150,255,.22); } .b-sched::before   { background: #8aaeff; }
+    .b-done     { color: #5ddf8e; border: 1px solid rgba(50,200,100,.22);  } .b-done::before    { background: #5ddf8e; }
+    .b-cancel   { color: #888;   border: 1px solid rgba(255,255,255,.1);   } .b-cancel::before  { background: #666; opacity:.5; }
+    .b-active   { color: #5ddf8e; border: 1px solid rgba(50,200,100,.22);  } .b-active::before  { background: #5ddf8e; }
+
+    /* Search */
+    .w-search {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); font-family: var(--font); font-size: 0.88rem;
+      padding: 0.65rem 1rem; outline: none; width: 100%; max-width: 320px;
+      transition: border-color .15s;
+    }
+    .w-search:focus { border-color: var(--border2); }
+    .w-search::placeholder { color: var(--dim); }
+
+    /* Input / select dentro de paneles */
+    .w-input, .w-select, .w-textarea {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text); font-family: var(--font); font-size: 0.86rem;
+      padding: 0.65rem 0.9rem; outline: none; width: 100%;
+      transition: border-color .15s;
+    }
+    .w-input:focus, .w-select:focus, .w-textarea:focus { border-color: var(--border2); }
+    .w-input::placeholder, .w-textarea::placeholder { color: var(--dim); }
+    .w-textarea { resize: vertical; min-height: 90px; }
+    .w-select option { background: #111; }
+    .w-input[type="date"] { color-scheme: dark; }
+
+    /* Form row */
+    .w-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+    .w-form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .w-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+
+    /* Botón */
+    .w-btn {
+      font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.6rem 1.1rem; border: 1px solid var(--border); color: var(--muted);
+      background: none; cursor: pointer; transition: color .15s, border-color .15s, background .15s;
+    }
+    .w-btn:hover { color: #fff; border-color: var(--border2); }
+    .w-btn.w-btn-primary { background: rgba(255,255,255,.92); color: #0a0a0a; border-color: transparent; }
+    .w-btn.w-btn-primary:hover { background: #fff; }
+    .w-btn:disabled { opacity: .4; pointer-events: none; }
+
+    /* Card panel */
+    .w-card {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 1.4rem 1.6rem; margin-bottom: 1.2rem;
+    }
+    .w-card-title {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 1rem;
+    }
+
+    /* Toast */
+    .w-toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
+      background: var(--surface); border: 1px solid var(--border2);
+      padding: 0.8rem 1.2rem; font-size: 0.84rem; color: var(--text);
+      box-shadow: 0 8px 24px rgba(0,0,0,.4);
+      animation: toastIn .2s ease;
+    }
+    @keyframes toastIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .w-toast.success { border-color: rgba(50,200,100,.3); color: #5ddf8e; }
+    .w-toast.error   { border-color: rgba(220,50,50,.3); color: #ff8080; }
+
+    /* Empty */
+    .w-empty { padding: 3rem 1rem; text-align: center; color: var(--dim); font-size: 0.84rem; border: 1px dashed var(--border); }
+
+    /* ══════════════════════════════
+       PANEL DE CLIENTE (derecha)
+    ══════════════════════════════ */
+    .clients-layout { display: grid; grid-template-columns: 1fr 360px; gap: 1.5rem; }
+    .client-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      height: fit-content; position: sticky; top: 72px;
+    }
+    .client-panel-head {
+      padding: 1.2rem 1.4rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .client-panel-name { font-size: 1rem; font-weight: 600; color: var(--text); }
+    .client-panel-email { font-family: var(--mono); font-size: 0.65rem; color: var(--dim); margin-top: 0.15rem; }
+    .client-panel-close { background: none; border: none; color: var(--dim); cursor: pointer; font-size: 1.1rem; padding: 0.2rem 0.4rem; }
+    .client-panel-close:hover { color: var(--text); }
+    .client-panel-tabs { display: flex; border-bottom: 1px solid var(--border); }
+    .cp-tab {
+      flex: 1; padding: 0.7rem 0.5rem; font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.06em; text-transform: uppercase; text-align: center;
+      color: var(--dim); background: none; border: none; cursor: pointer;
+      border-bottom: 1px solid transparent; margin-bottom: -1px;
+      transition: color .15s, border-color .15s;
+    }
+    .cp-tab:hover { color: var(--muted); }
+    .cp-tab.active { color: var(--text); border-bottom-color: rgba(255,255,255,.5); }
+    .client-panel-body { padding: 1.2rem 1.4rem; max-height: calc(100vh - 200px); overflow-y: auto; }
+
+    .cp-stat-row { display: flex; gap: 1.5rem; margin-bottom: 1.2rem; }
+    .cp-stat { flex: 1; }
+    .cp-stat-n { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+    .cp-stat-l { font-family: var(--mono); font-size: 0.6rem; color: var(--dim); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .cp-section { margin-bottom: 1.5rem; }
+    .cp-section-title { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 0.7rem; display: flex; align-items: center; justify-content: space-between; }
+    .cp-add-link { color: var(--dim); background: none; border: none; cursor: pointer; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; text-decoration: underline; transition: color .15s; }
+    .cp-add-link:hover { color: var(--text); }
+
+    .cp-item { padding: 0.6rem 0; border-top: 1px solid var(--border); font-size: 0.83rem; }
+    .cp-item-main { color: #ccc; }
+    .cp-item-sub  { font-family: var(--mono); font-size: 0.68rem; color: var(--dim); margin-top: 0.1rem; }
+
+    /* Form de añadir (colapsable) */
+    .cp-form { background: var(--card); padding: 1rem; margin-top: 0.6rem; display: none; flex-direction: column; gap: 0.6rem; }
+    .cp-form.open { display: flex; }
+
+    /* ══════════════════════════════
+       WORKSPACE
+    ══════════════════════════════ */
+    .ws-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; }
+
+    /* Notes board */
+    .ws-notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 1rem; }
+    .ws-note {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 1.2rem; position: relative; min-height: 140px;
+      display: flex; flex-direction: column;
+    }
+    .ws-note-content {
+      font-size: 0.86rem; color: #ccc; line-height: 1.6; flex: 1;
+      background: none; border: none; resize: none; outline: none;
+      font-family: var(--font); width: 100%; color: #ccc;
+      min-height: 80px;
+    }
+    .ws-note-content::placeholder { color: var(--dim); }
+    .ws-note-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.8rem; }
+    .ws-note-date { font-family: var(--mono); font-size: 0.6rem; color: var(--dim); }
+    .ws-note-del { background: none; border: none; color: var(--dim); cursor: pointer; font-size: 0.75rem; padding: 0.15rem 0.3rem; transition: color .15s; }
+    .ws-note-del:hover { color: #ff8080; }
+    .ws-note-saved { font-family: var(--mono); font-size: 0.58rem; color: #5ddf8e; opacity: 0; transition: opacity .3s; }
+    .ws-note-saved.show { opacity: 1; }
+
+    /* Tasks */
+    .ws-task { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.65rem 0; border-top: 1px solid var(--border); }
+    .ws-task:first-child { border-top: none; }
+    .ws-task-cb { width: 15px; height: 15px; border: 1px solid var(--border2); background: none; flex-shrink: 0; cursor: pointer; appearance: none; margin-top: 2px; position: relative; transition: background .15s, border-color .15s; }
+    .ws-task-cb:checked { background: rgba(255,255,255,0.9); border-color: transparent; }
+    .ws-task-cb:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 7px; border: 2px solid #0a0a0a; border-top: none; border-left: none; transform: rotate(45deg); }
+    .ws-task-text { flex: 1; font-size: 0.86rem; color: #ccc; cursor: pointer; line-height: 1.4; }
+    .ws-task-text.done { text-decoration: line-through; color: var(--dim); }
+    .ws-task-del { background: none; border: none; color: var(--dim); cursor: pointer; font-size: 0.7rem; padding: 0.1rem 0.3rem; }
+    .ws-task-del:hover { color: #ff8080; }
+
+    .ws-add-task {
+      display: flex; gap: 0.5rem; margin-top: 0.8rem;
+    }
+
+    /* ══════════════════════════════
+       CITAS (admin view)
+    ══════════════════════════════ */
+    .citas-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
+    .citas-filter-btn {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase;
+      background: none; border: 1px solid var(--border); color: var(--dim);
+      padding: 0.35rem 0.8rem; cursor: pointer; transition: all .15s;
+    }
+    .citas-filter-btn:hover { color: var(--muted); border-color: var(--border2); }
+    .citas-filter-btn.active { color: var(--text); border-color: rgba(255,255,255,.4); background: rgba(255,255,255,.05); }
+
+    .estado-select {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.04em; text-transform: uppercase;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border); color: #ccc;
+      padding: 0.3rem 0.6rem; cursor: pointer;
+    }
+    .estado-select option { background: #111; }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width: 900px) {
+      :root { --sidebar: 56px; }
+      .sidebar-logo span, .sidebar-section-label, .s-link span, .s-badge, .sidebar-bottom .worker-info, .sidebar-bottom .btn-logout { display: none; }
+      .s-link { justify-content: center; padding: 0.8rem; }
+      .clients-layout, .ws-layout { grid-template-columns: 1fr; }
+      .client-panel { position: static; }
+    }
+    /* ── Fotos del servicio ── */
+    .svc-photos { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.7rem; }
+    .svc-photo-thumb {
+      width: 60px; height: 60px; object-fit: cover;
+      cursor: pointer; border: 1px solid var(--border);
+      transition: border-color .15s;
+    }
+    .svc-photo-thumb:hover { border-color: var(--border2); }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.92);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lightbox img { max-width: 90vw; max-height: 88vh; object-fit: contain; }
+    .lightbox-close {
+      position: absolute; top: 1.2rem; right: 1.5rem;
+      font-size: 1.6rem; color: #ccc; cursor: pointer; background: none; border: none;
+    }
+    .lightbox-close:hover { color: #fff; }
+
+    /* Upload zone */
+    .upload-zone {
+      border: 1px dashed var(--border2); padding: 1rem;
+      text-align: center; cursor: pointer;
+      font-family: var(--mono); font-size: 0.68rem; color: var(--dim);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      transition: border-color .15s, background .15s;
+      position: relative; overflow: hidden;
+    }
+    .upload-zone:hover { border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.02); }
+    .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-previews { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+    .upload-preview { width: 48px; height: 48px; object-fit: cover; border: 1px solid var(--border); }
+    .upload-progress { font-family: var(--mono); font-size: .65rem; color: #8aaeff; margin-top: .4rem; }
+
+    /* Notas en historial */
+    .svc-notes {
+      font-size: .82rem; color: var(--muted); margin-top: .4rem;
+      line-height: 1.55; border-left: 2px solid var(--border2);
+      padding-left: .7rem; white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <g stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M48 30 L74 16 L112 36 L86 50 Z"/></g>
+      <path d="M8 50 L34 36 L72 56 L46 70 Z" fill="currentColor"/>
+    </svg>
+    <span>Elemsoft</span>
+  </a>
+  <nav class="sidebar-nav">
+    <p class="sidebar-section-label">Principal</p>
+    <button class="s-link active" onclick="setSection('overview')" id="nav-overview">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>Resumen</span>
+    </button>
+    <button class="s-link" onclick="setSection('clients')" id="nav-clients">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Clientes</span>
+      <span class="s-badge" id="badge-clients">—</span>
+    </button>
+    <button class="s-link" onclick="setSection('citas')" id="nav-citas">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Citas</span>
+      <span class="s-badge" id="badge-citas">—</span>
+    </button>
+    <p class="sidebar-section-label">Equipo</p>
+    <button class="s-link" onclick="setSection('workspace')" id="nav-workspace">
+      <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>Workspace</span>
+    </button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="worker-info">
+      <strong id="workerName">—</strong>
+      <span id="workerEmail">—</span>
+    </div>
+    <button class="btn-logout" onclick="logOut()">Cerrar sesión</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+  <header class="topbar">
+    <span class="topbar-title" id="topbarTitle">Cargando…</span>
+    <div class="topbar-right" id="topbarActions"></div>
+  </header>
+  <div class="content" id="content">
+    <div class="w-loading">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Verificando acceso…
+    </div>
+  </div>
+</div>
+
+<!-- ── FIREBASE ── -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   CONFIGURACIÓN — agrega aquí los correos del equipo de trabajo
+══════════════════════════════════════════════════════════════ */
+const WORKER_EMAILS = [
+  'emprendpc825@gmail.com',
+  // 'otro.trabajador@gmail.com',
+];
+
+const FB = {
+  apiKey:            'AIzaSyAYUz0m5R_ncBFCMFXCOzcArEkQnbVYWGo',
+  authDomain:        'elemsoftgt.firebaseapp.com',
+  projectId:         'elemsoftgt',
+  storageBucket:     'elemsoftgt.firebasestorage.app',
+  messagingSenderId: '482757350889',
+  appId:             '1:482757350889:web:3c45a31d75f6b319562778',
+};
+firebase.initializeApp(FB);
+const auth    = firebase.auth();
+const db      = firebase.firestore();
+const storage = firebase.storage();
+
+/* ── Estado global ── */
+let G = {
+  user:      null,
+  section:   'overview',
+  clients:   [],
+  citas:     [],
+  selClient: null,
+  cpTab:     'historial',
+};
+
+/* ── Auth ── */
+auth.onAuthStateChanged(async user => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  if (!WORKER_EMAILS.includes(user.email)) {
+    window.location.href = 'dashboard.html'; return;
+  }
+  G.user = user;
+  document.getElementById('workerName').textContent  = user.displayName || 'Trabajador';
+  document.getElementById('workerEmail').textContent = user.email;
+  await loadData();
+  setSection('overview');
+});
+
+function logOut() { auth.signOut().then(() => window.location.href = 'login.html'); }
+
+/* ══════════════════════════════════════════════════════════════
+   CARGA DE DATOS
+══════════════════════════════════════════════════════════════ */
+async function loadData() {
+  const [usersSnap, citasSnap] = await Promise.all([
+    db.collection('usuarios').get(),
+    db.collection('citas_rapidas').orderBy('creadoEn','desc').get(),
+  ]);
+  G.clients = usersSnap.docs.map(d => ({ id:d.id, ...d.data() }));
+  G.citas   = citasSnap.docs.map(d => ({ id:d.id, ...d.data() }));
+  document.getElementById('badge-clients').textContent = G.clients.length;
+  document.getElementById('badge-citas').textContent   = G.citas.filter(c=>c.estado==='pendiente').length + ' ●';
+}
+
+async function reloadCitas() {
+  const snap = await db.collection('citas_rapidas').orderBy('creadoEn','desc').get();
+  G.citas = snap.docs.map(d=>({id:d.id,...d.data()}));
+  document.getElementById('badge-citas').textContent = G.citas.filter(c=>c.estado==='pendiente').length + ' ●';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NAVEGACIÓN DE SECCIONES
+══════════════════════════════════════════════════════════════ */
+function setSection(sec) {
+  G.section = sec;
+  document.querySelectorAll('.s-link').forEach(el => el.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + sec);
+  if (navEl) navEl.classList.add('active');
+  const titles = { overview:'Resumen', clients:'Clientes', citas:'Citas', workspace:'Workspace' };
+  document.getElementById('topbarTitle').textContent = titles[sec] || sec;
+  const renders = { overview: renderOverview, clients: renderClients, citas: renderCitas, workspace: renderWorkspace };
+  (renders[sec] || (() => {}))();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECCIÓN: RESUMEN
+══════════════════════════════════════════════════════════════ */
+function renderOverview() {
+  document.getElementById('topbarActions').innerHTML = '';
+  const pendientes  = G.citas.filter(c=>c.estado==='pendiente').length;
+  const confirmadas = G.citas.filter(c=>c.estado==='confirmada').length;
+  const hoy = new Date().toISOString().slice(0,10);
+  const citasHoy = G.citas.filter(c=>c.fechaPreferida===hoy).length;
+
+  document.getElementById('content').innerHTML = `
+    <div style="max-width:860px;">
+      <div style="margin-bottom:1.8rem;">
+        <h1 class="section-title">Buenos días, ${G.user.displayName?.split(' ')[0] || 'equipo'}</h1>
+        <p class="section-sub">Panel interno de Elemsoft GT</p>
+      </div>
+
+      <!-- Stats rápidos -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:2rem;">
+        ${[
+          ['Clientes totales', G.clients.length, ''],
+          ['Citas pendientes', pendientes, 'color:#ffd04d'],
+          ['Citas confirmadas', confirmadas, 'color:#8aaeff'],
+          ['Citas hoy', citasHoy, 'color:#5ddf8e'],
+        ].map(([l,n,s])=>`
+          <div style="background:var(--surface);padding:1.3rem 1.5rem;">
+            <div style="font-size:1.8rem;font-weight:700;${s};letter-spacing:-.5px;line-height:1;margin-bottom:.35rem;">${n}</div>
+            <div style="font-family:var(--mono);font-size:.62rem;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;">${l}</div>
+          </div>`).join('')}
+      </div>
+
+      <!-- Citas recientes -->
+      <div class="w-card">
+        <p class="w-card-title">Citas recientes</p>
+        ${G.citas.length === 0 ? '<div class="w-empty">No hay citas registradas.</div>' : `
+        <table class="w-table">
+          <thead><tr><th>Cliente</th><th>Servicio</th><th>Fecha</th><th>Estado</th><th>WA</th></tr></thead>
+          <tbody>
+            ${G.citas.slice(0,8).map(c=>`<tr>
+              <td class="t-main">${c.nombre||'—'}</td>
+              <td class="t-dim">${c.servicio||'—'}</td>
+              <td class="t-mono">${c.fechaPreferida||'—'}</td>
+              <td>${estadoBadge(c.estado)}</td>
+              <td>${c.telefono ? `<a href="https://wa.me/${c.telefono.replace(/[^0-9]/g,'')}" target="_blank" style="color:var(--muted);font-family:var(--mono);font-size:.72rem;text-decoration:none;">→ WA</a>` : '—'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`}
+      </div>
+
+      <!-- Clientes recientes -->
+      <div class="w-card">
+        <p class="w-card-title">Clientes registrados recientemente</p>
+        ${G.clients.length === 0 ? '<div class="w-empty">No hay clientes registrados.</div>' : `
+        <table class="w-table">
+          <thead><tr><th>Nombre</th><th>Correo</th></tr></thead>
+          <tbody>
+            ${G.clients.slice(0,6).map(c=>`<tr onclick="openClient('${c.id}')">
+              <td class="t-main">${c.nombre||'—'}</td>
+              <td class="t-mono">${c.email||'—'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`}
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECCIÓN: CLIENTES
+══════════════════════════════════════════════════════════════ */
+function renderClients(query='') {
+  document.getElementById('topbarActions').innerHTML = '';
+  const filtered = query
+    ? G.clients.filter(c=>(c.nombre+c.email).toLowerCase().includes(query.toLowerCase()))
+    : G.clients;
+
+  const tableHTML = filtered.length === 0
+    ? '<div class="w-empty">No se encontraron clientes.</div>'
+    : `<table class="w-table">
+        <thead><tr><th>Nombre</th><th>Correo</th><th>Acción</th></tr></thead>
+        <tbody>${filtered.map(c=>`
+          <tr onclick="openClient('${c.id}')">
+            <td class="t-main">${c.nombre||'Sin nombre'}</td>
+            <td class="t-mono">${c.email||'—'}</td>
+            <td><span style="font-family:var(--mono);font-size:.68rem;color:var(--dim);">Ver →</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+
+  const panelHTML = G.selClient
+    ? clientPanelHTML(G.selClient)
+    : `<div class="client-panel" style="display:flex;align-items:center;justify-content:center;min-height:200px;color:var(--dim);font-size:.84rem;">Selecciona un cliente</div>`;
+
+  document.getElementById('content').innerHTML = `
+    <div style="margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
+      <input class="w-search" placeholder="Buscar por nombre o correo…" value="${query}" oninput="renderClients(this.value)" id="clientSearch"/>
+      <span style="font-family:var(--mono);font-size:.68rem;color:var(--dim);">${filtered.length} cliente${filtered.length!==1?'s':''}</span>
+    </div>
+    <div class="clients-layout">
+      <div>${tableHTML}</div>
+      <div id="clientPanelWrap">${panelHTML}</div>
+    </div>`;
+}
+
+async function openClient(uid) {
+  G.selClient = { uid };
+  G.cpTab = 'historial';
+  await loadClientData(uid);
+  renderClients(document.getElementById('clientSearch')?.value || '');
+}
+
+async function loadClientData(uid) {
+  const [basico, svcSnap, cupSnap, citSnap] = await Promise.all([
+    db.collection('usuarios').doc(uid).get(),
+    db.collection('usuarios').doc(uid).collection('servicios').get(),
+    db.collection('usuarios').doc(uid).collection('cupones').get(),
+    db.collection('citas_rapidas').where('uid','==',uid).get(),
+  ]);
+  G.selClient = {
+    uid,
+    ...basico.data(),
+    servicios: svcSnap.docs.map(d=>({id:d.id,...d.data()})),
+    cupones:   cupSnap.docs.map(d=>({id:d.id,...d.data()})),
+    citas:     citSnap.docs.map(d=>({id:d.id,...d.data()})),
+  };
+}
+
+function clientPanelHTML(cl) {
+  const tabs = [
+    ['historial','Historial'],
+    ['citas','Citas'],
+    ['cupones','Cupones'],
+  ];
+  return `
+    <div class="client-panel">
+      <div class="client-panel-head">
+        <div>
+          <div class="client-panel-name">${cl.nombre||'Sin nombre'}</div>
+          <div class="client-panel-email">${cl.email||'—'}</div>
+        </div>
+        <button class="client-panel-close" onclick="G.selClient=null;renderClients()">✕</button>
+      </div>
+      <div class="client-panel-tabs">
+        ${tabs.map(([k,l])=>`<button class="cp-tab ${G.cpTab===k?'active':''}" onclick="G.cpTab='${k}';document.getElementById('cp-body').innerHTML=cpTabContent('${k}')">${l}</button>`).join('')}
+      </div>
+      <div class="client-panel-body" id="cp-body">${cpTabContent(G.cpTab)}</div>
+    </div>`;
+}
+
+// Archivos pendientes de subir
+let _pendingFiles = [];
+
+function cpTabContent(tab) {
+  const cl = G.selClient;
+  if (!cl) return '';
+
+  /* ── HISTORIAL: servicios con fotos y notas ── */
+  if (tab === 'historial') {
+    const svcs = (cl.servicios || []).slice().sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+    return `
+      <div class="cp-stat-row">
+        <div class="cp-stat"><div class="cp-stat-n">${svcs.filter(s=>s.estado==='done').length}</div><div class="cp-stat-l">Completados</div></div>
+        <div class="cp-stat"><div class="cp-stat-n">${cl.cupones?.filter(c=>c.usado!==true).length||0}</div><div class="cp-stat-l">Cupones</div></div>
+        <div class="cp-stat"><div class="cp-stat-n">${cl.citas?.length||0}</div><div class="cp-stat-l">Citas</div></div>
+      </div>
+
+      <!-- Form para nuevo servicio con fotos y notas -->
+      <div class="cp-section">
+        <div class="cp-section-title">
+          Servicios realizados
+          <button class="cp-add-link" onclick="toggleCpForm('form-svc')">+ Nuevo</button>
+        </div>
+        <div class="cp-form" id="form-svc">
+          <div class="w-form-group"><label class="w-label">Servicio</label>
+            <select class="w-select" id="svc-tipo">
+              <option value="" disabled selected>Seleccionar…</option>
+              <option>Mantenimiento preventivo</option>
+              <option>Mantenimiento correctivo</option>
+              <option>Actualización de hardware</option>
+              <option>Ensamble de PC</option>
+              <option>Instalación de software</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="w-form-row">
+            <div class="w-form-group"><label class="w-label">Fecha</label><input class="w-input" type="date" id="svc-fecha"/></div>
+            <div class="w-form-group"><label class="w-label">Técnico</label><input class="w-input" type="text" id="svc-tecnico" placeholder="Nombre"/></div>
+          </div>
+          <div class="w-form-row">
+            <div class="w-form-group"><label class="w-label">Estado</label>
+              <select class="w-select" id="svc-estado">
+                <option value="sched">Agendado</option>
+                <option value="pending">En proceso</option>
+                <option value="done">Completado</option>
+              </select>
+            </div>
+            <div class="w-form-group"><label class="w-label">Garantía</label><input class="w-input" type="text" id="svc-garantia" placeholder="Ej. 3 meses"/></div>
+          </div>
+          <div class="w-form-group">
+            <label class="w-label">Notas / Observaciones</label>
+            <textarea class="w-textarea" id="svc-notas" placeholder="Describe el trabajo realizado, piezas reemplazadas, observaciones importantes…" style="min-height:70px;"></textarea>
+          </div>
+          <div class="w-form-group">
+            <label class="w-label">Fotos del servicio</label>
+            <div class="upload-zone" id="uploadZone">
+              <input type="file" accept="image/*" multiple id="svc-fotos" onchange="previewFotos(this)"/>
+              Haz clic o arrastra fotos aquí
+            </div>
+            <div class="upload-previews" id="fotoPreviews"></div>
+            <div class="upload-progress" id="uploadProgress"></div>
+          </div>
+          <button class="w-btn w-btn-primary" id="btnGuardarSvc" onclick="addServicio('${cl.uid}')">Guardar servicio</button>
+        </div>
+      </div>
+
+      <!-- Lista de servicios -->
+      ${svcs.length === 0
+        ? '<div class="w-empty" style="padding:1.2rem .5rem;">Sin servicios registrados.</div>'
+        : svcs.map(s=>`
+          <div class="cp-item">
+            <div class="cp-item-main">${s.servicio||'—'} ${estadoBadge(s.estado)}</div>
+            <div class="cp-item-sub">${s.fecha||'—'} · ${s.tecnico||'Sin técnico'}${s.garantia?` · ${s.garantia}`:''}</div>
+            ${s.notas ? `<div class="svc-notes">${s.notas}</div>` : ''}
+            ${s.fotos && s.fotos.length ? `
+              <div class="svc-photos">
+                ${s.fotos.map(url=>`<img src="${url}" class="svc-photo-thumb" onclick="openLightbox('${url}')" loading="lazy"/>`).join('')}
+              </div>` : ''}
+          </div>`).join('')}`;
+  }
+
+  /* ── CITAS: lista + formulario para programar ── */
+  if (tab === 'citas') {
+    const citas = (cl.citas || []).slice().sort((a,b)=>(b.fechaPreferida||'').localeCompare(a.fechaPreferida||''));
+    return `
+      <div class="cp-section">
+        <div class="cp-section-title">
+          Citas del cliente
+          <button class="cp-add-link" onclick="toggleCpForm('form-cita')">+ Programar</button>
+        </div>
+        <div class="cp-form" id="form-cita">
+          <div class="w-form-group"><label class="w-label">Servicio</label>
+            <select class="w-select" id="cita-servicio">
+              <option value="" disabled selected>Seleccionar…</option>
+              <option>Mantenimiento preventivo</option>
+              <option>Mantenimiento correctivo</option>
+              <option>Actualización de hardware</option>
+              <option>Ensamble de PC</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="w-form-row">
+            <div class="w-form-group"><label class="w-label">Fecha</label><input class="w-input" type="date" id="cita-fecha"/></div>
+            <div class="w-form-group"><label class="w-label">Hora (opcional)</label><input class="w-input" type="time" id="cita-hora"/></div>
+          </div>
+          <div class="w-form-group"><label class="w-label">Teléfono del cliente</label><input class="w-input" type="tel" id="cita-tel" placeholder="+502…" value="${cl.telefono||''}"/></div>
+          <div class="w-form-group"><label class="w-label">Notas internas</label><textarea class="w-textarea" id="cita-notas" placeholder="Observaciones para el técnico…" style="min-height:55px;"></textarea></div>
+          <button class="w-btn w-btn-primary" onclick="programarCita('${cl.uid}')">Guardar cita</button>
+        </div>
+      </div>
+      ${citas.length === 0
+        ? '<div class="w-empty" style="padding:1.2rem .5rem;">Sin citas registradas.</div>'
+        : citas.map(c=>`
+          <div class="cp-item">
+            <div class="cp-item-main">${c.servicio||'—'} ${estadoBadge(c.estado)}</div>
+            <div class="cp-item-sub">${c.fechaPreferida||'—'}${c.hora?` · ${c.hora}`:''} · ${c.telefono||'—'}${c.cupon?` · cupón: ${c.cupon}`:''}${c.origen==='worker-panel'?' · <span style="color:var(--dim)">programada internamente</span>':''}</div>
+            ${c.notas?`<div class="svc-notes" style="margin-top:.3rem;">${c.notas}</div>`:''}
+          </div>`).join('')}`;
+  }
+
+  /* ── CUPONES: lista + formulario para agregar ── */
+  if (tab === 'cupones') {
+    const cups = cl.cupones || [];
+    return `
+      <div class="cp-section">
+        <div class="cp-section-title">
+          Cupones y promociones
+          <button class="cp-add-link" onclick="toggleCpForm('form-cup')">+ Agregar</button>
+        </div>
+        <div class="cp-form" id="form-cup">
+          <div class="w-form-row">
+            <div class="w-form-group"><label class="w-label">Descuento</label><input class="w-input" type="text" id="cup-desc" placeholder="Ej. 20% o Q50"/></div>
+            <div class="w-form-group"><label class="w-label">Código</label><input class="w-input" type="text" id="cup-codigo" placeholder="Ej. ELEM-20" style="text-transform:uppercase;"/></div>
+          </div>
+          <div class="w-form-group"><label class="w-label">Descripción</label><input class="w-input" type="text" id="cup-detalle" placeholder="Aplica en mantenimiento preventivo…"/></div>
+          <div class="w-form-group"><label class="w-label">Tipo</label>
+            <select class="w-select" id="cup-tipo">
+              <option value="cupón">Cupón de descuento</option>
+              <option value="promoción">Promoción especial</option>
+              <option value="regalo">Servicio de regalo</option>
+            </select>
+          </div>
+          <div class="w-form-group"><label class="w-label">Vence</label><input class="w-input" type="date" id="cup-vence"/></div>
+          <button class="w-btn w-btn-primary" onclick="addCupon('${cl.uid}')">Guardar cupón</button>
+        </div>
+      </div>
+      ${cups.length === 0
+        ? '<div class="w-empty" style="padding:1.2rem .5rem;">Sin cupones.</div>'
+        : cups.map(c=>`
+          <div class="cp-item">
+            <div class="cp-item-main">
+              <strong style="font-size:.95rem;">${c.descuento||'—'}</strong>
+              — <code style="font-family:var(--mono);font-size:.75rem;">${c.codigo||'—'}</code>
+              ${c.usado===true?'<span style="color:var(--dim);font-size:.7rem;margin-left:.4rem;">(usado)</span>':''}
+            </div>
+            <div class="cp-item-sub">${c.descripcion||''} · hasta ${c.vencimiento||'—'}</div>
+          </div>`).join('')}`;
+  }
+  return '';
+}
+
+function toggleCpForm(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+/* Preview de fotos antes de subir */
+function previewFotos(input) {
+  _pendingFiles = Array.from(input.files);
+  const container = document.getElementById('fotoPreviews');
+  if (!container) return;
+  container.innerHTML = _pendingFiles.map((f,i)=>`
+    <img src="${URL.createObjectURL(f)}" class="upload-preview" title="${f.name}"/>
+  `).join('') + `<span style="font-family:var(--mono);font-size:.62rem;color:var(--dim);align-self:center;margin-left:.3rem;">${_pendingFiles.length} foto${_pendingFiles.length!==1?'s':''}</span>`;
+}
+
+/* Lightbox */
+function openLightbox(url) {
+  const lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.innerHTML = `<button class="lightbox-close" onclick="this.parentElement.remove()">✕</button><img src="${url}" onclick="event.stopPropagation()"/>`;
+  lb.addEventListener('click', ()=>lb.remove());
+  document.body.appendChild(lb);
+}
+
+/* Subir foto a Firebase Storage y devolver URL */
+async function uploadFoto(file, uid, svcId) {
+  const ext  = file.name.split('.').pop();
+  const ref  = storage.ref(`servicios/${uid}/${svcId}/${Date.now()}.${ext}`);
+  await ref.put(file);
+  return ref.getDownloadURL();
+}
+
+/* Guardar servicio con fotos y notas */
+async function addServicio(uid) {
+  const tipo    = document.getElementById('svc-tipo').value;
+  const fecha   = document.getElementById('svc-fecha').value;
+  const tecnico = document.getElementById('svc-tecnico').value.trim();
+  const estado  = document.getElementById('svc-estado').value;
+  const gar     = document.getElementById('svc-garantia').value.trim();
+  const notas   = document.getElementById('svc-notas').value.trim();
+
+  if (!tipo || !fecha) { toast('Completa servicio y fecha', 'error'); return; }
+
+  const btn = document.getElementById('btnGuardarSvc');
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
+
+  // Crear el documento primero para tener el ID
+  const docRef = await db.collection('usuarios').doc(uid).collection('servicios').add({
+    servicio: tipo, fecha, tecnico, estado, garantia: gar, notas, fotos: [], creadoEn: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  // Subir fotos si las hay
+  let fotosUrls = [];
+  if (_pendingFiles.length > 0) {
+    const prog = document.getElementById('uploadProgress');
+    for (let i = 0; i < _pendingFiles.length; i++) {
+      if (prog) prog.textContent = `Subiendo foto ${i+1} de ${_pendingFiles.length}…`;
+      try {
+        const url = await uploadFoto(_pendingFiles[i], uid, docRef.id);
+        fotosUrls.push(url);
+      } catch(e) { console.warn('Error subiendo foto:', e); }
+    }
+    if (fotosUrls.length) {
+      await docRef.update({ fotos: fotosUrls });
+    }
+  }
+
+  _pendingFiles = [];
+  await loadClientData(uid);
+  G.cpTab = 'historial';
+  document.getElementById('cp-body').innerHTML = cpTabContent('historial');
+  toast('Servicio guardado' + (fotosUrls.length ? ` con ${fotosUrls.length} foto${fotosUrls.length!==1?'s':''}` : ''));
+}
+
+/* Programar cita desde el panel de trabajador */
+async function programarCita(uid) {
+  const servicio = document.getElementById('cita-servicio').value;
+  const fecha    = document.getElementById('cita-fecha').value;
+  const hora     = document.getElementById('cita-hora').value;
+  const tel      = document.getElementById('cita-tel').value.trim();
+  const notas    = document.getElementById('cita-notas').value.trim();
+
+  if (!servicio || !fecha) { toast('Completa servicio y fecha', 'error'); return; }
+
+  const cl = G.selClient;
+  await db.collection('citas_rapidas').add({
+    uid,
+    email:          cl.email || '—',
+    nombre:         cl.nombre || '—',
+    telefono:       tel,
+    servicio,
+    fechaPreferida: fecha,
+    hora:           hora || null,
+    notas:          notas || null,
+    estado:         'confirmada',
+    origen:         'worker-panel',
+    creadoEn:       firebase.firestore.FieldValue.serverTimestamp(),
+  });
+
+  await loadClientData(uid);
+  await reloadCitas();
+  G.cpTab = 'citas';
+  document.getElementById('cp-body').innerHTML = cpTabContent('citas');
+  toast('Cita programada');
+}
+
+async function addCupon(uid) {
+  const desc    = document.getElementById('cup-desc').value.trim();
+  const codigo  = document.getElementById('cup-codigo').value.trim().toUpperCase();
+  const detalle = document.getElementById('cup-detalle').value.trim();
+  const tipo    = document.getElementById('cup-tipo').value;
+  const vence   = document.getElementById('cup-vence').value;
+  if (!desc || !codigo) { toast('Completa descuento y código', 'error'); return; }
+  const fmtVence = vence ? new Date(vence+'T12:00:00').toLocaleDateString('es-GT',{day:'2-digit',month:'short',year:'numeric'}).replace('.','') : '—';
+  await db.collection('usuarios').doc(uid).collection('cupones').add({ descuento:desc, codigo, descripcion:detalle, tipo, vencimiento:fmtVence, usado:false });
+  await loadClientData(uid);
+  G.cpTab = 'cupones';
+  document.getElementById('cp-body').innerHTML = cpTabContent('cupones');
+  toast('Cupón agregado');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECCIÓN: CITAS
+══════════════════════════════════════════════════════════════ */
+let citaFiltro = 'activas';
+
+function renderCitas() {
+  document.getElementById('topbarActions').innerHTML = `
+    <button class="tb-btn" onclick="reloadCitas().then(()=>renderCitas())">↻ Actualizar</button>`;
+  const pendientes  = G.citas.filter(c=>c.estado==='pendiente');
+  const confirmadas = G.citas.filter(c=>c.estado==='confirmada');
+  const activas     = [...pendientes, ...confirmadas];
+
+  const maps = { activas, pendiente: pendientes, confirmada: confirmadas,
+    completada: G.citas.filter(c=>c.estado==='completada'),
+    cancelada:  G.citas.filter(c=>c.estado==='cancelada'),
+    todas:      G.citas };
+  const lista = maps[citaFiltro] || activas;
+
+  const filtros = [
+    ['activas', `Activas (${activas.length})`],
+    ['pendiente', 'Pendientes'],
+    ['confirmada', 'Confirmadas'],
+    ['completada', 'Completadas'],
+    ['cancelada', 'Canceladas'],
+    ['todas', `Todas (${G.citas.length})`],
+  ];
+
+  document.getElementById('content').innerHTML = `
+    <div class="citas-filters">
+      ${filtros.map(([k,l])=>`<button class="citas-filter-btn ${citaFiltro===k?'active':''}" onclick="citaFiltro='${k}';renderCitas()">${l}</button>`).join('')}
+    </div>
+    ${lista.length === 0 ? '<div class="w-empty">No hay citas en esta categoría.</div>' : `
+    <table class="w-table">
+      <thead><tr><th>Cliente</th><th>Servicio</th><th>Fecha</th><th>Teléfono</th><th>Cupón</th><th>Estado</th></tr></thead>
+      <tbody>
+        ${lista.map(c=>`<tr>
+          <td class="t-main">${c.nombre||'—'}</td>
+          <td class="t-dim">${c.servicio||'—'}</td>
+          <td class="t-mono">${c.fechaPreferida||'—'}</td>
+          <td>${c.telefono ? `<a href="https://wa.me/${c.telefono.replace(/[^0-9]/g,'')}" target="_blank" style="color:#8aaeff;font-family:var(--mono);font-size:.75rem;text-decoration:none;">${c.telefono}</a>` : '—'}</td>
+          <td class="t-mono">${c.cupon||'—'}</td>
+          <td>
+            <select class="estado-select" data-id="${c.id}" onchange="cambiarEstadoCita('${c.id}',this.value,this)">
+              <option value="pendiente"   ${c.estado==='pendiente'  ?'selected':''}>Pendiente</option>
+              <option value="confirmada"  ${c.estado==='confirmada' ?'selected':''}>Confirmada</option>
+              <option value="completada"  ${c.estado==='completada' ?'selected':''}>Completada</option>
+              <option value="cancelada"   ${c.estado==='cancelada'  ?'selected':''}>Cancelada</option>
+            </select>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`}`;
+}
+
+async function cambiarEstadoCita(id, estado, selectEl) {
+  selectEl.disabled = true;
+  await db.collection('citas_rapidas').doc(id).update({ estado });
+  const cita = G.citas.find(c=>c.id===id);
+  if (cita) cita.estado = estado;
+  selectEl.disabled = false;
+  document.getElementById('badge-citas').textContent = G.citas.filter(c=>c.estado==='pendiente').length + ' ●';
+  toast('Estado actualizado');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECCIÓN: WORKSPACE
+══════════════════════════════════════════════════════════════ */
+let _noteTimers = {};
+let _tasks = [];
+let _notes = [];
+
+async function renderWorkspace() {
+  document.getElementById('topbarActions').innerHTML = `
+    <button class="tb-btn w-btn-primary" onclick="addNote()">+ Nueva nota</button>`;
+
+  // Cargar notas y tareas
+  const [notesSnap, tasksSnap] = await Promise.all([
+    db.collection('workspace').doc('notas').collection('items').orderBy('creadoEn','desc').get(),
+    db.collection('workspace').doc('tareas').collection('items').orderBy('creadoEn','asc').get(),
+  ]);
+  _notes = notesSnap.docs.map(d=>({id:d.id,...d.data()}));
+  _tasks = tasksSnap.docs.map(d=>({id:d.id,...d.data()}));
+  drawWorkspace();
+}
+
+function drawWorkspace() {
+  document.getElementById('content').innerHTML = `
+    <div class="ws-layout">
+      <!-- Notas -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div>
+            <p class="section-title" style="font-size:.95rem;">Notas rápidas</p>
+            <p style="font-family:var(--mono);font-size:.62rem;color:var(--dim);">Auto-guardado al escribir</p>
+          </div>
+        </div>
+        <div class="ws-notes-grid" id="notesGrid">
+          ${_notes.length === 0 ? '<div class="w-empty" style="grid-column:1/-1;">Sin notas. Crea una con el botón.</div>' :
+            _notes.map(n=>`
+              <div class="ws-note" id="note-${n.id}">
+                <textarea class="ws-note-content" placeholder="Escribe algo…" oninput="scheduleNoteSave('${n.id}',this.value)">${n.contenido||''}</textarea>
+                <div class="ws-note-footer">
+                  <span class="ws-note-saved" id="saved-${n.id}">✓ guardado</span>
+                  <button class="ws-note-del" onclick="deleteNote('${n.id}')">✕</button>
+                </div>
+              </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- Tareas -->
+      <div>
+        <div style="margin-bottom:1rem;">
+          <p class="section-title" style="font-size:.95rem;">Tareas del equipo</p>
+          <p style="font-family:var(--mono);font-size:.62rem;color:var(--dim);">${_tasks.filter(t=>!t.done).length} pendiente${_tasks.filter(t=>!t.done).length!==1?'s':''}</p>
+        </div>
+        <div class="w-card" style="padding:1rem 1.2rem;">
+          <div id="taskList">
+            ${_tasks.length === 0
+              ? '<div style="padding:.5rem 0;color:var(--dim);font-size:.82rem;">Sin tareas.</div>'
+              : _tasks.map(t=>`
+                  <div class="ws-task" id="task-${t.id}">
+                    <input type="checkbox" class="ws-task-cb" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"/>
+                    <span class="ws-task-text ${t.done?'done':''}">${t.texto||''}</span>
+                    <button class="ws-task-del" onclick="deleteTask('${t.id}')">✕</button>
+                  </div>`).join('')}
+          </div>
+          <div class="ws-add-task">
+            <input class="w-input" type="text" id="newTaskInput" placeholder="Nueva tarea…" onkeydown="if(event.key==='Enter')addTask()"/>
+            <button class="w-btn" onclick="addTask()">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+async function addNote() {
+  const ref = await db.collection('workspace').doc('notas').collection('items').add({
+    contenido: '', creadoEn: firebase.firestore.FieldValue.serverTimestamp(), autor: G.user.email
+  });
+  _notes.unshift({ id: ref.id, contenido: '', autor: G.user.email });
+  drawWorkspace();
+}
+
+function scheduleNoteSave(id, val) {
+  clearTimeout(_noteTimers[id]);
+  _noteTimers[id] = setTimeout(async () => {
+    await db.collection('workspace').doc('notas').collection('items').doc(id).update({ contenido: val });
+    const el = document.getElementById('saved-'+id);
+    if (el) { el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), 1800); }
+    const note = _notes.find(n=>n.id===id);
+    if (note) note.contenido = val;
+  }, 900);
+}
+
+async function deleteNote(id) {
+  await db.collection('workspace').doc('notas').collection('items').doc(id).delete();
+  _notes = _notes.filter(n=>n.id!==id);
+  drawWorkspace();
+}
+
+async function addTask() {
+  const inp = document.getElementById('newTaskInput');
+  const txt = inp?.value.trim();
+  if (!txt) return;
+  const ref = await db.collection('workspace').doc('tareas').collection('items').add({
+    texto: txt, done: false, creadoEn: firebase.firestore.FieldValue.serverTimestamp(), autor: G.user.email
+  });
+  _tasks.push({ id: ref.id, texto: txt, done: false });
+  drawWorkspace();
+  document.getElementById('newTaskInput')?.focus();
+}
+
+async function toggleTask(id, done) {
+  await db.collection('workspace').doc('tareas').collection('items').doc(id).update({ done });
+  const t = _tasks.find(t=>t.id===id);
+  if (t) t.done = done;
+  const textEl = document.querySelector(`#task-${id} .ws-task-text`);
+  if (textEl) textEl.classList.toggle('done', done);
+}
+
+async function deleteTask(id) {
+  await db.collection('workspace').doc('tareas').collection('items').doc(id).delete();
+  _tasks = _tasks.filter(t=>t.id!==id);
+  drawWorkspace();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════════════════════ */
+function estadoBadge(e) {
+  const m = { pendiente:'b-pending', confirmada:'b-sched', sched:'b-sched', done:'b-done', pending:'b-pending', completada:'b-done', cancelada:'b-cancel' };
+  const l = { pendiente:'Pendiente', confirmada:'Confirmada', sched:'Agendado', done:'Completado', pending:'En proceso', completada:'Completada', cancelada:'Cancelada' };
+  return `<span class="badge ${m[e]||'b-pending'}">${l[e]||e||'—'}</span>`;
+}
+
+let _toastTimer;
+function toast(msg, type='success') {
+  clearTimeout(_toastTimer);
+  let el = document.getElementById('w-toast');
+  if (!el) { el = document.createElement('div'); el.id='w-toast'; document.body.appendChild(el); }
+  el.className = `w-toast ${type}`;
+  el.textContent = msg;
+  _toastTimer = setTimeout(() => el.remove(), 2800);
+}
+</script>
+</body>
+</html>
